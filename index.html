@@ -357,28 +357,38 @@
 
   <!-- Order Modal -->
   <div class="pl-modal" id="orderModal" aria-hidden="true">
-    <div class="pl-modal-content">
+    <div class="pl-modal-content pl-max">
       <button class="pl-modal-close" data-close="orderModal">×</button>
       <h2>Formulario de Pedido</h2>
       <form id="orderForm" class="pl-form">
-        <label>Nombre Completo<input id="orderName" required class="pl-input" /></label>
-        <label>Correo Electrónico<input id="orderEmail" type="email" required class="pl-input" /></label>
-        <label>Dirección de Envío<textarea id="orderAddress" rows="3" required class="pl-input"></textarea></label>
-        <label>Ciudad
-          <select id="orderCity" class="pl-input" required>
-            <option value="">Selecciona ciudad</option>
-            <option>Bogotá</option>
-            <option>Medellín</option>
-            <option>Cali</option>
-            <option>Otra</option>
-          </select>
-        </label>
-        <div class="pl-row-gap">
+        <div class="pl-form-grid">
+          <label>Nombre Completo *<input id="orderName" required class="pl-input" /></label>
+          <label>Correo Electrónico *<input id="orderEmail" type="email" required class="pl-input" /></label>
+        </div>
+        <label>Dirección 1 *<input id="orderAddress" required class="pl-input" placeholder="Calle, carrera, número" /></label>
+        <label>Dirección 2 (opcional)<input id="orderAddress2" class="pl-input" placeholder="Apartamento, edificio, piso, indicaciones adicionales" /></label>
+        <div class="pl-form-grid">
+          <label>Departamento *
+            <select id="orderDepartment" class="pl-input" required>
+              <option value="">Selecciona departamento</option>
+            </select>
+          </label>
+          <label>Ciudad *
+            <select id="orderCity" class="pl-input" required disabled>
+              <option value="">Primero selecciona departamento</option>
+            </select>
+          </label>
+        </div>
+        <div class="pl-form-grid">
+          <label>Teléfono *<input id="orderPhone" type="tel" required class="pl-input" placeholder="300 123 4567" /></label>
+          <label>Código Postal (opcional)<input id="orderPostalCode" class="pl-input" placeholder="110111" /></label>
+        </div>
+        <label>Cédula (opcional — aparecerá en la factura)<input id="orderCedula" class="pl-input" placeholder="1.234.567.890" /></label>
+        <div class="pl-row-gap" style="align-items:center;">
           <button class="pl-btn pl-ghost" type="button" id="calcShippingBtn">Calcular envío</button>
           <div id="shippingQuote" class="pl-muted"></div>
         </div>
-        <label>Teléfono<input id="orderPhone" type="tel" required class="pl-input" /></label>
-        <label>Método de Pago
+        <label>Método de Pago *
           <select id="paymentMethod" class="pl-input" required>
             <option value="">Seleccione método</option>
             <option value="credit">Tarjeta de Crédito</option>
@@ -393,8 +403,10 @@
         </label>
         <div id="paymentDetails" style="display:none;">
           <label>Número de Tarjeta<input id="cardNumber" class="pl-input" placeholder="1234 5678 9012 3456" /></label>
-          <label>Fecha de Expiración<input id="cardExpiry" class="pl-input" placeholder="MM/AA" /></label>
-          <label>CVV<input id="cardCVV" class="pl-input" placeholder="123" /></label>
+          <div class="pl-form-grid">
+            <label>Fecha de Expiración<input id="cardExpiry" class="pl-input" placeholder="MM/AA" /></label>
+            <label>CVV<input id="cardCVV" class="pl-input" placeholder="123" /></label>
+          </div>
         </div>
         <button class="pl-btn pl-primary" type="submit">Realizar Pedido</button>
       </form>

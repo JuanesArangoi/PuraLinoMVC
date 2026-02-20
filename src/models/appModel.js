@@ -281,9 +281,9 @@ export class AppModel {
     }));
     return { ...o, id: o._id, items };
   }
-  async createOrder({userName,email,address,phone,paymentMethod,shippingCity,shippingCost,giftCardCode}){
+  async createOrder({userName,email,address,address2,department,postalCode,cedula,phone,paymentMethod,shippingCity,shippingCost,giftCardCode}){
     const payload = {
-      userName,email,address,phone,paymentMethod,
+      userName,email,address,address2,department,postalCode,cedula,phone,paymentMethod,
       items: this.state.cart.map(i=>({ productId: i.product._id || i.product.id, variantId: i.variantId, quantity: i.quantity })),
       promoCode: this.state.currentPromo?.code || undefined,
       shippingCity,

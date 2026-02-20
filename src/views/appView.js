@@ -286,17 +286,20 @@ export class AppView {
           </div>
         </div>
 
-        <div style="display:flex;justify-content:space-between;gap:2rem;margin-bottom:20px">
-          <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;gap:2rem;margin-bottom:20px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px">
             <p style="margin:0 0 4px;font-weight:700;color:#555;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px">Facturar a</p>
             <p style="margin:0;font-weight:600">${order.userName||'—'}</p>
             <p style="margin:2px 0;color:#555;font-size:.9rem">${order.email||''}</p>
             <p style="margin:2px 0;color:#555;font-size:.9rem">${order.phone||''}</p>
+            ${order.cedula?`<p style="margin:2px 0;color:#555;font-size:.9rem">CC: ${order.cedula}</p>`:''}
           </div>
-          <div style="flex:1">
+          <div style="flex:1;min-width:200px">
             <p style="margin:0 0 4px;font-weight:700;color:#555;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px">Enviar a</p>
             <p style="margin:0;font-size:.9rem;color:#333">${order.address||'—'}</p>
-            ${order.shippingCity?`<p style="margin:2px 0;font-size:.9rem;color:#555">${order.shippingCity}</p>`:''}
+            ${order.address2?`<p style="margin:2px 0;font-size:.9rem;color:#555">${order.address2}</p>`:''}
+            <p style="margin:2px 0;font-size:.9rem;color:#555">${order.shippingCity||''}, ${order.department||''}</p>
+            ${order.postalCode?`<p style="margin:2px 0;font-size:.9rem;color:#555">C.P. ${order.postalCode}</p>`:''}
           </div>
         </div>
 

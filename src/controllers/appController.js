@@ -3,6 +3,7 @@ import { AppModel } from '../models/appModel.js';
 import { AppView, cop } from '../views/appView.js';
 import { wishlistApi, reviewsApi } from '../api/client.js';
 import { PaymentStrategies } from '../strategies/payment.js';
+import { DEPARTMENTS } from '../data/colombiaDepts.js';
 
 export class AppController {
   constructor(){
@@ -955,15 +956,20 @@ export class AppController {
       const nameVal = document.getElementById('orderName').value.trim();
       const emailVal = document.getElementById('orderEmail').value.trim();
       const addrVal = document.getElementById('orderAddress').value.trim();
-      const phoneVal = document.getElementById('orderPhone').value.trim();
+      const addr2Val = document.getElementById('orderAddress2')?.value?.trim() || '';
+      const deptVal = document.getElementById('orderDepartment')?.value || '';
       const cityVal = this.currentShipping?.city || document.getElementById('orderCity')?.value?.trim() || '';
+      const phoneVal = document.getElementById('orderPhone').value.trim();
+      const postalVal = document.getElementById('orderPostalCode')?.value?.trim() || '';
+      const cedulaVal = document.getElementById('orderCedula')?.value?.trim() || '';
       const method = document.getElementById('paymentMethod').value;
 
       if(!nameVal){ this.view.toast('El nombre es obligatorio','error'); return; }
       if(!emailVal){ this.view.toast('El correo es obligatorio','error'); return; }
       if(!addrVal){ this.view.toast('La dirección de envío es obligatoria','error'); return; }
-      if(!phoneVal){ this.view.toast('El teléfono es obligatorio','error'); return; }
+      if(!deptVal){ this.view.toast('Selecciona un departamento','error'); return; }
       if(!cityVal){ this.view.toast('Debes calcular el envío seleccionando una ciudad','error'); return; }
+      if(!phoneVal){ this.view.toast('El teléfono es obligatorio','error'); return; }
       if(!method){ this.view.toast('Selecciona un método de pago','error'); return; }
 
       if(method==='credit' || method==='debit'){
@@ -981,6 +987,10 @@ export class AppController {
           userName: nameVal,
           email: emailVal,
           address: addrVal,
+          address2: addr2Val,
+          department: deptVal,
+          postalCode: postalVal,
+          cedula: cedulaVal,
           phone: phoneVal,
           paymentMethod: method,
           shippingCity: cityVal,
@@ -1075,10 +1085,15 @@ export class AppController {
         y += 5;
         doc.setFontSize(9); doc.setTextColor(85,85,85);
         doc.text(order.email||'', lm, y);
-        if(order.shippingCity) doc.text(order.shippingCity, 110, y);
+        if(order.address2) doc.text(order.address2, 110, y);
         y += 5;
         doc.text(order.phone||'', lm, y);
-        y += 10;
+        const cityDept = [order.shippingCity, order.department].filter(Boolean).join(', ');
+        if(cityDept) doc.text(cityDept, 110, y);
+        y += 5;
+        if(order.cedula){ doc.text('CC: ' + order.cedula, lm, y); }
+        if(order.postalCode){ doc.text('C.P. ' + order.postalCode, 110, y); }
+        y += 8;
 
         // Products table header
         const colX = [lm, 120, 150, rm];
@@ -1158,6 +1173,45 @@ export class AppController {
         this.currentShipping = { city: data.city||city, cost: data.cost };
       }catch(err){ this.view.toast('No se pudo calcular el envío','error'); }
     }); }
+    // Populate departments dropdown
+    const deptSelect = document.getElementById('orderDepartment');
+    const citySelect = document.getElementById('orderCity');
+    if(deptSelect){
+      Object.keys(DEPARTMENTS).sort().forEach(dept=>{
+        const opt = document.createElement('option');
+        opt.value = dept; opt.textContent = dept;
+        deptSelect.appendChild(opt);
+      });
+      deptSelect.addEventListener('change', ()=>{
+        const dept = deptSelect.value;
+        citySelect.innerHTML = '';
+        if(!dept){
+          citySelect.disabled = true;
+          citySelect.innerHTML = '<option value="">Primero selecciona departamento</option>';
+          return;
+        }
+        citySelect.disabled = false;
+        citySelect.innerHTML = '<option value="">Selecciona ciudad</option>';
+        (DEPARTMENTS[dept]||[]).forEach(city=>{
+          const opt = document.createElement('option');
+          opt.value = city; opt.textContent = city;
+          citySelect.appendChild(opt);
+        });
+        // Reset shipping quote when department changes
+        const q = document.getElementById('shippingQuote');
+        if(q) q.textContent = '';
+        this.currentShipping = null;
+      });
+    }
+    // Reset shipping when city changes
+    if(citySelect){
+      citySelect.addEventListener('change', ()=>{
+        const q = document.getElementById('shippingQuote');
+        if(q) q.textContent = '';
+        this.currentShipping = null;
+      });
+    }
+
     document.getElementById('checkoutBtn').addEventListener('click', ()=>{
       if(!this.model.state.currentUser){ this.view.toast('Por favor inicia sesión para comprar','error'); this.view.toggleModal('cartModal', false); this.view.toggleModal('loginModal', true); return; }
       if(this.model.state.cart.length===0){ this.view.toast('Tu carrito está vacío','error'); return; }
@@ -1167,8 +1221,16 @@ export class AppController {
       const setVal = (id, v)=>{ const el=document.getElementById(id); if(el) el.value = v||''; };
       setVal('orderName', u.name);
       setVal('orderEmail', u.email);
-      const addrEl = document.getElementById('orderAddress'); if(addrEl) addrEl.value = u.address||'';
+      setVal('orderAddress', u.address||'');
       setVal('orderPhone', u.phone);
+      // Reset selects
+      setVal('orderAddress2', '');
+      setVal('orderPostalCode', '');
+      setVal('orderCedula', '');
+      if(deptSelect) deptSelect.value = '';
+      if(citySelect){ citySelect.innerHTML = '<option value="">Primero selecciona departamento</option>'; citySelect.disabled = true; }
+      const q = document.getElementById('shippingQuote'); if(q) q.textContent = '';
+      this.currentShipping = null;
       this.view.toggleModal('cartModal', false); this.view.toggleModal('orderModal', true);
     });
 
