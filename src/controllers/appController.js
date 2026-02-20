@@ -564,6 +564,10 @@ export class AppController {
           }
           const added = (this.model.state.wishlist||[]).map(String).includes(String(pid));
           this.view.toast(added? 'Agregado a favoritos' : 'Eliminado de favoritos');
+          // Re-render wishlist section if currently viewing it
+          if(this.view.refs.customerContent && this.view.refs.customerContent.querySelector('[data-wishlist-section]')){
+            this._renderWishlistSection();
+          }
         }catch(err){ this.view.toast(err.message||'Error en favoritos','error'); }
       })(); }
 
@@ -605,15 +609,7 @@ export class AppController {
             const wl = await wishlistApi.get();
             this.model.state.wishlist = Array.isArray(wl?.items)? wl.items.map(String): [];
           }
-          const ids = new Set((this.model.state.wishlist||[]).map(String));
-          const prods = this.model.state.products.filter(p=>ids.has(String(p._id||p.id)));
-          const html = `
-            <div class="pl-card"><div class="pl-card-body">
-            <h3>Mis Favoritos</h3>
-            ${prods.length===0? '<p>No tienes productos en favoritos</p>':
-              `<div class="pl-grid">${prods.map(p=>`<div class=\"pl-card\"><div class=\"pl-card-body\"><h4>${p.name}</h4><div class=\"pl-price\">${cop(p.price)}</div><button class=\"pl-btn pl-ghost\" data-wishlist=\"${p._id||p.id}\">Quitar</button></div></div>`).join('')}</div>`}
-            </div></div>`;
-          this.view.refs.customerContent.innerHTML = html;
+          this._renderWishlistSection();
         }catch(err){ this.view.toast(err.message||'Error al cargar favoritos','error'); }
       })(); }
       const newPromoBtn = e.target.id === 'newPromoBtn';
@@ -2167,6 +2163,34 @@ export class AppController {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Guardar Producto';
     }
+  }
+
+  _renderWishlistSection(){
+    const ids = new Set((this.model.state.wishlist||[]).map(String));
+    const prods = this.model.state.products.filter(p=>ids.has(String(p._id||p.id)));
+    const html = `
+      <div data-wishlist-section>
+        <h3 style="margin-bottom:1rem;">Mis Favoritos (${prods.length})</h3>
+        ${prods.length===0? '<p style="color:var(--muted);">No tienes productos en favoritos.</p>':
+          `<div class="pl-grid">${prods.map(p=>{
+            const img = (p.images && p.images.length > 0)
+              ? `<div class="pl-img"><img src="${p.images[0].url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover"></div>`
+              : `<div class="pl-img">👕</div>`;
+            return `<div class="pl-card">
+              ${img}
+              <div class="pl-card-body">
+                <h4 class="pl-name">${p.name}</h4>
+                <p style="color:var(--muted);font-size:.85rem;">${(p.description||'').substring(0,60)}${(p.description||'').length>60?'...':''}</p>
+                <div class="pl-price">${cop(p.price)}</div>
+                <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;">
+                  <button class="pl-btn pl-primary" data-add="${p._id||p.id}" style="flex:1;min-width:120px;">Agregar al Carrito</button>
+                  <button class="pl-btn pl-ghost" data-wishlist="${p._id||p.id}" style="min-width:90px;">✕ Quitar</button>
+                </div>
+              </div>
+            </div>`;
+          }).join('')}</div>`}
+      </div>`;
+    this.view.refs.customerContent.innerHTML = html;
   }
 
   route(r){
