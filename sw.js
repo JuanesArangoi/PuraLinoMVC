@@ -1,4 +1,4 @@
-const CACHE_NAME = 'puralino-cache-v3';
+const CACHE_NAME = 'puralino-cache-v4';
 const urlsToCache = [
   '/',
   '/assets/styles.css',
@@ -33,29 +33,17 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch — network-first for HTML, cache-first for assets
+// Fetch — network-first for all requests
 self.addEventListener('fetch', event => {
   const req = event.request;
-  if (req.mode === 'navigate') {
-    // HTML pages: always try network first
-    event.respondWith(
-      fetch(req).then(res => {
-        const clone = res.clone();
-        caches.open(CACHE_NAME).then(c => c.put(req, clone));
-        return res;
-      }).catch(() => caches.match(req))
-    );
-  } else {
-    // Assets: cache first, then network
-    event.respondWith(
-      caches.match(req).then(cached => {
-        const fetched = fetch(req).then(res => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then(c => c.put(req, clone));
-          return res;
-        });
-        return cached || fetched;
-      })
-    );
-  }
+  // Skip cross-origin requests (API calls, CDN, etc)
+  if (!req.url.startsWith(self.location.origin)) return;
+
+  event.respondWith(
+    fetch(req).then(res => {
+      const clone = res.clone();
+      caches.open(CACHE_NAME).then(c => c.put(req, clone));
+      return res;
+    }).catch(() => caches.match(req))
+  );
 });
