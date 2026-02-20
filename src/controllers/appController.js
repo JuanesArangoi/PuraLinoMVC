@@ -152,13 +152,11 @@ export class AppController {
   }
 
   setupActivityTracking() {
-    console.log('Setting up activity tracking');
     // Track mouse movement, clicks, and keyboard input
     const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
     
     const resetTimeout = (event) => {
       if (this.model.state.currentUser) {
-        console.log('Activity detected:', event.type);
         this.model.resetSessionTimeout();
       }
     };
@@ -169,7 +167,6 @@ export class AppController {
 
     // Also reset on page visibility change
     document.addEventListener('visibilitychange', () => {
-      console.log('Visibility changed, hidden:', document.hidden);
       if (!document.hidden && this.model.state.currentUser) {
         this.model.resetSessionTimeout();
       }
@@ -232,23 +229,17 @@ export class AppController {
 
       const add = e.target.closest('[data-add]');
       if(add){
-        console.log('🛒 Add to cart button clicked!');
         const id = add.getAttribute('data-add');
-        console.log('🛒 Product ID:', id);
         
         try{
           const card = add.closest('.pl-card');
           const sizeEl = card?.querySelector('[data-variant-size]');
           const colorEl = card?.querySelector('[data-variant-color]');
           const opts = { size: sizeEl?.value, color: colorEl?.value };
-          console.log('🛒 Adding to cart with options:', opts);
-          
           this.model.addToCart(id, opts);
           this.view.toast('Producto agregado al carrito');
           
-          console.log('🛒 About to open cart...');
           this.openCart();
-          console.log('🛒 Cart should be open now');
         }catch(err){ 
           console.error('🛒 Error adding to cart:', err);
           this.view.toast(err.message,'error'); 
@@ -395,7 +386,7 @@ export class AppController {
       if(adminTrackBtn){ (async()=>{
         const oid = adminTrackBtn.getAttribute('data-admin-track');
         try{
-          const res = await fetch(`http://localhost:4000/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
+          const res = await fetch(`${window.__API_URL__||'http://localhost:4000'}/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
           const data = await res.json();
           if(!res.ok){ throw new Error(data?.error||'Error'); }
           const cont = document.getElementById('trackingContent');
@@ -419,7 +410,7 @@ export class AppController {
           if(saveBtn){ saveBtn.addEventListener('click', async ()=>{
             try{
               const body = { trackingNumber: document.getElementById('trkNumber').value, carrier: document.getElementById('trkCarrier').value };
-              const r2 = await fetch(`http://localhost:4000/orders/${oid}/tracking/meta`, { method:'PATCH', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
+              const r2 = await fetch(`${window.__API_URL__||'http://localhost:4000'}/orders/${oid}/tracking/meta`, { method:'PATCH', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
               const d2 = await r2.json(); if(!r2.ok) throw new Error(d2?.error||'Error');
               this.view.toast('Tracking actualizado');
             }catch(err){ this.view.toast(err.message||'Error al guardar tracking','error'); }
@@ -428,7 +419,7 @@ export class AppController {
           if(addEvBtn){ addEvBtn.addEventListener('click', async ()=>{
             try{
               const body = { status: document.getElementById('trkStatus').value, note: document.getElementById('trkNote').value };
-              const r3 = await fetch(`http://localhost:4000/orders/${oid}/tracking`, { method:'POST', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
+              const r3 = await fetch(`${window.__API_URL__||'http://localhost:4000'}/orders/${oid}/tracking`, { method:'POST', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
               const d3 = await r3.json(); if(!r3.ok) throw new Error(d3?.error||'Error');
               const wrap = document.getElementById('trackEvents');
               wrap.innerHTML = d3.events.map(ev=>`<div class=\"pl-card\" style=\"margin:0.25rem 0\"><div class=\"pl-card-body\"><div>${new Date(ev.date).toLocaleString()}</div><div>${ev.status}</div><div class=\"pl-muted\">${ev.note||''}</div></div></div>`).join('');
@@ -551,16 +542,12 @@ export class AppController {
         const maxPrice = document.getElementById('filterMaxPrice')?.value || '';
         const inStock = document.getElementById('filterInStock')?.checked || false;
         
-        console.log('Filters applied:', { size, color, minPrice, maxPrice, inStock });
-        
         const query = {};
         if(size) query.size = size;
         if(color) query.color = color;
         if(minPrice) query.minPrice = minPrice;
         if(maxPrice) query.maxPrice = maxPrice;
         if(inStock) query.inStock = true;
-        
-        console.log('Query to send:', query);
         
         await this.model.refreshProducts(query);
         this.renderProducts();
@@ -612,7 +599,7 @@ export class AppController {
         const order = this.model.state.orders.find(o=>String(o._id||o.id)===String(oid));
         if(!order){ this.view.toast('Pedido no encontrado','error'); return; }
         try{
-          const res = await fetch(`http://localhost:4000/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
+          const res = await fetch(`${window.__API_URL__||'http://localhost:4000'}/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
           const data = await res.json();
           if(!res.ok) throw new Error(data?.error||'Error');
           const events = data.events || [];
@@ -795,7 +782,7 @@ export class AppController {
             return;
           }
           
-          const res = await fetch('http://localhost:4000/auth/resend-verification', {
+          const res = await fetch(`${window.__API_URL__||'http://localhost:4000'}/auth/resend-verification`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email })
@@ -881,7 +868,7 @@ export class AppController {
         e.preventDefault();
         const email = document.getElementById('forgotEmail').value;
         try{
-          const res = await fetch('http://localhost:4000/auth/forgot-password', {
+          const res = await fetch(`${window.__API_URL__||'http://localhost:4000'}/auth/forgot-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email })
@@ -911,7 +898,7 @@ export class AppController {
         }
         
         try{
-          const res = await fetch('http://localhost:4000/auth/reset-password', {
+          const res = await fetch(`${window.__API_URL__||'http://localhost:4000'}/auth/reset-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token, newPassword })
@@ -1134,7 +1121,7 @@ export class AppController {
       const city = document.getElementById('orderCity')?.value||'';
       if(!city){ this.view.toast('Selecciona una ciudad','error'); return; }
       try{
-        const res = await fetch(`http://localhost:4000/shipping/quote?city=${encodeURIComponent(city)}`);
+        const res = await fetch(`${window.__API_URL__||'http://localhost:4000'}/shipping/quote?city=${encodeURIComponent(city)}`);
         const data = await res.json();
         const q = document.getElementById('shippingQuote');
         if(q) q.textContent = `Envío: ${cop(data.cost)} (ETA ${data.etaDays} días)`;
@@ -1355,7 +1342,7 @@ export class AppController {
       if(!o){ this.view.toast('Pedido no encontrado','error'); return; }
       this.model._viewingOrder = o;
       try{
-        const res = await fetch(`http://localhost:4000/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
+        const res = await fetch(`${window.__API_URL__||'http://localhost:4000'}/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
         const data = await res.json();
         this.model._orderTracking = res.ok ? data : {};
       }catch(e){ this.model._orderTracking = {}; }
@@ -1386,7 +1373,7 @@ export class AppController {
       const oid = saveTrackBtn.dataset.id;
       const body = { trackingNumber: document.getElementById('trkNumber').value, carrier: document.getElementById('trkCarrier').value };
       try{
-        const r = await fetch(`http://localhost:4000/orders/${oid}/tracking/meta`, { method:'PATCH', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
+        const r = await fetch(`${window.__API_URL__||'http://localhost:4000'}/orders/${oid}/tracking/meta`, { method:'PATCH', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
         const d = await r.json(); if(!r.ok) throw new Error(d?.error||'Error');
         this.model._orderTracking = { ...this.model._orderTracking, trackingNumber: body.trackingNumber, carrier: body.carrier };
         this.view.toast('Datos de tracking guardados');
@@ -1401,7 +1388,7 @@ export class AppController {
       if(!status){ this.view.toast('Selecciona un estado para el evento','error'); return; }
       const note = document.getElementById('trkEventNote').value;
       try{
-        const r = await fetch(`http://localhost:4000/orders/${oid}/tracking`, { method:'POST', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify({ status, note }) });
+        const r = await fetch(`${window.__API_URL__||'http://localhost:4000'}/orders/${oid}/tracking`, { method:'POST', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify({ status, note }) });
         const d = await r.json(); if(!r.ok) throw new Error(d?.error||'Error');
         this.model._orderTracking = { ...this.model._orderTracking, events: d.events || [] };
         // Re-render
