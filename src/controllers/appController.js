@@ -257,12 +257,46 @@ export class AppController {
       const viewInv = e.target.closest('[data-view-invoice]');
       if(viewInv){ const id=viewInv.getAttribute('data-view-invoice'); const o=this.model.state.orders.find(x=>String(x.id)===String(id) || String(x._id)===String(id)); if(o){ this._lastInvoiceOrder=o; this.view.renderInvoice(o); this.view.toggleModal('invoiceModal', true); } }
 
+      // Admin mobile menu toggle
+      if(e.target.closest('#adminMenuToggle')){
+        e.preventDefault();
+        const nav = document.getElementById('adminNav');
+        const overlay = document.getElementById('adminMenuOverlay');
+        const toggle = document.getElementById('adminMenuToggle');
+        const isOpen = nav?.classList.contains('open');
+        if(isOpen){ nav.classList.remove('open'); overlay.classList.remove('active'); toggle.classList.remove('active'); }
+        else { nav.classList.add('open'); overlay.classList.add('active'); toggle.classList.add('active'); }
+      }
+      if(e.target.closest('#adminMenuOverlay')){
+        const nav = document.getElementById('adminNav');
+        const overlay = document.getElementById('adminMenuOverlay');
+        const toggle = document.getElementById('adminMenuToggle');
+        nav?.classList.remove('open'); overlay?.classList.remove('active'); toggle?.classList.remove('active');
+        document.querySelectorAll('.nav-group').forEach(g=>g.classList.remove('open'));
+      }
+
       // Admin nav group toggle (click to open/close dropdown)
       const groupToggle = e.target.closest('.nav-group-toggle');
       if(groupToggle){ e.preventDefault(); const grp = groupToggle.closest('.nav-group'); document.querySelectorAll('.nav-group').forEach(g=>{ if(g!==grp) g.classList.remove('open'); }); grp.classList.toggle('open'); }
 
       const adminLink = e.target.closest('[data-admin]');
-      if(adminLink){ e.preventDefault(); document.querySelectorAll('.nav-group').forEach(g=>g.classList.remove('open')); const sect=adminLink.getAttribute('data-admin'); this.currentAdminSection = sect; sessionStorage.setItem('pl_admin_section', sect); document.querySelectorAll('.pl-admin-nav a').forEach(a=>a.classList.remove('active')); adminLink.classList.add('active'); this.loadAdminSection(sect); }
+      if(adminLink){
+        e.preventDefault();
+        document.querySelectorAll('.nav-group').forEach(g=>g.classList.remove('open'));
+        const sect=adminLink.getAttribute('data-admin');
+        this.currentAdminSection = sect;
+        sessionStorage.setItem('pl_admin_section', sect);
+        document.querySelectorAll('.pl-admin-nav a').forEach(a=>a.classList.remove('active'));
+        adminLink.classList.add('active');
+        this.loadAdminSection(sect);
+        // Close mobile drawer and update label
+        const nav = document.getElementById('adminNav');
+        const overlay = document.getElementById('adminMenuOverlay');
+        const toggle = document.getElementById('adminMenuToggle');
+        nav?.classList.remove('open'); overlay?.classList.remove('active'); toggle?.classList.remove('active');
+        const label = document.getElementById('adminCurrentSection');
+        if(label) label.textContent = adminLink.textContent.trim();
+      }
 
       const editProd = e.target.closest('[data-edit-product]');
       if(editProd){ const id=editProd.getAttribute('data-edit-product'); const p=this.model.state.products.find(x=>String(x._id||x.id)===String(id)); if(p) this.openProductModal(p); }

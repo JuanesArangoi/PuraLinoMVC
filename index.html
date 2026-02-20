@@ -261,7 +261,14 @@
     </section>
 
     <section id="adminSection" class="pl-section" style="display:none;">
-      <div class="pl-admin-nav">
+      <div class="admin-mobile-bar">
+        <button id="adminMenuToggle" class="admin-menu-toggle" aria-label="Menú admin">
+          <span></span><span></span><span></span>
+        </button>
+        <span id="adminCurrentSection" class="admin-current-section">📊 Panel</span>
+      </div>
+      <div id="adminMenuOverlay" class="admin-menu-overlay"></div>
+      <div class="pl-admin-nav" id="adminNav">
         <ul>
           <li><a href="#" data-admin="dashboard" class="active">📊 Panel</a></li>
           <li class="nav-group">

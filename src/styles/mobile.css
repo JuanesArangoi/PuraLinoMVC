@@ -5,6 +5,8 @@
 /* ── Desktop defaults (hide mobile-only elements) ──── */
 .menu-toggle { display: none; }
 .menu-overlay { display: none; }
+.admin-mobile-bar { display: none; }
+.admin-menu-overlay { display: none; }
 
 /* ── Mobile: max 768px ─────────────────────────────── */
 @media (max-width: 768px) {
@@ -123,23 +125,79 @@
   .pl-variants-table .pl-input { padding: 0.4rem; font-size: 0.8rem; }
   .pl-img-thumb { width: 70px; height: 70px; }
 
-  /* --- Admin Nav (grouped dropdowns) --- */
+  /* --- Admin Mobile Bar (toggle + current section label) --- */
+  .admin-mobile-bar {
+    display: flex; align-items: center; gap: 0.75rem;
+    background: #111; color: #fff; padding: 0.5rem 0.75rem;
+    position: sticky; top: 56px; z-index: 30;
+    min-height: 48px;
+  }
+  .admin-menu-toggle {
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    width: 44px; height: 44px; background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2); border-radius: 8px;
+    cursor: pointer; flex-shrink: 0; gap: 5px; padding: 0;
+  }
+  .admin-menu-toggle span {
+    display: block; width: 20px; height: 2px; background: #fff;
+    border-radius: 1px; transition: all 0.3s ease;
+  }
+  .admin-menu-toggle.active span:first-child { transform: rotate(45deg) translate(5px, 5px); }
+  .admin-menu-toggle.active span:nth-child(2) { opacity: 0; }
+  .admin-menu-toggle.active span:last-child { transform: rotate(-45deg) translate(5px, -5px); }
+  .admin-current-section {
+    font-size: 0.95rem; font-weight: 600; letter-spacing: 0.02em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* --- Admin Menu Overlay --- */
+  .admin-menu-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.5); z-index: 39;
+  }
+  .admin-menu-overlay.active { display: block; }
+
+  /* --- Admin Nav as slide-out drawer --- */
+  .pl-admin-nav {
+    position: fixed; top: 0; left: -280px;
+    width: 280px; height: 100vh; z-index: 40;
+    background: #111; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    transition: left 0.3s ease;
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .pl-admin-nav.open { left: 0; }
   .pl-admin-nav>ul {
-    flex-direction: row; flex-wrap: nowrap;
-    overflow-x: auto; -webkit-overflow-scrolling: touch;
-    gap: 0; padding: 0 0.5rem; height: 44px;
-    scrollbar-width: none;
+    flex-direction: column; height: auto;
+    padding: 1rem 0; gap: 0;
   }
-  .pl-admin-nav>ul::-webkit-scrollbar { display: none; }
+  .pl-admin-nav>ul>li {
+    height: auto; flex-direction: column; align-items: stretch;
+  }
   .pl-admin-nav a {
-    white-space: nowrap; padding: 0.45rem 0.7rem;
-    font-size: 0.8rem;
+    display: flex; align-items: center; min-height: 48px;
+    padding: 0.75rem 1.25rem; font-size: 0.95rem;
+    border-radius: 0; white-space: normal;
   }
+  .pl-admin-nav a:hover, .pl-admin-nav a.active {
+    background: rgba(255,255,255,.1);
+  }
+
+  /* --- Dropdown as accordion inside drawer --- */
+  .nav-group-toggle { border-bottom: 1px solid rgba(255,255,255,.08); }
   .nav-dropdown {
-    position: fixed; top: auto; left: 0; right: 0;
-    border-radius: 0 0 12px 12px; min-width: 100vw;
+    position: static; display: none;
+    background: rgba(255,255,255,.05);
+    box-shadow: none; border-radius: 0;
+    min-width: auto; padding: 0;
   }
-  .nav-dropdown li a { padding: 0.7rem 1.2rem; font-size: 0.9rem; }
+  .nav-group.open .nav-dropdown { display: block; }
+  .nav-group:hover .nav-dropdown { display: none; }
+  .nav-group.open:hover .nav-dropdown { display: block; }
+  .nav-dropdown li a {
+    padding: 0.7rem 1.25rem 0.7rem 2.5rem;
+    font-size: 0.9rem; min-height: 44px;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+  }
 
   /* Admin tables: horizontal scroll */
   #adminContent table {
