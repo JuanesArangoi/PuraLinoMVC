@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#8b7355" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Pura Lino" />
+  <meta name="application-name" content="Pura Lino" />
+  <meta name="description" content="Lino Puro, Comodidad Pura - Tienda online de ropa y accesorios de lino" />
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- iOS Icons -->
+  <link rel="apple-touch-icon" sizes="72x72" href="icons/icon-72x72.png" />
+  <link rel="apple-touch-icon" sizes="96x96" href="icons/icon-96x96.png" />
+  <link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128x128.png" />
+  <link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144x144.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png" />
+  
+  <!-- Android Icons -->
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png" />
+  
+  <!-- PWA Theme -->
+  <meta name="msapplication-TileColor" content="#8b7355" />
+  <meta name="msapplication-TileImage" content="icons/icon-144x144.png" />
+  
+  <title>Pura Lino - MVC</title>
+  <link rel="stylesheet" href="assets/styles.css?v=3" />
+  <link rel="stylesheet" href="src/styles/mobile.css?v=3" />
+</head>
+<body>
+  <header class="pl-header">
+    <nav class="pl-container pl-nav">
+      <!-- Logo Centrado -->
+      <div class="pl-logo">PURA LINO</div>
+      
+      <!-- Menu Toggle Button -->
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu"
+        onclick="var n=document.getElementById('navLinks'),o=document.getElementById('menuOverlay');this.classList.toggle('active');if(n)n.classList.toggle('active');if(o)o.classList.toggle('active');">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <!-- User Actions -->
+      <div class="pl-actions">
+        <button class="pl-icon-btn" id="cartBtn" aria-label="Carrito de compras">
+          🛒 <span class="pl-cart-count">0</span>
+        </button>
+        <button class="pl-btn pl-ghost" id="loginBtn">Iniciar Sesión</button>
+        <button class="pl-btn pl-primary" id="registerBtn">Registrarse</button>
+      </div>
+      
+      <!-- Navigation Links -->
+      <ul class="pl-nav-links" id="navLinks">
+        <li><a href="#home" data-route="home">Inicio</a></li>
+        <li><a href="#products" data-route="products">Productos</a></li>
+        <li><a href="#about" data-route="about">Nosotros</a></li>
+        <li><a href="#contact" data-route="contact">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <script>
+    // Hamburger menu
+    (function() {
+      function init() {
+        var toggle = document.getElementById('menuToggle');
+        var nav = document.getElementById('navLinks');
+        var overlay = document.getElementById('menuOverlay');
+        if (!overlay) {
+          overlay = document.createElement('div');
+          overlay.className = 'menu-overlay';
+          overlay.id = 'menuOverlay';
+          document.body.appendChild(overlay);
+        }
+        if (!toggle || !nav) return;
+        function close() {
+          toggle.classList.remove('active');
+          nav.classList.remove('active');
+          overlay.classList.remove('active');
+        }
+        toggle.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var open = nav.classList.contains('active');
+          if (open) close();
+          else {
+            toggle.classList.add('active');
+            nav.classList.add('active');
+            overlay.classList.add('active');
+          }
+        };
+        nav.onclick = function(e) { if (e.target.tagName === 'A') close(); };
+        overlay.onclick = close;
+        document.onkeydown = function(e) { if (e.key === 'Escape') close(); };
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+      else init();
+    })();
+  </script>
+
+  <!-- Accessibility Floating Button -->
+  <button class="accessibility-btn" id="accessibilityBtn" aria-label="Configuración de accesibilidad" title="Accesibilidad">
+    <span class="accessibility-icon">♿</span>
+  </button>
+  
+  <!-- Accessibility Modal -->
+  <div class="accessibility-modal" id="accessibilityModal">
+    <div class="accessibility-content">
+      <button class="accessibility-close" id="closeAccessibility" aria-label="Cerrar">✕</button>
+      <h3 class="accessibility-title">♿ Accesibilidad</h3>
+      
+      <div class="accessibility-option">
+        <label class="accessibility-label">Tamaño de Texto — <span id="fontSizeValue">16px</span></label>
+        <div class="accessibility-slider">
+          <input type="range" id="fontSizeSlider" min="14" max="28" value="16" step="1">
+        </div>
+      </div>
+      
+      <div class="accessibility-option">
+        <label class="accessibility-label">Contraste — <span id="contrastValue">Normal</span></label>
+        <div class="accessibility-slider">
+          <input type="range" id="contrastSlider" min="0" max="2" value="0" step="1">
+        </div>
+      </div>
+      
+      <div class="accessibility-option">
+        <label class="accessibility-label">Espaciado de Línea — <span id="lineHeightValue">1.6</span></label>
+        <div class="accessibility-slider">
+          <input type="range" id="lineHeightSlider" min="1.2" max="2.4" value="1.6" step="0.1">
+        </div>
+      </div>
+
+      <div class="accessibility-option">
+        <label class="accessibility-label" style="display:flex;align-items:center;gap:0.5rem">
+          <input type="checkbox" id="highlightLinksToggle"> Resaltar enlaces
+        </label>
+      </div>
+
+      <div class="accessibility-option">
+        <label class="accessibility-label" style="display:flex;align-items:center;gap:0.5rem">
+          <input type="checkbox" id="bigCursorToggle"> Cursor grande
+        </label>
+      </div>
+
+      <div class="accessibility-preview" id="accessibilityPreview">
+        Este es un texto de ejemplo para previsualizar los ajustes de accesibilidad en tiempo real.
+      </div>
+
+      <button class="accessibility-reset" id="resetAccessibility">↺ Restaurar valores por defecto</button>
+    </div>
+  </div>
+
+  <!-- Menu Overlay (mobile slide-in) -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <main id="appMain">
+    <section id="homeSection" class="pl-hero">
+      <div class="pl-container">
+        <h1>Lino Puro, Comodidad Pura</h1>
+        <p>Descubre nuestra colección de ropa y productos para el hogar en lino premium</p>
+        <button class="pl-btn pl-primary" data-route="products">Comprar Ahora</button>
+      </div>
+    </section>
+
+    <section id="contactSection" class="pl-section" style="display:none;">
+      <div class="pl-container">
+        <h2>Contáctanos</h2>
+        <p>
+          ¿Tienes alguna pregunta, comentario o deseas colaborar con nosotros?<br>
+          ¡Nos encantará escucharte! 💬
+        </p>
+        <p>
+          📧 <strong>contacto@puralino.com</strong><br>
+          📍 Bogotá, Colombia<br>
+          📱 WhatsApp: <strong>+57 300 000 0000</strong><br>
+        </p>
+        <p>
+          También puedes seguirnos en nuestras redes sociales para conocer nuestras colecciones, consejos de estilo y novedades:
+        </p>
+        <ul>
+          <li>Instagram: <a href="https://instagram.com/puralino" target="_blank">@puralino</a></li>
+          <li>Facebook: <a href="https://facebook.com/puralino" target="_blank">Pura Lino</a></li>
+          <li>TikTok: <a href="https://tiktok.com/@puralino" target="_blank">@puralino</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="productsSection" class="pl-section">
+      <div class="pl-container">
+        <h2 class="pl-title">Nuestra Colección</h2>
+        <div class="pl-card pl-mb">
+          <div class="pl-card-body">
+            <div class="pl-row-gap" style="flex-wrap:wrap;gap:0.75rem;align-items:flex-end">
+              <label> Talla
+                <select id="filterSize" class="pl-input">
+                  <option value="">Todas</option>
+                  <option>S</option><option>M</option><option>L</option><option>XL</option>
+                </select>
+              </label>
+              <label> Color
+                <select id="filterColor" class="pl-input">
+                  <option value="">Todos</option>
+                  <option>Blanco</option><option>Negro</option><option>Beige</option>
+                </select>
+              </label>
+              <label> Precio mín.
+                <input id="filterMinPrice" type="number" class="pl-input" placeholder="0" />
+              </label>
+              <label> Precio máx.
+                <input id="filterMaxPrice" type="number" class="pl-input" placeholder="1000" />
+              </label>
+              <label style="display:flex;gap:0.5rem;align-items:center;margin-top:0.25rem">
+                <input id="filterInStock" type="checkbox" /> En stock
+              </label>
+              <button class="pl-btn pl-primary" id="applyFiltersBtn">Aplicar</button>
+              <button class="pl-btn pl-ghost" id="clearFiltersBtn">Limpiar</button>
+            </div>
+          </div>
+        </div>
+        <div class="pl-grid" id="productsGrid"></div>
+      </div>
+    </section>
+
+    <section id="aboutSection" class="pl-section" style="display:none;">
+      <div class="pl-container">
+        <h2>Sobre Nosotros</h2>
+        <p>
+          En <strong>Pura Lino</strong> creemos que la verdadera elegancia nace de la sencillez y la conexión con la naturaleza. 
+          Cada prenda que creamos está inspirada en la armonía entre comodidad, frescura y estilo atemporal.
+        </p>
+        <p>
+          Trabajamos con lino y fibras naturales de alta calidad, cuidando cada detalle desde el diseño hasta la confección. 
+          Nuestro propósito es ofrecer ropa que no solo se vea bien, sino que también se sienta bien — liviana, duradera y consciente.
+        </p>
+        <p>
+          Más que una marca, somos una comunidad que promueve un estilo de vida natural, responsable y auténtico. 
+          Creemos que vestir con propósito es una forma de expresar quién eres.
+        </p>
+      </div>
+    </section>
+
+    <section id="customerSection" class="pl-section" style="display:none;">
+      <div class="pl-container">
+        <h2>Mi Cuenta</h2>
+        <div class="pl-row-gap">
+          <button class="pl-btn pl-ghost" id="wishlistBtn">Mis Favoritos</button>
+          <button class="pl-btn pl-primary" id="purchaseHistoryBtn">Historial de Compras</button>
+          <button class="pl-btn pl-ghost" id="myAccountBtn">Mi Cuenta</button>
+          <button class="pl-btn pl-ghost" id="customerBtn">Panel Cliente</button>
+          <button class="pl-btn pl-primary" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+        <div id="customerContent" class="pl-card pl-mt"></div>
+      </div>
+    </section>
+
+    <section id="adminSection" class="pl-section" style="display:none;">
+      <div class="pl-admin-nav">
+        <ul>
+          <li><a href="#" data-admin="dashboard" class="active">📊 Panel</a></li>
+          <li class="nav-group">
+            <a href="#" class="nav-group-toggle">🛍️ Tienda ▾</a>
+            <ul class="nav-dropdown">
+              <li><a href="#" data-admin="products">Productos</a></li>
+              <li><a href="#" data-admin="orders">Pedidos</a></li>
+              <li><a href="#" data-admin="clients">Clientes</a></li>
+              <li><a href="#" data-admin="returns">Devoluciones</a></li>
+            </ul>
+          </li>
+          <li class="nav-group">
+            <a href="#" class="nav-group-toggle">📦 Inventario ▾</a>
+            <ul class="nav-dropdown">
+              <li><a href="#" data-admin="suppliers">Proveedores</a></li>
+              <li><a href="#" data-admin="warehouses">Almacenes</a></li>
+              <li><a href="#" data-admin="purchaseOrders">Albaranes</a></li>
+              <li><a href="#" data-admin="stockMovements">Movimientos</a></li>
+              <li><a href="#" data-admin="lowStock">Stock Bajo</a></li>
+            </ul>
+          </li>
+          <li class="nav-group">
+            <a href="#" class="nav-group-toggle">📈 Marketing ▾</a>
+            <ul class="nav-dropdown">
+              <li><a href="#" data-admin="promotions">Promociones</a></li>
+              <li><a href="#" data-admin="reviews">Reseñas</a></li>
+              <li><a href="#" data-admin="reports">Reportes</a></li>
+            </ul>
+          </li>
+          <li><a href="#" id="adminLogout" style="opacity:.6">🚪 Salir</a></li>
+        </ul>
+      </div>
+      <div class="pl-container">
+        <div id="adminContent" class="pl-card"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart Modal -->
+  <div class="pl-modal" id="cartModal" aria-hidden="true">
+    <div class="pl-modal-content">
+      <button class="pl-modal-close" data-close="cartModal">×</button>
+      <h2>Carrito de Compras</h2>
+      <div id="cartItems"></div>
+      <div id="cartTotal" class="pl-total"></div>
+      <div class="pl-row-gap">
+        <input id="promoCode" class="pl-input" placeholder="Código de promoción" />
+        <button class="pl-btn pl-ghost" id="applyPromoBtn">Aplicar</button>
+      </div>
+      <button class="pl-btn pl-primary pl-mt" id="checkoutBtn">Proceder al Pago</button>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="pl-modal" id="loginModal" aria-hidden="true">
+    <div class="pl-modal-content">
+      <button class="pl-modal-close" data-close="loginModal">×</button>
+      <h2>Iniciar Sesión</h2>
+      <form id="loginForm" class="pl-form">
+        <label>Usuario o Correo Electrónico<input id="username" required class="pl-input" /></label>
+        <label>Contraseña<input id="password" type="password" required class="pl-input" /></label>
+        <button class="pl-btn pl-primary" type="submit">Ingresar</button>
+      </form>
+      <p class="pl-mt-sm">
+        <a href="#" id="forgotPasswordLink">¿Olvidaste tu contraseña?</a>
+      </p>
+      <p class="pl-mt-sm">¿No tienes cuenta? <a href="#" id="openRegisterLink">Regístrate aquí</a></p>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div class="pl-modal" id="registerModal" aria-hidden="true">
+    <div class="pl-modal-content">
+      <button class="pl-modal-close" data-close="registerModal">×</button>
+      <h2>Registrarse</h2>
+      <form id="registerForm" class="pl-form">
+        <label>Nombre Completo<input id="regName" required class="pl-input" /></label>
+        <label>Correo Electrónico<input id="regEmail" type="email" required class="pl-input" /></label>
+        <label>Usuario<input id="regUsername" required class="pl-input" /></label>
+        <label>Contraseña<input id="regPassword" type="password" required class="pl-input" /></label>
+        <button class="pl-btn pl-primary" type="submit">Crear Cuenta</button>
+      </form>
+      <p class="pl-mt-sm pl-muted">Te enviaremos un correo de verificación para activar tu cuenta.</p>
+    </div>
+  </div>
+
+  <!-- Order Modal -->
+  <div class="pl-modal" id="orderModal" aria-hidden="true">
+    <div class="pl-modal-content">
+      <button class="pl-modal-close" data-close="orderModal">×</button>
+      <h2>Formulario de Pedido</h2>
+      <form id="orderForm" class="pl-form">
+        <label>Nombre Completo<input id="orderName" required class="pl-input" /></label>
+        <label>Correo Electrónico<input id="orderEmail" type="email" required class="pl-input" /></label>
+        <label>Dirección de Envío<textarea id="orderAddress" rows="3" required class="pl-input"></textarea></label>
+        <label>Ciudad
+          <select id="orderCity" class="pl-input" required>
+            <option value="">Selecciona ciudad</option>
+            <option>Bogotá</option>
+            <option>Medellín</option>
+            <option>Cali</option>
+            <option>Otra</option>
+          </select>
+        </label>
+        <div class="pl-row-gap">
+          <button class="pl-btn pl-ghost" type="button" id="calcShippingBtn">Calcular envío</button>
+          <div id="shippingQuote" class="pl-muted"></div>
+        </div>
+        <label>Teléfono<input id="orderPhone" type="tel" required class="pl-input" /></label>
+        <label>Método de Pago
+          <select id="paymentMethod" class="pl-input" required>
+            <option value="">Seleccione método</option>
+            <option value="credit">Tarjeta de Crédito</option>
+            <option value="debit">Tarjeta de Débito</option>
+            <option value="paypal">PayPal</option>
+            <option value="pse">PSE</option>
+            <option value="cod">Pago contraentrega</option>
+          </select>
+        </label>
+        <label>Gift Card (opcional)
+          <input id="giftCardCode" class="pl-input" placeholder="Código de Gift Card" />
+        </label>
+        <div id="paymentDetails" style="display:none;">
+          <label>Número de Tarjeta<input id="cardNumber" class="pl-input" placeholder="1234 5678 9012 3456" /></label>
+          <label>Fecha de Expiración<input id="cardExpiry" class="pl-input" placeholder="MM/AA" /></label>
+          <label>CVV<input id="cardCVV" class="pl-input" placeholder="123" /></label>
+        </div>
+        <button class="pl-btn pl-primary" type="submit">Realizar Pedido</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Invoice Modal -->
+  <div class="pl-modal" id="invoiceModal" aria-hidden="true">
+    <div class="pl-modal-content pl-max">
+      <button class="pl-modal-close" data-close="invoiceModal">×</button>
+      <div id="invoiceContent"></div>
+      <button class="pl-btn pl-primary" id="downloadInvoiceBtn">Descargar Factura</button>
+    </div>
+  </div>
+
+  <!-- Return Modal -->
+  <div class="pl-modal" id="returnModal" aria-hidden="true">
+    <div class="pl-modal-content">
+      <button class="pl-modal-close" data-close="returnModal">×</button>
+      <h2>Registrar Devolución</h2>
+      <form id="returnForm" class="pl-form">
+        <label>ID de Pedido<input id="returnOrder" type="text" required class="pl-input" placeholder="Ej: 652f..." /></label>
+        <label>Motivo de Devolución
+          <select id="returnReason" required class="pl-input">
+            <option value="">Seleccione motivo</option>
+            <option value="defective">Producto Defectuoso</option>
+            <option value="wrong">Producto Incorrecto</option>
+            <option value="size">Talla Incorrecta</option>
+            <option value="changed">Cambio de Opinión</option>
+          </select>
+        </label>
+        <label>Detalles Adicionales<textarea id="returnDetails" rows="3" class="pl-input"></textarea></label>
+        <button class="pl-btn pl-primary" type="submit">Registrar Devolución</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Password Recovery Modal -->
+  <div class="pl-modal" id="forgotPasswordModal" aria-hidden="true">
+    <div class="pl-modal-content">
+      <button class="pl-modal-close" data-close="forgotPasswordModal">×</button>
+      <h2>Recuperar Contraseña</h2>
+      <form id="forgotPasswordForm" class="pl-form">
+        <p>Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
+        <label>Correo Electrónico<input id="forgotEmail" type="email" required class="pl-input" /></label>
+        <button class="pl-btn pl-primary" type="submit">Enviar Enlace</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reset Password Modal -->
+  <div class="pl-modal" id="resetPasswordModal" aria-hidden="true">
+    <div class="pl-modal-content">
+      <button class="pl-modal-close" data-close="resetPasswordModal">×</button>
+      <h2>Restablecer Contraseña</h2>
+      <form id="resetPasswordForm" class="pl-form">
+        <input type="hidden" id="resetToken" />
+        <label>Nueva Contraseña<input id="newPassword" type="password" required class="pl-input" /></label>
+        <label>Confirmar Nueva Contraseña<input id="confirmNewPassword" type="password" required class="pl-input" /></label>
+        <button class="pl-btn pl-primary" type="submit">Restablecer Contraseña</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="notification" class="pl-toast" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // API URL config — change this when deploying to production
+    window.__API_URL__ = 'http://localhost:4000';
+  </script>
+  <script type="module" src="src/main.js"></script>
+
+  <!-- Reviews Modal -->
+  <div class="pl-modal" id="reviewsModal" aria-hidden="true">
+    <div class="pl-modal-content pl-max">
+      <button class="pl-modal-close" data-close="reviewsModal">×</button>
+      <div id="reviewsContent"></div>
+    </div>
+  </div>
+
+  <!-- Tracking Modal -->
+  <div class="pl-modal" id="trackingModal" aria-hidden="true">
+    <div class="pl-modal-content pl-max">
+      <button class="pl-modal-close" data-close="trackingModal">×</button>
+      <div id="trackingContent"></div>
+    </div>
+  </div>
+
+  <!-- Variants Modal (Admin) -->
+  <div class="pl-modal" id="variantsModal" aria-hidden="true">
+    <div class="pl-modal-content pl-max">
+      <button class="pl-modal-close" data-close="variantsModal">×</button>
+      <h2>Variantes del Producto</h2>
+      <div class="pl-card"><div class="pl-card-body">
+        <table style="width:100%">
+          <thead>
+            <tr><th>Talla</th><th>Color</th><th>Stock</th><th>SKU</th><th>Precio Override</th><th></th></tr>
+          </thead>
+          <tbody id="variantsRows"></tbody>
+        </table>
+        <div class="pl-row-gap" style="margin-top:0.5rem">
+          <button class="pl-btn pl-ghost" id="variantsAddRowBtn">Agregar Variante</button>
+          <button class="pl-btn pl-primary" id="variantsSaveBtn">Guardar Variantes</button>
+        </div>
+      </div></div>
+    </div>
+  </div>
+  
+  <!-- Product Modal (Admin - Create/Edit) -->
+  <div class="pl-modal" id="productModal" aria-hidden="true">
+    <div class="pl-modal-content pl-max" style="max-width:700px;">
+      <button class="pl-modal-close" data-close="productModal">×</button>
+      <h2 id="productModalTitle">Nuevo Producto</h2>
+      <form id="productForm" class="pl-form">
+        <input type="hidden" id="productFormId" />
+        <div class="pl-form-grid">
+          <label>Nombre del producto<input id="productFormName" required class="pl-input" placeholder="Ej: Camisa de Lino" /></label>
+          <label>Categoría
+            <select id="productFormCategory" required class="pl-input">
+              <option value="">Selecciona</option>
+              <option value="ropa">Ropa</option>
+              <option value="hogar">Hogar</option>
+            </select>
+          </label>
+          <label>Precio ($)<input id="productFormPrice" type="number" step="0.01" min="0" required class="pl-input" placeholder="0.00" /></label>
+          <label>Stock general<input id="productFormStock" type="number" min="0" required class="pl-input" placeholder="0" /></label>
+        </div>
+        <label>Proveedor
+          <select id="productFormSupplier" class="pl-input">
+            <option value="">Sin proveedor</option>
+          </select>
+        </label>
+        <label>Descripción<textarea id="productFormDesc" rows="3" class="pl-input" placeholder="Describe el producto..."></textarea></label>
+
+        <div class="pl-form-section">
+          <h3>Imágenes del Producto</h3>
+          <div id="productFormImagesPreview" class="pl-images-preview"></div>
+          <div class="pl-upload-area" id="productFormUploadArea">
+            <span>📷 Arrastra imágenes aquí o haz clic para seleccionar</span>
+            <input type="file" id="productFormImages" multiple accept="image/*" style="display:none" />
+          </div>
+          <p class="pl-muted" style="font-size:0.8rem;margin-top:0.25rem">Formatos: JPG, PNG, GIF, WEBP. Máx 5MB por imagen.</p>
+        </div>
+
+        <div class="pl-form-section">
+          <h3>Variantes <span class="pl-muted" style="font-size:0.85rem">(opcional)</span></h3>
+          <table class="pl-variants-table" style="width:100%">
+            <thead><tr><th>Talla</th><th>Color</th><th>Stock</th><th>SKU</th><th>Precio</th><th></th></tr></thead>
+            <tbody id="productFormVariants"></tbody>
+          </table>
+          <button type="button" class="pl-btn pl-ghost" id="productFormAddVariant" style="margin-top:0.5rem">+ Agregar Variante</button>
+        </div>
+
+        <div class="pl-row-gap" style="margin-top:1.5rem;justify-content:flex-end;gap:0.75rem">
+          <button type="button" class="pl-btn pl-ghost" id="productFormCancel">Cancelar</button>
+          <button type="submit" class="pl-btn pl-primary" id="productFormSubmit">Guardar Producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PWA Service Worker Registration -->
+  <script type="module" src="src/controllers/appController.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('SW registered: ', registration);
+          })
+          .catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
