@@ -4,6 +4,7 @@ import { AppView, cop } from '../views/appView.js';
 import { wishlistApi, reviewsApi } from '../api/client.js';
 import { PaymentStrategies } from '../strategies/payment.js';
 import { DEPARTMENTS } from '../data/colombiaDepts.js';
+import { LEGAL_PAGES } from '../data/legalPages.js';
 
 export class AppController {
   constructor(){
@@ -226,6 +227,19 @@ export class AppController {
         e.preventDefault(); 
         this.view.toggleModal('loginModal', false); 
         this.view.toggleModal('forgotPasswordModal', true);
+      }
+
+      // Legal page links (data-legal attribute)
+      const legalLink = e.target.closest('[data-legal]');
+      if(legalLink){
+        e.preventDefault();
+        const page = legalLink.getAttribute('data-legal');
+        const legal = LEGAL_PAGES[page];
+        if(legal){
+          const el = document.getElementById('legalContent');
+          if(el) el.innerHTML = `<h2 style="margin-top:0">${legal.title}</h2>${legal.content}`;
+          this.view.toggleModal('legalModal', true);
+        }
       }
 
       const add = e.target.closest('[data-add]');
@@ -868,7 +882,21 @@ export class AppController {
           this.view.toast(err.message||'Credenciales inválidas','error');
         }
       });
-    } const registerForm = document.getElementById('registerForm');
+    }
+    // T&C checkbox → enable/disable register button
+    const regTerms = document.getElementById('regTerms');
+    const regSubmitBtn = document.getElementById('regSubmitBtn');
+    if(regTerms && regSubmitBtn){
+      regTerms.addEventListener('change', ()=>{ regSubmitBtn.disabled = !regTerms.checked; });
+    }
+    // T&C checkbox → enable/disable order button
+    const orderTerms = document.getElementById('orderTerms');
+    const orderSubmitBtn = document.getElementById('orderSubmitBtn');
+    if(orderTerms && orderSubmitBtn){
+      orderTerms.addEventListener('change', ()=>{ orderSubmitBtn.disabled = !orderTerms.checked; });
+    }
+
+    const registerForm = document.getElementById('registerForm');
     registerForm.addEventListener('submit', async (e)=>{
       e.preventDefault();
       const payload = {
@@ -1231,6 +1259,9 @@ export class AppController {
       if(citySelect){ citySelect.innerHTML = '<option value="">Primero selecciona departamento</option>'; citySelect.disabled = true; }
       const q = document.getElementById('shippingQuote'); if(q) q.textContent = '';
       this.currentShipping = null;
+      // Reset T&C checkbox
+      const ot = document.getElementById('orderTerms'); if(ot){ ot.checked = false; }
+      const osb = document.getElementById('orderSubmitBtn'); if(osb){ osb.disabled = true; }
       this.view.toggleModal('cartModal', false); this.view.toggleModal('orderModal', true);
     });
 

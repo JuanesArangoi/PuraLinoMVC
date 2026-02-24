@@ -359,6 +359,25 @@
 
   /* Select elements */
   select { background: #1a1a1a; color: #e8e8e8; border-color: #444; }
+
+  /* Footer dark */
+  .pl-footer { background: #0a0a0a; }
+  .pl-footer-bottom { border-top-color: #222; }
+
+  /* Legal content dark */
+  #legalContent p { color: #bbb; }
+  #legalContent ul, #legalContent ol { color: #bbb; }
+  #legalContent h3 { color: #e8e8e8; }
+  #legalContent table { color: #ccc; }
+  #legalContent th { background: var(--accent) !important; color: #1a1a1a !important; }
+  #legalContent td { border-bottom-color: #333 !important; }
+
+  /* Checkbox dark */
+  .pl-checkbox-label { color: #999; }
+  .pl-checkbox-label a.pl-link { color: var(--accent); }
+
+  /* Disabled button dark */
+  .pl-btn:disabled { background: #333; color: #666; border-color: #444; cursor: not-allowed; opacity: .6; }
 }
 
 /* ── Reduced motion ────────────────────────────────── */

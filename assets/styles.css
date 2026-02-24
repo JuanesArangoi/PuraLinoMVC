@@ -28,6 +28,7 @@ body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,s
 .pl-btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:.6rem 1.1rem;border-radius:999px;cursor:pointer;transition:.2s}
 .pl-btn:hover{transform:translateY(-1px)}
 .pl-btn:active{transform:translateY(0)}
+.pl-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .pl-primary{background:var(--text);color:#fff;border-color:var(--text)}
 .pl-ghost{background:#fff;color:var(--text)}
 .pl-icon-btn{position:relative;background:transparent;border:1px solid var(--border);padding:.5rem .75rem;border-radius:999px;cursor:pointer}
@@ -293,5 +294,29 @@ textarea.pl-input{resize:vertical}
 .pl-variants-table .pl-input{padding:.5rem .6rem;font-size:.85rem}
 .pl-upload-progress{margin-top:.5rem;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
 .pl-upload-progress .pl-bar{height:100%;background:var(--accent);transition:width .3s}
+
+/* Footer */
+.pl-footer{background:#111;color:#ccc;padding:3rem 0 1.5rem;margin-top:3rem}
+.pl-footer h4{color:#fff;font-size:.95rem;letter-spacing:.1em;margin-bottom:.75rem}
+.pl-footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem}
+.pl-footer-col ul{list-style:none;padding:0}
+.pl-footer-col li{margin-bottom:.4rem;font-size:.88rem}
+.pl-footer-col a{color:#b09070;text-decoration:none;transition:color .2s}
+.pl-footer-col a:hover{color:#d4b892;text-decoration:underline}
+.pl-footer-bottom{margin-top:2rem;padding-top:1rem;border-top:1px solid #333;text-align:center;font-size:.8rem;color:#666}
+
+/* Checkbox Label */
+.pl-checkbox-label{display:flex;align-items:flex-start;gap:.5rem;cursor:pointer;font-size:.88rem;line-height:1.4;color:var(--muted)}
+.pl-checkbox-label input[type="checkbox"]{width:18px;height:18px;min-width:18px;margin-top:2px;cursor:pointer;accent-color:var(--accent)}
+.pl-checkbox-label a.pl-link{color:var(--accent);text-decoration:underline;font-weight:500}
+.pl-checkbox-label a.pl-link:hover{color:#6b5a45}
+
+/* Legal content inside modal */
+#legalContent h2{font-size:1.3rem;margin:1.5rem 0 .75rem;color:var(--accent);border-bottom:2px solid var(--accent);padding-bottom:.4rem}
+#legalContent h3{font-size:1.05rem;margin:1.25rem 0 .5rem;color:var(--text)}
+#legalContent p{margin:.5rem 0;line-height:1.6;color:#555}
+#legalContent ul,#legalContent ol{margin:.5rem 0 .5rem 1.5rem;color:#555;line-height:1.6}
+#legalContent li{margin-bottom:.3rem}
+#legalContent table{font-size:.9rem}
 
 /* Responsive — see src/styles/mobile.css for all breakpoints */

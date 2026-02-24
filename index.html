@@ -349,7 +349,11 @@
         <label>Correo Electrónico<input id="regEmail" type="email" required class="pl-input" /></label>
         <label>Usuario<input id="regUsername" required class="pl-input" /></label>
         <label>Contraseña<input id="regPassword" type="password" required class="pl-input" /></label>
-        <button class="pl-btn pl-primary" type="submit">Crear Cuenta</button>
+        <label class="pl-checkbox-label">
+          <input type="checkbox" id="regTerms" />
+          <span>Acepto los <a href="#" data-legal="terms" class="pl-link">Términos y Condiciones</a> y las <a href="#" data-legal="privacy" class="pl-link">Políticas de Privacidad</a></span>
+        </label>
+        <button class="pl-btn pl-primary" type="submit" id="regSubmitBtn" disabled>Crear Cuenta</button>
       </form>
       <p class="pl-mt-sm pl-muted">Te enviaremos un correo de verificación para activar tu cuenta.</p>
     </div>
@@ -408,7 +412,11 @@
             <label>CVV<input id="cardCVV" class="pl-input" placeholder="123" /></label>
           </div>
         </div>
-        <button class="pl-btn pl-primary" type="submit">Realizar Pedido</button>
+        <label class="pl-checkbox-label">
+          <input type="checkbox" id="orderTerms" />
+          <span>Acepto los <a href="#" data-legal="terms" class="pl-link">Términos y Condiciones</a> y las <a href="#" data-legal="shipping" class="pl-link">Políticas de Envío y Devolución</a></span>
+        </label>
+        <button class="pl-btn pl-primary" type="submit" id="orderSubmitBtn" disabled>Realizar Pedido</button>
       </form>
     </div>
   </div>
@@ -566,6 +574,46 @@
           <button type="submit" class="pl-btn pl-primary" id="productFormSubmit">Guardar Producto</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="pl-footer">
+    <div class="pl-container">
+      <div class="pl-footer-grid">
+        <div class="pl-footer-col">
+          <h4>PURA LINO</h4>
+          <p class="pl-muted">Lino Puro, Comodidad Pura.<br>Moda sostenible con los mejores materiales naturales.</p>
+        </div>
+        <div class="pl-footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#" data-legal="terms">Términos y Condiciones</a></li>
+            <li><a href="#" data-legal="privacy">Aviso Legal y Privacidad</a></li>
+            <li><a href="#" data-legal="shipping">Políticas de Envío y Devolución</a></li>
+            <li><a href="#" data-legal="payment">Pago Seguro</a></li>
+          </ul>
+        </div>
+        <div class="pl-footer-col">
+          <h4>Contacto</h4>
+          <ul>
+            <li>📧 contacto@puralino.com</li>
+            <li>📞 +57 300 123 4567</li>
+            <li>📍 Bogotá, Colombia</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pl-footer-bottom">
+        <p>&copy; 2026 Pura Lino. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Legal Modal -->
+  <div class="pl-modal" id="legalModal" aria-hidden="true">
+    <div class="pl-modal-content pl-max">
+      <button class="pl-modal-close" data-close="legalModal">×</button>
+      <div id="legalContent"></div>
     </div>
   </div>
 
