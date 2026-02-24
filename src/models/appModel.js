@@ -38,14 +38,28 @@ export class AppModel {
       try{ 
         const u = await apiMe(); 
         this.state.currentUser = { ...u, id: u._id };
+        // Cache user data for offline/cold-start recovery
+        try{ localStorage.setItem('pl_user', JSON.stringify(this.state.currentUser)); }catch(_){}
         this.startSessionTimeout();
       }catch(e){ 
         console.warn('Session restore failed:', e.message);
-        // Token is invalid/expired — clear it completely
-        api.setToken(null);
-        this.token = null;
-        this.state.currentUser = null;
-        this.clearSessionTimeout();
+        // Only clear token on auth errors (401/403 = invalid/expired token)
+        // Keep session alive on network errors (0 = offline, cold start, timeout)
+        if(e.status === 401 || e.status === 403){
+          api.setToken(null);
+          this.token = null;
+          this.state.currentUser = null;
+          this.clearSessionTimeout();
+          try{ localStorage.removeItem('pl_user'); }catch(_){}
+        } else {
+          // Network error — restore cached user info to keep UI logged in
+          console.warn('Network error during session restore — using cached user');
+          try{
+            const cached = localStorage.getItem('pl_user');
+            if(cached) this.state.currentUser = JSON.parse(cached);
+          }catch(_){}
+          if(this.state.currentUser) this.startSessionTimeout();
+        }
       }
     }
     await Promise.all([
@@ -137,6 +151,7 @@ export class AppModel {
     this.token = res.token;
     const user = { ...res.user, id: res.user._id };
     this.state.currentUser = user;
+    try{ localStorage.setItem('pl_user', JSON.stringify(user)); }catch(_){}
     this.notify();
     return user;
   }
@@ -147,6 +162,7 @@ export class AppModel {
     this.clearSessionTimeout();
     // Clear all session data (ISO 25010 security)
     localStorage.removeItem('pl_cart');
+    localStorage.removeItem('pl_user');
     sessionStorage.removeItem('pl_admin_section');
     this.state.cart = [];
     this.state.currentPromo=null;

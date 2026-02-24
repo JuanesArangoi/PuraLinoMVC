@@ -168,19 +168,11 @@ export class AppView {
   }
 
   setUserUI(user){
-    console.log('🔧 setUserUI called with user:', !!user);
-    console.log('🔧 this.refs.userActions:', this.refs.userActions);
-    console.log('🔧 userActions element:', document.querySelector('.pl-actions'));
-    
     if(!this.refs.userActions) {
-      console.warn('User actions element not found');
-      // Try to find it dynamically
       this.refs.userActions = document.querySelector('.pl-actions');
-      console.log('🔧 Updated userActions ref:', this.refs.userActions);
     }
     
     if(!user){
-      console.log('🔧 Setting up UI for non-logged user');
       this.refs.userActions.innerHTML = `
         <button class="pl-icon-btn" id="cartBtn" aria-label="Carrito de compras">
           🛒 <span class="pl-cart-count">0</span>
@@ -189,8 +181,6 @@ export class AppView {
         <button class="pl-btn pl-primary" id="registerBtn">Registrarse</button>
       `;
     } else {
-      console.log('🔧 Setting up UI for logged user');
-      // Check if user is admin
       const isAdmin = user.role === 'admin';
       this.refs.userActions.innerHTML = `
         <button class="pl-icon-btn" id="cartBtn" aria-label="Carrito de compras">
@@ -203,16 +193,11 @@ export class AppView {
     // Re-bind cart button after UI update
     this.refs.cartCount = document.querySelector('.pl-cart-count');
     
-    // Force immediate re-bind by calling controller method directly
-    console.log('🔧 Forcing immediate re-bind...');
+    // Force immediate re-bind
     if (typeof window.appController !== 'undefined' && window.appController.bindHeaderActions) {
-      console.log('🔧 Calling window.appController.bindHeaderActions()');
-      // Call the controller method directly
       setTimeout(() => {
         window.appController.bindHeaderActions();
       }, 10);
-    } else {
-      console.log('🔧 window.appController not available');
     }
   }
 

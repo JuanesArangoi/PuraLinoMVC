@@ -7,9 +7,20 @@ function getToken(){ if(token) return token; const t = localStorage.getItem('pl_
 async function request(path, { method='GET', body, auth=false }={}){
   const headers = { 'Content-Type': 'application/json' };
   if(auth){ const t=getToken(); if(t) headers['Authorization'] = `Bearer ${t}`; }
-  const res = await fetch(`${baseURL}${path}`, { method, headers, body: body? JSON.stringify(body): undefined });
+  let res;
+  try {
+    res = await fetch(`${baseURL}${path}`, { method, headers, body: body? JSON.stringify(body): undefined });
+  } catch(networkErr) {
+    const err = new Error('Error de conexión con el servidor');
+    err.status = 0;
+    throw err;
+  }
   const data = await res.json().catch(()=>({}));
-  if(!res.ok) throw new Error(data?.error || 'Request error');
+  if(!res.ok){
+    const err = new Error(data?.error || 'Request error');
+    err.status = res.status;
+    throw err;
+  }
   return data;
 }
 
