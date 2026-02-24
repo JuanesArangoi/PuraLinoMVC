@@ -319,4 +319,12 @@ textarea.pl-input{resize:vertical}
 #legalContent li{margin-bottom:.3rem}
 #legalContent table{font-size:.9rem}
 
+/* Pagination */
+.pl-pagination{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:2rem;flex-wrap:wrap}
+.pl-pagination-pages{display:flex;align-items:center;gap:.25rem}
+.pl-page-btn{padding:.4rem .8rem;font-size:.88rem;min-width:38px}
+.pl-pagination-dots{padding:0 .25rem;color:var(--muted);font-size:.9rem}
+.pl-pagination-info{text-align:center;margin-top:.5rem;font-size:.85rem;color:var(--muted)}
+.pl-mb{margin-bottom:1.5rem}
+
 /* Responsive — see src/styles/mobile.css for all breakpoints */

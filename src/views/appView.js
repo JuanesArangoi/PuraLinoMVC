@@ -65,7 +65,7 @@ export class AppView {
 
   toggleModal(id, show){ const el=document.getElementById(id); if(!el) return; el.setAttribute('aria-hidden', show? 'false':'true'); }
 
-  renderProducts(products, recommendations){
+  renderProducts(products, recommendations, pagination){
     const recIds = new Set(recommendations.map(r=>r.id));
     this.refs.productsGrid.innerHTML = products.map(p=>{
       const rec = recIds.has(p.id) ? '<span class="pl-badge" style="position:static;">Recomendado</span>' : '';
@@ -118,6 +118,46 @@ export class AppView {
           </div>
         </div>`;
     }).join('');
+
+    // Render pagination controls
+    if(pagination && pagination.total > 1){
+      const { current, total, totalProducts } = pagination;
+      let pages = '';
+      // Show max 5 page buttons centered around current
+      const maxVisible = 5;
+      let startPage = Math.max(1, current - Math.floor(maxVisible / 2));
+      let endPage = Math.min(total, startPage + maxVisible - 1);
+      if(endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+
+      if(startPage > 1) pages += `<button class="pl-btn pl-ghost pl-page-btn" data-page="1">1</button>`;
+      if(startPage > 2) pages += `<span class="pl-pagination-dots">...</span>`;
+      for(let i = startPage; i <= endPage; i++){
+        pages += `<button class="pl-btn ${i===current?'pl-primary':'pl-ghost'} pl-page-btn" data-page="${i}">${i}</button>`;
+      }
+      if(endPage < total - 1) pages += `<span class="pl-pagination-dots">...</span>`;
+      if(endPage < total) pages += `<button class="pl-btn pl-ghost pl-page-btn" data-page="${total}">${total}</button>`;
+
+      const paginationEl = document.getElementById('productsPagination');
+      const html = `
+        <div class="pl-pagination">
+          <button class="pl-btn pl-ghost pl-page-btn" data-page="${current-1}" ${current<=1?'disabled':''}>← Anterior</button>
+          <div class="pl-pagination-pages">${pages}</div>
+          <button class="pl-btn pl-ghost pl-page-btn" data-page="${current+1}" ${current>=total?'disabled':''}>Siguiente →</button>
+        </div>
+        <p class="pl-pagination-info">Mostrando ${products.length} de ${totalProducts} productos — Página ${current} de ${total}</p>
+      `;
+      if(paginationEl){
+        paginationEl.innerHTML = html;
+      } else {
+        const div = document.createElement('div');
+        div.id = 'productsPagination';
+        div.innerHTML = html;
+        this.refs.productsGrid.parentElement.appendChild(div);
+      }
+    } else {
+      const existing = document.getElementById('productsPagination');
+      if(existing) existing.innerHTML = '';
+    }
   }
 
   updateCartCount(count){ 

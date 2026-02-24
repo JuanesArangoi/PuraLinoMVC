@@ -11,6 +11,8 @@ export class AppController {
     this.model = new AppModel();
     this.view = new AppView();
     this.currentAdminSection = 'dashboard';
+    this.currentPage = 1;
+    this.PRODUCTS_PER_PAGE = 12;
 
     // Connect view to model for session timeout notifications
     this.model.setView(this.view);
@@ -240,6 +242,14 @@ export class AppController {
           if(el) el.innerHTML = `<h2 style="margin-top:0">${legal.title}</h2>${legal.content}`;
           this.view.toggleModal('legalModal', true);
         }
+      }
+
+      // Pagination buttons
+      const pageBtn = e.target.closest('[data-page]');
+      if(pageBtn && !pageBtn.disabled){
+        e.preventDefault();
+        const page = parseInt(pageBtn.getAttribute('data-page'));
+        if(page >= 1) this.goToPage(page);
       }
 
       const add = e.target.closest('[data-add]');
@@ -603,6 +613,7 @@ export class AppController {
         if(inStock) query.inStock = true;
         
         await this.model.refreshProducts(query);
+        this.currentPage = 1;
         this.renderProducts();
       })(); }
 
@@ -611,6 +622,7 @@ export class AppController {
         ['filterSize','filterColor','filterMinPrice','filterMaxPrice'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
         const ck = document.getElementById('filterInStock'); if(ck) ck.checked = false;
         await this.model.refreshProducts();
+        this.currentPage = 1;
         this.renderProducts();
       })(); }
 
@@ -2053,9 +2065,22 @@ export class AppController {
   }
 
   renderProducts(){
-    const products = this.model.listProducts();
+    const allProducts = this.model.listProducts();
     const recs = this.model.getRecommendations();
-    this.view.renderProducts(products, recs);
+    const total = allProducts.length;
+    const totalPages = Math.max(1, Math.ceil(total / this.PRODUCTS_PER_PAGE));
+    if(this.currentPage > totalPages) this.currentPage = totalPages;
+    const start = (this.currentPage - 1) * this.PRODUCTS_PER_PAGE;
+    const pageProducts = allProducts.slice(start, start + this.PRODUCTS_PER_PAGE);
+    this.view.renderProducts(pageProducts, recs, { current: this.currentPage, total: totalPages, totalProducts: total });
+  }
+
+  goToPage(page){
+    this.currentPage = page;
+    this.renderProducts();
+    // Scroll to products section
+    const el = document.getElementById('productsSection');
+    if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   openCart(){
