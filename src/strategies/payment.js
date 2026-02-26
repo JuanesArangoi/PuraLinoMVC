@@ -20,6 +20,18 @@ export const PaymentStrategies = {
   paypal: {
     name: 'PayPal',
     validate(){ return true; }
+  },
+  pse: {
+    name: 'PSE',
+    validate(){ return true; }
+  },
+  mercadopago: {
+    name: 'Mercado Pago',
+    validate(){ return true; }
+  },
+  cod: {
+    name: 'Pago contraentrega',
+    validate(){ return true; }
   }
 };
 export const getPaymentName = (method)=>PaymentStrategies[method]?.name || method;

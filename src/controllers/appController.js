@@ -1,7 +1,7 @@
 import { bus } from '../core/observer.js';
 import { AppModel } from '../models/appModel.js';
 import { AppView, cop } from '../views/appView.js';
-import { wishlistApi, reviewsApi } from '../api/client.js';
+import { wishlistApi, reviewsApi, paymentsApi } from '../api/client.js';
 import { PaymentStrategies } from '../strategies/payment.js';
 import { DEPARTMENTS } from '../data/colombiaDepts.js';
 import { LEGAL_PAGES } from '../data/legalPages.js';
@@ -208,6 +208,43 @@ export class AppController {
           this.loadAdminSection(savedSection);
         }
       }
+    }
+
+    // ── Handle Mercado Pago return ──
+    this._handleMPReturn();
+  }
+
+  async _handleMPReturn(){
+    const params = new URLSearchParams(window.location.search);
+    const mpStatus = params.get('mp_status') || params.get('collection_status');
+    const orderId = params.get('order_id') || params.get('external_reference');
+    if(!mpStatus || !orderId) return;
+
+    // Clean URL params without reload
+    const cleanUrl = window.location.origin + window.location.pathname + (window.location.hash || '');
+    window.history.replaceState({}, '', cleanUrl);
+
+    if(mpStatus === 'approved'){
+      this.view.toast('¡Pago aprobado! Tu pedido ha sido confirmado.', 'success');
+      // Try to show invoice
+      if(this.model.state.currentUser){
+        try{
+          const status = await paymentsApi.getStatus(orderId);
+          if(status){
+            await this.model.refreshMyOrders();
+            const order = this.model.state.orders.find(o => String(o._id || o.id) === String(orderId));
+            if(order){
+              this._lastInvoiceOrder = order;
+              this.view.renderInvoice(order);
+              this.view.toggleModal('invoiceModal', true);
+            }
+          }
+        }catch(e){ /* non-critical */ }
+      }
+    } else if(mpStatus === 'rejected'){
+      this.view.toast('El pago fue rechazado. Intenta con otro método de pago.', 'error');
+    } else if(mpStatus === 'pending'){
+      this.view.toast('Tu pago está pendiente de confirmación. Te notificaremos cuando sea aprobado.', 'warning');
     }
   }
 
@@ -1022,21 +1059,53 @@ export class AppController {
       const submitBtn = orderForm.querySelector('button[type="submit"], input[type="submit"]') || orderForm.querySelector('.pl-btn.pl-primary');
       if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'Procesando...'; }
 
+      const orderPayload = {
+        userName: nameVal,
+        email: emailVal,
+        address: addrVal,
+        address2: addr2Val,
+        department: deptVal,
+        postalCode: postalVal,
+        cedula: cedulaVal,
+        phone: phoneVal,
+        paymentMethod: method,
+        shippingCity: cityVal,
+        shippingCost: (typeof this.currentShipping?.cost==='number'? this.currentShipping.cost: undefined),
+        giftCardCode: document.getElementById('giftCardCode')?.value || undefined
+      };
+
+      // ── Mercado Pago flow ──
+      if(method === 'mercadopago'){
+        try{
+          const cart = this.model.state.cart;
+          const mpPayload = {
+            ...orderPayload,
+            items: cart.map(c => ({
+              productId: c.product.id || c.product._id,
+              variantId: c.variantId || undefined,
+              quantity: c.quantity,
+            })),
+            promoCode: this.model.state.currentPromo?.code || undefined,
+          };
+          const result = await paymentsApi.createPreference(mpPayload);
+          // Persist address/phone to user profile (non-blocking)
+          this.model.updateCurrentUser({ name: nameVal, address: addrVal, phone: phoneVal }).catch(()=>{});
+          // Clear cart before redirect
+          this.model.clearCart();
+          // Redirect to Mercado Pago sandbox checkout
+          window.location.href = result.sandboxInitPoint || result.initPoint;
+          return;
+        }catch(err){
+          this.view.toast(err.message,'error');
+          orderSubmitting = false;
+          if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = 'Realizar Pedido'; }
+          return;
+        }
+      }
+
+      // ── Regular payment flow ──
       try{
-        const order = await this.model.createOrder({
-          userName: nameVal,
-          email: emailVal,
-          address: addrVal,
-          address2: addr2Val,
-          department: deptVal,
-          postalCode: postalVal,
-          cedula: cedulaVal,
-          phone: phoneVal,
-          paymentMethod: method,
-          shippingCity: cityVal,
-          shippingCost: (typeof this.currentShipping?.cost==='number'? this.currentShipping.cost: undefined),
-          giftCardCode: document.getElementById('giftCardCode')?.value || undefined
-        });
+        const order = await this.model.createOrder(orderPayload);
         // Persist address/phone to user profile
         try{
           await this.model.updateCurrentUser({ name: nameVal, address: addrVal, phone: phoneVal });
@@ -1076,12 +1145,20 @@ export class AppController {
     document.getElementById('paymentMethod').addEventListener('change', ()=>{
       const method = document.getElementById('paymentMethod').value;
       const details = document.getElementById('paymentDetails');
+      const mpInfo = document.getElementById('mpInfo');
       if(method==='credit' || method==='debit'){
         details.style.display='block';
         ['cardNumber','cardExpiry','cardCVV'].forEach(id=>document.getElementById(id).required=true);
+        if(mpInfo) mpInfo.style.display='none';
       } else {
         details.style.display='none';
         ['cardNumber','cardExpiry','cardCVV'].forEach(id=>document.getElementById(id).required=false);
+        if(mpInfo) mpInfo.style.display = method==='mercadopago' ? 'block' : 'none';
+      }
+      // Update submit button text
+      const submitBtn = document.getElementById('orderSubmitBtn');
+      if(submitBtn && !submitBtn.disabled){
+        submitBtn.textContent = method==='mercadopago' ? 'Pagar con Mercado Pago' : 'Realizar Pedido';
       }
     });
 

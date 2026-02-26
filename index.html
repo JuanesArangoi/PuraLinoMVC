@@ -395,9 +395,9 @@
         <label>Método de Pago *
           <select id="paymentMethod" class="pl-input" required>
             <option value="">Seleccione método</option>
+            <option value="mercadopago">💳 Mercado Pago (Recomendado)</option>
             <option value="credit">Tarjeta de Crédito</option>
             <option value="debit">Tarjeta de Débito</option>
-            <option value="paypal">PayPal</option>
             <option value="pse">PSE</option>
             <option value="cod">Pago contraentrega</option>
           </select>
@@ -411,6 +411,9 @@
             <label>Fecha de Expiración<input id="cardExpiry" class="pl-input" placeholder="MM/AA" /></label>
             <label>CVV<input id="cardCVV" class="pl-input" placeholder="123" /></label>
           </div>
+        </div>
+        <div id="mpInfo" style="display:none;padding:1rem;background:#e8f4fd;border-radius:8px;border:1px solid #b3d7f0;">
+          <p style="margin:0;font-size:.9rem;color:#1a5276;"><strong>💳 Mercado Pago</strong> — Serás redirigido a la plataforma segura de Mercado Pago para completar tu pago. Puedes pagar con tarjeta de crédito, débito, PSE, Nequi y más.</p>
         </div>
         <label class="pl-checkbox-label">
           <input type="checkbox" id="orderTerms" />

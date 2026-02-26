@@ -113,6 +113,13 @@ export const inventoryApi = {
   async adjust(payload){ return request('/inventory/adjust', { method:'POST', body: payload, auth:true }); }
 };
 
+// ── Payments (Mercado Pago) ──
+export const paymentsApi = {
+  async getConfig(){ return request('/payments/config'); },
+  async createPreference(payload){ return request('/payments/create-preference', { method:'POST', body: payload, auth:true }); },
+  async getStatus(orderId){ return request(`/payments/status/${orderId}`, { auth:true }); },
+};
+
 // Convenience export: get current user by token
 export async function me(){ return request('/auth/me', { auth:true }); }
 

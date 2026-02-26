@@ -256,6 +256,12 @@ export class AppModel {
     this.resetSessionTimeout(); // Reset timeout on user activity
     this.notify(); 
   }
+  clearCart(){
+    this.state.cart = [];
+    this.state.currentPromo = null;
+    this.saveCart();
+    this.notify();
+  }
   cartCount(){ return this.state.cart.reduce((s,i)=>s+i.quantity,0); }
 
   // Promotions
