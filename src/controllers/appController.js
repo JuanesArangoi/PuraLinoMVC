@@ -1439,14 +1439,14 @@ export class AppController {
       if(!this.model.state.currentUser){ this.view.toast('Por favor inicia sesión para comprar','error'); this.view.toggleModal('cartModal', false); this.view.toggleModal('loginModal', true); return; }
       if(this.model.state.cart.length===0){ this.view.toast('Tu carrito está vacío','error'); return; }
       if(!this.model.state.currentUser.emailVerified){ this.view.toast('Debes verificar tu cuenta de correo antes de realizar pedidos. Revisa tu bandeja de entrada.','error'); return; }
-      // Prefill checkout with user data
+      // Prefill checkout with CURRENT user data only
       const u = this.model.state.currentUser;
       const setVal = (id, v)=>{ const el=document.getElementById(id); if(el) el.value = v||''; };
       setVal('orderName', u.name);
       setVal('orderEmail', u.email);
       setVal('orderAddress', u.address||'');
       setVal('orderPhone', u.phone);
-      // Reset selects
+      // Reset non-user fields
       setVal('orderAddress2', '');
       setVal('orderPostalCode', '');
       setVal('orderCedula', '');
@@ -1454,9 +1454,20 @@ export class AppController {
       if(citySelect){ citySelect.innerHTML = '<option value="">Primero selecciona departamento</option>'; citySelect.disabled = true; }
       const q = document.getElementById('shippingQuote'); if(q) q.textContent = '';
       this.currentShipping = null;
-      // Reset T&C checkbox
+      // Reset payment method and clear ALL sensitive payment data
+      setVal('paymentMethod', '');
+      setVal('cardNumber', '');
+      setVal('cardExpiry', '');
+      setVal('cardCVV', '');
+      setVal('giftCardCode', '');
+      ['cardNumber','cardExpiry','cardCVV'].forEach(id=>{ const el=document.getElementById(id); if(el) el.required=false; });
+      const payDetails = document.getElementById('paymentDetails'); if(payDetails) payDetails.style.display='none';
+      const mpInfo = document.getElementById('mpInfo'); if(mpInfo) mpInfo.style.display='none';
+      this._destroyMPBrick();
+      // Reset T&C checkbox and submit button
       const ot = document.getElementById('orderTerms'); if(ot){ ot.checked = false; }
-      const osb = document.getElementById('orderSubmitBtn'); if(osb){ osb.disabled = true; }
+      const osb = document.getElementById('orderSubmitBtn');
+      if(osb){ osb.disabled = true; osb.style.display = ''; osb.textContent = 'Realizar Pedido'; }
       this.view.toggleModal('cartModal', false); this.view.toggleModal('orderModal', true);
     });
 
@@ -2194,6 +2205,15 @@ export class AppController {
     if(logoutBtn){ 
       logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        // Clear sensitive form data before logout
+        ['orderName','orderEmail','orderAddress','orderAddress2','orderPhone',
+         'orderPostalCode','orderCedula','cardNumber','cardExpiry','cardCVV',
+         'giftCardCode'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+        const pm = document.getElementById('paymentMethod'); if(pm) pm.value='';
+        const pd = document.getElementById('paymentDetails'); if(pd) pd.style.display='none';
+        const mi = document.getElementById('mpInfo'); if(mi) mi.style.display='none';
+        this._destroyMPBrick();
+        this.view.toggleModal('orderModal', false);
         this.model.logout(); 
         this.view.setUserUI(null); 
         this.bindHeaderActions(); 
