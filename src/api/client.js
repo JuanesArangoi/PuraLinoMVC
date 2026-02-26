@@ -117,6 +117,7 @@ export const inventoryApi = {
 export const paymentsApi = {
   async getConfig(){ return request('/payments/config'); },
   async createPreference(payload){ return request('/payments/create-preference', { method:'POST', body: payload, auth:true }); },
+  async processPayment(payload){ return request('/payments/process', { method:'POST', body: payload, auth:true }); },
   async getStatus(orderId){ return request(`/payments/status/${orderId}`, { auth:true }); },
 };
 

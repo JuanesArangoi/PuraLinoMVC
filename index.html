@@ -412,8 +412,29 @@
             <label>CVV<input id="cardCVV" class="pl-input" placeholder="123" /></label>
           </div>
         </div>
-        <div id="mpInfo" style="display:none;padding:1rem;background:#e8f4fd;border-radius:8px;border:1px solid #b3d7f0;">
-          <p style="margin:0;font-size:.9rem;color:#1a5276;"><strong>💳 Mercado Pago</strong> — Serás redirigido a la plataforma segura de Mercado Pago para completar tu pago. Puedes pagar con tarjeta de crédito, débito, PSE, Nequi y más.</p>
+        <div id="mpInfo" style="display:none;">
+          <p style="margin:0 0 .5rem;font-size:.9rem;color:#1a5276;padding:.75rem;background:#e8f4fd;border-radius:8px;border:1px solid #b3d7f0;"><strong>💳 Mercado Pago</strong> — Ingresa los datos de tu tarjeta abajo. El pago es procesado de forma segura por Mercado Pago.</p>
+          <div id="mpCardForm">
+            <div class="pl-form-grid">
+              <label>Número de Tarjeta *<input id="mpCardNumber" class="pl-input" placeholder="4013 5406 8274 6260" maxlength="19" /></label>
+              <label>Nombre en la Tarjeta *<input id="mpCardHolder" class="pl-input" placeholder="APRO" /></label>
+            </div>
+            <div class="pl-form-grid">
+              <label>Fecha de Expiración *<input id="mpCardExpiry" class="pl-input" placeholder="11/25" maxlength="5" /></label>
+              <label>CVV *<input id="mpCardCVV" class="pl-input" placeholder="123" maxlength="4" type="password" /></label>
+            </div>
+            <div class="pl-form-grid">
+              <label>Tipo de Documento *
+                <select id="mpDocType" class="pl-input">
+                  <option value="CC">CC - Cédula de Ciudadanía</option>
+                  <option value="CE">CE - Cédula de Extranjería</option>
+                  <option value="NIT">NIT</option>
+                </select>
+              </label>
+              <label>Número de Documento *<input id="mpDocNumber" class="pl-input" placeholder="12345678" /></label>
+            </div>
+            <label>Email del pagador *<input id="mpPayerEmail" class="pl-input" type="email" placeholder="comprador@email.com" /></label>
+          </div>
         </div>
         <label class="pl-checkbox-label">
           <input type="checkbox" id="orderTerms" />
@@ -619,6 +640,9 @@
       <div id="legalContent"></div>
     </div>
   </div>
+
+  <!-- Mercado Pago SDK -->
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
 
   <!-- PWA Service Worker Registration -->
   <script type="module" src="src/controllers/appController.js"></script>

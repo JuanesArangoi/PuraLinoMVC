@@ -1074,12 +1074,46 @@ export class AppController {
         giftCardCode: document.getElementById('giftCardCode')?.value || undefined
       };
 
-      // ── Mercado Pago flow ──
+      // ── Mercado Pago flow (Checkout API — inline card form) ──
       if(method === 'mercadopago'){
         try{
+          // Validate MP card fields
+          const mpCardNum = (document.getElementById('mpCardNumber')?.value||'').replace(/\s/g,'');
+          const mpHolder = (document.getElementById('mpCardHolder')?.value||'').trim();
+          const mpExpiry = (document.getElementById('mpCardExpiry')?.value||'').trim();
+          const mpCVV = (document.getElementById('mpCardCVV')?.value||'').trim();
+          const mpDocType = document.getElementById('mpDocType')?.value||'CC';
+          const mpDocNum = (document.getElementById('mpDocNumber')?.value||'').trim();
+          const mpEmail = (document.getElementById('mpPayerEmail')?.value||'').trim();
+          if(!mpCardNum || mpCardNum.length < 13){ this.view.toast('Ingresa un número de tarjeta válido','error'); orderSubmitting=false; if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Pagar con Mercado Pago';} return; }
+          if(!mpHolder){ this.view.toast('Ingresa el nombre del titular','error'); orderSubmitting=false; if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Pagar con Mercado Pago';} return; }
+          if(!/^\d{2}\/\d{2}$/.test(mpExpiry)){ this.view.toast('Fecha de expiración inválida (MM/AA)','error'); orderSubmitting=false; if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Pagar con Mercado Pago';} return; }
+          if(!/^\d{3,4}$/.test(mpCVV)){ this.view.toast('CVV inválido','error'); orderSubmitting=false; if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Pagar con Mercado Pago';} return; }
+          if(!mpDocNum){ this.view.toast('Ingresa el número de documento','error'); orderSubmitting=false; if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Pagar con Mercado Pago';} return; }
+          if(!mpEmail){ this.view.toast('Ingresa el email del pagador','error'); orderSubmitting=false; if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Pagar con Mercado Pago';} return; }
+
+          // Initialize MP SDK and create card token
+          const configRes = await paymentsApi.getConfig();
+          if(!configRes.publicKey) throw new Error('Mercado Pago no está configurado');
+          const mp = new window.MercadoPago(configRes.publicKey, { locale: 'es-CO' });
+          const [expMonth, expYear] = mpExpiry.split('/');
+          const tokenData = await mp.createCardToken({
+            cardNumber: mpCardNum,
+            cardholderName: mpHolder,
+            cardExpirationMonth: expMonth,
+            cardExpirationYear: '20' + expYear,
+            securityCode: mpCVV,
+            identificationType: mpDocType,
+            identificationNumber: mpDocNum,
+          });
+          if(!tokenData || !tokenData.id) throw new Error('No se pudo tokenizar la tarjeta');
+
           const cart = this.model.state.cart;
           const mpPayload = {
             ...orderPayload,
+            token: tokenData.id,
+            installments: 1,
+            payerEmail: mpEmail,
             items: cart.map(c => ({
               productId: c.product.id || c.product._id,
               variantId: c.variantId || undefined,
@@ -1087,18 +1121,29 @@ export class AppController {
             })),
             promoCode: this.model.state.currentPromo?.code || undefined,
           };
-          const result = await paymentsApi.createPreference(mpPayload);
-          // Persist address/phone to user profile (non-blocking)
-          this.model.updateCurrentUser({ name: nameVal, address: addrVal, phone: phoneVal }).catch(()=>{});
-          // Clear cart before redirect
-          this.model.clearCart();
-          // Redirect to Mercado Pago sandbox checkout
-          window.location.href = result.sandboxInitPoint || result.initPoint;
+          const result = await paymentsApi.processPayment(mpPayload);
+
+          if(result.status === 'approved' && result.order){
+            this.model.updateCurrentUser({ name: nameVal, address: addrVal, phone: phoneVal }).catch(()=>{});
+            this.model.clearCart();
+            this.view.toggleModal('orderModal', false);
+            this.view.toast('¡Pago aprobado! Pedido confirmado.');
+            const order = this.model._adaptOrder(result.order);
+            this.model.state.orders.push(order);
+            this.model.addInvoice(order);
+            this._lastInvoiceOrder = order;
+            this.view.renderInvoice(order);
+            this.view.toggleModal('invoiceModal', true);
+          } else {
+            this.view.toast(result.message || 'Pago pendiente de confirmación', 'warning');
+            this.model.clearCart();
+            this.view.toggleModal('orderModal', false);
+          }
           return;
         }catch(err){
-          this.view.toast(err.message,'error');
+          this.view.toast(err.message || 'Error al procesar el pago','error');
           orderSubmitting = false;
-          if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = 'Realizar Pedido'; }
+          if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = 'Pagar con Mercado Pago'; }
           return;
         }
       }
