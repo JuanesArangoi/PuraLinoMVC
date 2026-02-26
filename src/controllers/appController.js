@@ -277,7 +277,8 @@ export class AppController {
         },
         callbacks: {
           onReady: ()=>{ },
-          onSubmit: async (cardFormData)=>{
+          onSubmit: (cardFormData)=>{
+            console.log('MP Brick onSubmit fired', cardFormData);
             // Read order fields from the form
             const nameVal = document.getElementById('orderName')?.value?.trim() || '';
             const addrVal = document.getElementById('orderAddress')?.value?.trim() || '';
@@ -291,13 +292,16 @@ export class AppController {
             const giftCardCode = document.getElementById('giftCardCode')?.value || undefined;
 
             if(!nameVal || !addrVal || !phoneVal || !cityVal || !deptVal){
-              self.view.toast('Completa todos los campos obligatorios del formulario de envío.','error');
-              throw new Error('Campos incompletos');
+              self.view.toast('Completa todos los campos obligatorios del formulario de envío antes de pagar.','error');
+              return Promise.reject(new Error('Campos incompletos'));
             }
 
             const cartItems = self.model.state.cart;
             const payload = {
-              ...cardFormData,
+              token: cardFormData.token,
+              installments: cardFormData.installments || 1,
+              issuerId: cardFormData.issuer_id || cardFormData.issuerId || '',
+              paymentMethodId: cardFormData.payment_method_id || cardFormData.paymentMethodId || '',
               payerEmail: cardFormData.payer?.email || emailVal,
               userName: nameVal,
               email: emailVal,
@@ -319,24 +323,30 @@ export class AppController {
               promoCode: self.model.state.currentPromo?.code || undefined,
             };
 
-            const result = await paymentsApi.processPayment(payload);
-
-            if(result.status === 'approved' && result.order){
-              self.model.updateCurrentUser({ name: nameVal, address: addrVal, phone: phoneVal }).catch(()=>{});
-              self.model.clearCart();
-              self.view.toggleModal('orderModal', false);
-              self.view.toast('¡Pago aprobado! Pedido confirmado.');
-              const order = self.model._adaptOrder(result.order);
-              self.model.state.orders.push(order);
-              self.model.addInvoice(order);
-              self._lastInvoiceOrder = order;
-              self.view.renderInvoice(order);
-              self.view.toggleModal('invoiceModal', true);
-            } else {
-              self.view.toast(result.message || 'Pago pendiente de confirmación', 'warning');
-              self.model.clearCart();
-              self.view.toggleModal('orderModal', false);
-            }
+            console.log('Sending payload to backend:', payload);
+            return paymentsApi.processPayment(payload).then(result => {
+              console.log('Backend result:', result);
+              if(result.status === 'approved' && result.order){
+                self.model.updateCurrentUser({ name: nameVal, address: addrVal, phone: phoneVal }).catch(()=>{});
+                self.model.clearCart();
+                self.view.toggleModal('orderModal', false);
+                self.view.toast('¡Pago aprobado! Pedido confirmado.');
+                const order = self.model._adaptOrder(result.order);
+                self.model.state.orders.push(order);
+                self.model.addInvoice(order);
+                self._lastInvoiceOrder = order;
+                self.view.renderInvoice(order);
+                self.view.toggleModal('invoiceModal', true);
+              } else {
+                self.view.toast(result.message || 'Pago pendiente de confirmación', 'warning');
+                self.model.clearCart();
+                self.view.toggleModal('orderModal', false);
+              }
+            }).catch(err => {
+              console.error('MP payment error:', err);
+              self.view.toast(err.message || 'Error al procesar el pago con Mercado Pago','error');
+              return Promise.reject(err);
+            });
           },
           onError: (error)=>{
             console.error('MP Brick error:', error);
