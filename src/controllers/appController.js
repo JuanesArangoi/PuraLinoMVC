@@ -279,14 +279,14 @@ export class AppController {
           onReady: ()=>{ },
           onSubmit: async (cardFormData)=>{
             // Read order fields from the form
-            const nameVal = document.getElementById('orderUserName')?.value?.trim() || '';
+            const nameVal = document.getElementById('orderName')?.value?.trim() || '';
             const addrVal = document.getElementById('orderAddress')?.value?.trim() || '';
             const addr2Val = document.getElementById('orderAddress2')?.value?.trim() || '';
             const deptVal = document.getElementById('orderDepartment')?.value || '';
             const postalVal = document.getElementById('orderPostalCode')?.value?.trim() || '';
             const cedulaVal = document.getElementById('orderCedula')?.value?.trim() || '';
             const phoneVal = document.getElementById('orderPhone')?.value?.trim() || '';
-            const cityVal = document.getElementById('shippingCity')?.value || '';
+            const cityVal = document.getElementById('orderCity')?.value || '';
             const emailVal = self.model.state.currentUser?.email || '';
             const giftCardCode = document.getElementById('giftCardCode')?.value || undefined;
 
