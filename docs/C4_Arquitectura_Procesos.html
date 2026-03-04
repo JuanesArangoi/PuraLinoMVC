@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PuraLino — C4 Model, Decisiones de Arquitectura y Procesos</title>
+  <style>
+    @media print {
+      body { font-size: 11px; }
+      .page-break { page-break-before: always; }
+      h1, h2, h3 { page-break-after: avoid; }
+      table { page-break-inside: avoid; }
+      .no-print { display: none; }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7;
+      color: #2c2c2c;
+      background: #f8f7f5;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 48px 56px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    }
+
+    /* Cover */
+    .cover {
+      text-align: center;
+      padding: 60px 0 40px;
+      border-bottom: 3px solid #8b7355;
+      margin-bottom: 40px;
+    }
+    .cover h1 {
+      font-size: 32px;
+      color: #8b7355;
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+    }
+    .cover .subtitle {
+      font-size: 13px;
+      color: #999;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .cover .doc-title {
+      font-size: 22px;
+      color: #333;
+      margin-top: 28px;
+      font-weight: 600;
+    }
+    .cover .doc-info {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #888;
+      line-height: 2;
+    }
+
+    /* Headings */
+    h2 {
+      font-size: 20px;
+      color: #8b7355;
+      border-bottom: 2px solid #e8e0d4;
+      padding-bottom: 8px;
+      margin: 36px 0 18px;
+    }
+    h3 {
+      font-size: 16px;
+      color: #555;
+      margin: 24px 0 12px;
+      padding-left: 12px;
+      border-left: 4px solid #8b7355;
+    }
+    h4 {
+      font-size: 14px;
+      color: #6b5b45;
+      margin: 18px 0 10px;
+      font-weight: 600;
+    }
+
+    /* Paragraphs */
+    p {
+      margin: 8px 0;
+      color: #444;
+      font-size: 13.5px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px;
+      font-size: 12.5px;
+    }
+    thead th {
+      background: #8b7355;
+      color: #fff;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    tbody td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+    }
+    tbody tr:nth-child(even) { background: #faf9f7; }
+    tbody tr:hover { background: #f5f0ea; }
+
+    code {
+      background: #f5f0ea;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 11.5px;
+      color: #8b5e3c;
+    }
+
+    /* Ordered lists */
+    ol {
+      margin: 10px 0 10px 24px;
+      font-size: 13.5px;
+      color: #444;
+    }
+    ol li {
+      margin-bottom: 6px;
+    }
+    ol li strong {
+      color: #333;
+    }
+
+    /* Unordered lists */
+    ul {
+      margin: 6px 0 6px 24px;
+      font-size: 13px;
+      color: #555;
+    }
+    ul li { margin-bottom: 4px; }
+
+    /* Process boxes */
+    .process-box {
+      background: #faf9f7;
+      border: 1px solid #e8e0d4;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 14px 0;
+    }
+    .process-box h4 {
+      margin-top: 0;
+      color: #8b7355;
+      border-bottom: 1px solid #e8e0d4;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+    }
+
+    /* Print button */
+    .print-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #8b7355;
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(139,115,85,0.4);
+      z-index: 999;
+    }
+    .print-btn:hover { background: #74604a; }
+
+    /* TOC */
+    .toc {
+      background: #faf9f7;
+      border: 1px solid #e8e0d4;
+      border-radius: 8px;
+      padding: 20px 28px;
+      margin: 20px 0 30px;
+    }
+    .toc h3 { border: none; padding: 0; margin: 0 0 12px; color: #8b7355; }
+    .toc ol { margin-left: 20px; }
+    .toc li { margin-bottom: 4px; font-size: 13.5px; }
+    .toc a { color: #8b7355; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">📄 Guardar como PDF</button>
+
+<div class="container">
+
+  <!-- COVER -->
+  <div class="cover">
+    <h1>PURA LINO</h1>
+    <div class="subtitle">Lino Puro, Comodidad Pura</div>
+    <div class="doc-title">Modelo C4, Decisiones de Arquitectura<br>y Procesos del Sistema</div>
+    <div class="doc-info">
+      <strong>Proyecto:</strong> PuraLino E-Commerce<br>
+      <strong>Versión:</strong> 1.0<br>
+      <strong>Fecha:</strong> Febrero 2026<br>
+      <strong>Stack:</strong> HTML5 + ES Modules (Frontend) | Node.js + Express + MongoDB (Backend)
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Tabla de Contenido</h3>
+    <ol>
+      <li><a href="#c4">Modelo C4</a>
+        <ol>
+          <li><a href="#c1">Contexto del Sistema (C1)</a></li>
+          <li><a href="#c2">Contenedores (C2)</a></li>
+          <li><a href="#c3">Componentes (C3) — Tablas</a></li>
+        </ol>
+      </li>
+      <li><a href="#decisiones">Decisiones de Arquitectura</a></li>
+      <li><a href="#procesos">Procesos del Sistema</a>
+        <ol>
+          <li><a href="#proc-auth">Login y Autenticación de Usuarios</a></li>
+          <li><a href="#proc-order">Proceso de Pedido</a></li>
+        </ol>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <h2 id="c4">1. Modelo C4</h2>
+
+  <h3 id="c1">1.1 Contexto del Sistema (C1)</h3>
+  <p>
+    <strong>PuraLino</strong> es una tienda en línea de ropa y artículos para el hogar fabricados en lino.
+    Los usuarios (clientes y administradores) interactúan con una <strong>SPA (Single Page Application)</strong>
+    construida con HTML5 y ES Modules, que se comunica con una <strong>API REST</strong> desplegada en Render,
+    respaldada por MongoDB Atlas como base de datos, Cloudinary para gestión de imágenes,
+    Brevo para correos transaccionales y Mercado Pago como pasarela de pagos.
+  </p>
+
+  <h3 id="c2">1.2 Contenedores (C2)</h3>
+  <table>
+    <thead>
+      <tr><th>Contenedor</th><th>Tecnología</th><th>Descripción</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Frontend SPA</strong></td>
+        <td>HTML5 + ES Modules + CSS</td>
+        <td>Aplicación de página única con patrón MVC puro, desplegada como sitio estático en GitHub Pages</td>
+      </tr>
+      <tr>
+        <td><strong>Backend API</strong></td>
+        <td>Node.js + Express.js</td>
+        <td>API REST con autenticación JWT, desplegada en Render</td>
+      </tr>
+      <tr>
+        <td><strong>Base de Datos</strong></td>
+        <td>MongoDB Atlas (Mongoose ODM)</td>
+        <td>Persistencia de datos: usuarios, productos, pedidos, inventario</td>
+      </tr>
+      <tr>
+        <td><strong>Cloudinary</strong></td>
+        <td>Cloud CDN + API</td>
+        <td>Almacenamiento y entrega de imágenes de productos</td>
+      </tr>
+      <tr>
+        <td><strong>Brevo</strong></td>
+        <td>HTTP API (SMTP relay)</td>
+        <td>Envío de correos transaccionales (verificación, pedidos, tracking)</td>
+      </tr>
+      <tr>
+        <td><strong>Mercado Pago</strong></td>
+        <td>SDK JS + REST API</td>
+        <td>Procesamiento de pagos con tarjeta mediante Payment Brick embebido</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- C3 -->
+  <div class="page-break"></div>
+  <h3 id="c3">1.3 Componentes (C3) — Nivel 3</h3>
+
+  <h4>Frontend (<code>PuraLinoMVC/</code>)</h4>
+  <table>
+    <thead>
+      <tr><th style="width:22%">Elemento N3</th><th style="width:34%">Código (paquete/clase)</th><th style="width:44%">Responsabilidad</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Entry Point</strong></td>
+        <td><code>src/main.js</code></td>
+        <td>Punto de entrada de la aplicación; instancia AppController, espera restauración de sesión y sincroniza rutas por hash</td>
+      </tr>
+      <tr>
+        <td><strong>Controlador Principal</strong></td>
+        <td><code>src/controllers/appController.js</code><br>→ clase <code>AppController</code></td>
+        <td>Orquesta toda la lógica: manejo de eventos globales, navegación SPA, CRUD de productos (admin), flujo de pedido, integración con Payment Brick de Mercado Pago, accesibilidad y gestión de sesión</td>
+      </tr>
+      <tr>
+        <td><strong>Modelo de Estado</strong></td>
+        <td><code>src/models/appModel.js</code><br>→ clase <code>AppModel</code></td>
+        <td>Gestión del estado global (usuario, carrito, productos, pedidos, promociones, wishlist), persistencia en localStorage, autenticación (login/logout), timeout de sesión por inactividad y comunicación con la API</td>
+      </tr>
+      <tr>
+        <td><strong>Vista Principal</strong></td>
+        <td><code>src/views/appView.js</code><br>→ clase <code>AppView</code></td>
+        <td>Renderizado del catálogo de productos, carrito, modales, panel de cliente, notificaciones toast, paginación y formateo de moneda COP</td>
+      </tr>
+      <tr>
+        <td><strong>Vista de Inventario</strong></td>
+        <td><code>src/views/inventoryView.js</code></td>
+        <td>Renderizado de secciones administrativas: proveedores, bodegas, albaranes, movimientos de stock, alertas de stock bajo</td>
+      </tr>
+      <tr>
+        <td><strong>Cliente API</strong></td>
+        <td><code>src/api/client.js</code><br>→ función <code>request()</code>, objetos API exportados</td>
+        <td>Capa de comunicación HTTP con el backend; maneja headers de autenticación (Bearer JWT), serialización JSON y propagación de errores</td>
+      </tr>
+      <tr>
+        <td><strong>Bus de Eventos</strong></td>
+        <td><code>src/core/observer.js</code><br>→ clase <code>Observer</code>, instancia <code>bus</code></td>
+        <td>Implementación del patrón Observer para comunicación desacoplada entre Model, View y Controller</td>
+      </tr>
+      <tr>
+        <td><strong>Estrategias de Pago</strong></td>
+        <td><code>src/strategies/payment.js</code><br>→ <code>PaymentStrategies</code></td>
+        <td>Patrón Strategy: validación de datos de tarjeta por método de pago (crédito, débito, PayPal, PSE, Mercado Pago, contraentrega)</td>
+      </tr>
+      <tr>
+        <td><strong>Estrategias de Descuento</strong></td>
+        <td><code>src/strategies/discount.js</code><br>→ <code>DiscountStrategies</code></td>
+        <td>Patrón Strategy: cálculo de descuentos porcentuales sobre el total del carrito</td>
+      </tr>
+      <tr>
+        <td><strong>Datos Geográficos</strong></td>
+        <td><code>src/data/colombiaDepts.js</code><br>→ <code>DEPARTMENTS</code></td>
+        <td>Catálogo estático de departamentos y ciudades principales de Colombia para el formulario de envío</td>
+      </tr>
+      <tr>
+        <td><strong>Páginas Legales</strong></td>
+        <td><code>src/data/legalPages.js</code><br>→ <code>LEGAL_PAGES</code></td>
+        <td>Contenido estático de páginas legales: Términos y Condiciones, Política de Privacidad, Política de Cookies, Política de Devoluciones</td>
+      </tr>
+      <tr>
+        <td><strong>Service Worker</strong></td>
+        <td><code>sw.js</code></td>
+        <td>PWA: caché de assets estáticos con estrategia cache-first, versionamiento de caché para actualizaciones</td>
+      </tr>
+      <tr>
+        <td><strong>Vista HTML</strong></td>
+        <td><code>index.html</code></td>
+        <td>Estructura completa de la SPA: secciones de contenido, modales, formularios, navegación responsive, footer con enlaces legales</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+  <h4>Backend (<code>PuraLinoMVC-api/</code>)</h4>
+  <table>
+    <thead>
+      <tr><th style="width:22%">Elemento N3</th><th style="width:34%">Código (paquete/clase)</th><th style="width:44%">Responsabilidad</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Servidor Express</strong></td>
+        <td><code>src/server.js</code></td>
+        <td>Configuración de Express, conexión a MongoDB, registro de rutas, CORS, seed de datos iniciales, documentación de API</td>
+      </tr>
+      <tr>
+        <td><strong>Middleware Auth</strong></td>
+        <td><code>src/middleware/auth.js</code><br>→ <code>authRequired</code>, <code>adminOnly</code></td>
+        <td>Verificación de JWT en cabecera Authorization; control de acceso basado en roles (cliente/admin)</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Auth</strong></td>
+        <td><code>src/routes/auth.js</code></td>
+        <td>Registro con validación, login por usuario/email, verificación de email por token, recuperación y reset de contraseña, reenvío de verificación</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Products</strong></td>
+        <td><code>src/routes/products.js</code></td>
+        <td>CRUD completo de productos, gestión de variantes (talla/color/stock/SKU), subida y eliminación de imágenes en Cloudinary</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Orders</strong></td>
+        <td><code>src/routes/orders.js</code></td>
+        <td>Creación de pedidos, consulta por usuario y admin, actualización de estado, gestión de tracking (guía, carrier, eventos de envío)</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Payments</strong></td>
+        <td><code>src/routes/payments.js</code></td>
+        <td>Integración con Mercado Pago: endpoint de configuración de public key, procesamiento de pagos con token de tarjeta, webhook de notificaciones, modo sandbox para pruebas</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Users</strong></td>
+        <td><code>src/routes/users.js</code></td>
+        <td>Gestión de usuarios (admin): listado, actualización de perfil y datos de cliente</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Returns</strong></td>
+        <td><code>src/routes/returns.js</code></td>
+        <td>Flujo completo de devoluciones: solicitud, aprobación/rechazo, recepción en bodega, revisión de calidad, generación de cupón</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Shipping</strong></td>
+        <td><code>src/routes/shipping.js</code></td>
+        <td>Cotización de envío por ciudad, cálculo de tarifas y tiempos estimados de entrega</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Promotions</strong></td>
+        <td><code>src/routes/promotions.js</code></td>
+        <td>CRUD de códigos promocionales, validación de código y activación/desactivación</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Gift Cards</strong></td>
+        <td><code>src/routes/giftcards.js</code></td>
+        <td>Gestión de tarjetas de regalo: creación, validación de saldo, aplicación al pedido</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Reviews</strong></td>
+        <td><code>src/routes/reviews.js</code></td>
+        <td>Reseñas de productos: creación por cliente, listado público (aprobadas), moderación por admin (aprobar/rechazar)</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Wishlist</strong></td>
+        <td><code>src/routes/wishlist.js</code></td>
+        <td>Lista de deseos: agregar/eliminar productos favoritos, consulta por usuario autenticado</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Suppliers</strong></td>
+        <td><code>src/routes/suppliers.js</code></td>
+        <td>CRUD de proveedores para gestión de cadena de suministro</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Warehouses</strong></td>
+        <td><code>src/routes/warehouses.js</code></td>
+        <td>CRUD de bodegas, gestión de estanterías (shelves) dentro de cada bodega</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Purchase Orders</strong></td>
+        <td><code>src/routes/purchaseOrders.js</code></td>
+        <td>Albaranes de compra: creación con proveedor, recepción de mercancía, actualización automática de stock</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Inventory</strong></td>
+        <td><code>src/routes/inventory.js</code></td>
+        <td>Movimientos de inventario, alertas de stock bajo, ajustes manuales de stock</td>
+      </tr>
+      <tr>
+        <td><strong>Rutas Cloudinary</strong></td>
+        <td><code>src/routes/cloudinary.js</code></td>
+        <td>Upload y eliminación de imágenes de productos usando Cloudinary SDK + Multer</td>
+      </tr>
+      <tr>
+        <td><strong>Servicio de Email</strong></td>
+        <td><code>src/utils/emailService.js</code></td>
+        <td>Envío de 10 tipos de correos transaccionales vía Brevo HTTP API: verificación de cuenta, reset de contraseña, confirmación de pedido, factura, actualización de estado, tracking, devoluciones (aprobada, rechazada, recibida, resultado de revisión)</td>
+      </tr>
+      <tr>
+        <td><strong>Seed</strong></td>
+        <td><code>src/seed.js</code></td>
+        <td>Carga inicial de productos de ejemplo y usuario administrador por defecto si la base de datos está vacía</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+  <h4>Modelos de Datos (Mongoose Schemas)</h4>
+  <table>
+    <thead>
+      <tr><th style="width:22%">Elemento N3</th><th style="width:34%">Código (paquete/clase)</th><th style="width:44%">Responsabilidad</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>User</strong></td><td><code>src/models/User.js</code></td><td>Schema: username, passwordHash (bcrypt), role (admin/client), email, verificación de email, tokens de reset de contraseña</td></tr>
+      <tr><td><strong>Product</strong></td><td><code>src/models/Product.js</code></td><td>Schema: nombre, precio base, categoría (ropa/hogar), stock general, descripción, variantes embebidas (talla/color/stock/SKU/priceOverride), imágenes (url + public_id)</td></tr>
+      <tr><td><strong>Order</strong></td><td><code>src/models/Order.js</code></td><td>Schema: userId, items embebidos, datos de envío, totales (subtotal/descuento/envío/gift/total), estado del pedido, tracking (guía/carrier/eventos), integración MP (paymentId/status)</td></tr>
+      <tr><td><strong>Promotion</strong></td><td><code>src/models/Promotion.js</code></td><td>Schema: código único, porcentaje de descuento, estado activo/inactivo</td></tr>
+      <tr><td><strong>Return</strong></td><td><code>src/models/Return.js</code></td><td>Schema: pedido, producto, tipo de devolución, razón, estados del flujo (solicitada → aprobada → recibida → revisada → completada), cupón generado</td></tr>
+      <tr><td><strong>Review</strong></td><td><code>src/models/Review.js</code></td><td>Schema: productId, userId, rating (1-5), comentario, estado de moderación (pendiente/aprobada/rechazada)</td></tr>
+      <tr><td><strong>Wishlist</strong></td><td><code>src/models/Wishlist.js</code></td><td>Schema: userId, array de productIds favoritos</td></tr>
+      <tr><td><strong>GiftCard</strong></td><td><code>src/models/GiftCard.js</code></td><td>Schema: código, saldo disponible, estado</td></tr>
+      <tr><td><strong>Coupon</strong></td><td><code>src/models/Coupon.js</code></td><td>Schema: código, valor, usuario asignado, origen (devolución), vigencia (3 meses)</td></tr>
+      <tr><td><strong>Supplier</strong></td><td><code>src/models/Supplier.js</code></td><td>Schema: nombre, contacto, dirección, productos asociados</td></tr>
+      <tr><td><strong>Warehouse</strong></td><td><code>src/models/Warehouse.js</code></td><td>Schema: nombre, ubicación, estanterías (código + label)</td></tr>
+      <tr><td><strong>PurchaseOrder</strong></td><td><code>src/models/PurchaseOrder.js</code></td><td>Schema: proveedor, items solicitados, estado (pendiente/recibido), fecha</td></tr>
+      <tr><td><strong>StockMovement</strong></td><td><code>src/models/StockMovement.js</code></td><td>Schema: producto, tipo de movimiento (venta/ajuste/recepción), cantidad, fecha, referencia al documento origen</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="decisiones">2. Decisiones de Arquitectura</h2>
+
+  <table>
+    <thead>
+      <tr><th style="width:6%">#</th><th style="width:30%">Decisión</th><th style="width:64%">Justificación</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>DA-1</strong></td>
+        <td>Patrón MVC puro en el frontend sin frameworks</td>
+        <td>Demuestra comprensión del patrón arquitectónico sin depender de abstracciones de terceros (React, Angular, Vue); reduce dependencias y tamaño del bundle; cada capa (Model, View, Controller) tiene responsabilidades bien definidas</td>
+      </tr>
+      <tr>
+        <td><strong>DA-2</strong></td>
+        <td>Patrón Observer (Event Bus) para comunicación entre capas</td>
+        <td>Desacopla Model, View y Controller; permite que cambios de estado se propaguen sin dependencias directas entre componentes; la clase <code>Observer</code> con instancia global <code>bus</code> facilita la extensibilidad</td>
+      </tr>
+      <tr>
+        <td><strong>DA-3</strong></td>
+        <td>Patrón Strategy para pagos y descuentos</td>
+        <td>Permite agregar nuevos métodos de pago o tipos de descuento sin modificar el código existente (principio Open/Closed); cada estrategia encapsula su propia lógica de validación</td>
+      </tr>
+      <tr>
+        <td><strong>DA-4</strong></td>
+        <td>API REST separada del frontend</td>
+        <td>Separación de responsabilidades; permite escalar frontend y backend independientemente; despliegue en diferentes servicios (GitHub Pages vs Render); facilita desarrollo en paralelo</td>
+      </tr>
+      <tr>
+        <td><strong>DA-5</strong></td>
+        <td>JWT (JSON Web Token) para autenticación stateless</td>
+        <td>No requiere sesiones en servidor; token autocontenido con <code>{id, role, name}</code>; expiración configurable (2h); compatible con arquitectura REST sin estado</td>
+      </tr>
+      <tr>
+        <td><strong>DA-6</strong></td>
+        <td>MongoDB con Mongoose como base de datos</td>
+        <td>Schema flexible ideal para productos con variantes; modelado natural de documentos embebidos (items dentro de orders); Mongoose provee validación y tipado a nivel de esquema; escalabilidad horizontal nativa</td>
+      </tr>
+      <tr>
+        <td><strong>DA-7</strong></td>
+        <td>Mercado Pago Payment Brick para pagos</td>
+        <td>Formulario de pago embebido que maneja tokenización PCI-compliant; evita manejo directo de datos de tarjeta en nuestro código; soporte para sandbox/pruebas; adaptado al mercado colombiano</td>
+      </tr>
+      <tr>
+        <td><strong>DA-8</strong></td>
+        <td>Brevo HTTP API para emails transaccionales</td>
+        <td>Servicio confiable con alta deliverability; templates HTML personalizados con diseño corporativo; patrón fire-and-forget para no bloquear el flujo principal; 10 tipos de correo implementados</td>
+      </tr>
+      <tr>
+        <td><strong>DA-9</strong></td>
+        <td>Cloudinary para gestión de imágenes</td>
+        <td>CDN global para entrega rápida; transformaciones automáticas; upload desde backend con Multer; evita almacenamiento local de archivos binarios en el servidor</td>
+      </tr>
+      <tr>
+        <td><strong>DA-10</strong></td>
+        <td>PWA con Service Worker</td>
+        <td>Caché de assets estáticos para carga rápida y experiencia offline básica; manifest.json para instalación en dispositivos móviles como app nativa; versionamiento de caché para actualizaciones controladas</td>
+      </tr>
+      <tr>
+        <td><strong>DA-11</strong></td>
+        <td>Middleware de autorización por capas</td>
+        <td>Seguridad en capas: primero <code>authRequired</code> (autenticación), luego <code>adminOnly</code> (autorización); separación clara de permisos cliente/admin a nivel de ruta</td>
+      </tr>
+      <tr>
+        <td><strong>DA-12</strong></td>
+        <td>Limpieza de datos sensibles en logout y entre sesiones</td>
+        <td>Borrado de formularios, tokens y datos de pago del DOM y localStorage al cerrar sesión; reset completo del formulario de pedido al abrirlo; previene filtración de datos entre sesiones de diferentes usuarios</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="procesos">3. Procesos del Sistema</h2>
+
+  <!-- ── PROCESO 1 ── -->
+  <h3 id="proc-auth">3.1 Proceso: Login y Autenticación de Usuarios</h3>
+
+  <p><strong>Objetivo:</strong> Permitir a los usuarios registrarse, verificar su identidad por correo electrónico,
+  iniciar sesión de forma segura y gestionar la recuperación de contraseña, garantizando que solo usuarios
+  autenticados y verificados puedan acceder a funcionalidades protegidas (compras, cuenta personal, panel administrativo).</p>
+
+  <p><strong>El proceso incluye:</strong></p>
+
+  <div class="process-box">
+    <h4>1. Registro de usuario</h4>
+    <ul>
+      <li>El cliente ingresa nombre, correo electrónico, nombre de usuario y contraseña</li>
+      <li><strong>Validaciones frontend:</strong> campos obligatorios, formato de email, longitud mínima de usuario (3 caracteres), contraseña de al menos 6 caracteres con 1 mayúscula y 1 número</li>
+      <li><strong>Validaciones backend:</strong> mismas reglas + verificación de duplicidad de username y email en la BD</li>
+      <li>Se genera hash bcrypt del password con 10 salt rounds</li>
+      <li>Se genera token criptográfico aleatorio de verificación de email (<code>crypto.randomBytes(32)</code>)</li>
+      <li>Se crea el usuario en MongoDB con <code>emailVerified: false</code> y rol <code>client</code></li>
+      <li>Se envía email de verificación vía Brevo HTTP API (fire-and-forget, no bloquea el registro)</li>
+      <li>Aceptación obligatoria de Términos y Condiciones mediante checkbox vinculado al botón de registro</li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>2. Verificación de correo electrónico</h4>
+    <ul>
+      <li>El usuario recibe un email con enlace al endpoint <code>GET /auth/verify-email?token=...</code></li>
+      <li>El backend busca usuario con token válido y no expirado (vigencia: 24 horas)</li>
+      <li>Si es válido: actualiza <code>emailVerified: true</code> y limpia tokens de verificación</li>
+      <li>Renderiza página HTML de éxito con diseño corporativo y redirección automática (5s) al frontend</li>
+      <li>Si el token es inválido o expirado, muestra página de error con opción de reenvío</li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>3. Inicio de sesión (Login)</h4>
+    <ul>
+      <li>El cliente ingresa usuario o correo electrónico y contraseña</li>
+      <li>Backend busca por username O email (query <code>$or</code> de MongoDB)</li>
+      <li>Compara password con hash almacenado usando <code>bcrypt.compare</code></li>
+      <li>Si es válido: genera JWT con payload <code>{ id, role, name }</code> y expiración de 2 horas</li>
+      <li>Retorna token + datos del usuario (excluyendo passwordHash por seguridad)</li>
+      <li>Frontend almacena token en <code>localStorage</code> y lo adjunta como <code>Bearer</code> en cada request HTTP</li>
+      <li>Al recargar la página, se restaura sesión automáticamente invocando <code>GET /auth/me</code> con el token guardado</li>
+      <li>Si el token es inválido/expirado, se limpia sesión; si hay error de red, se usa caché local del usuario</li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>4. Gestión de sesión y timeout por inactividad</h4>
+    <ul>
+      <li>Se monitorean eventos de actividad del usuario: mouse, teclado, scroll, touch, clicks</li>
+      <li>Timeout configurable (por defecto 30 minutos de inactividad)</li>
+      <li>Aviso visual 10 segundos antes de que expire la sesión</li>
+      <li>Al expirar: logout automático, limpieza de datos sensibles del DOM y localStorage, redirección al inicio</li>
+      <li>Cada interacción del usuario reinicia el temporizador de inactividad</li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>5. Recuperación de contraseña</h4>
+    <ul>
+      <li>El cliente solicita reset ingresando su correo electrónico</li>
+      <li>Backend genera token criptográfico de reset con expiración de 1 hora</li>
+      <li>Se envía email con enlace al formulario de reset (renderizado por el backend como HTML)</li>
+      <li>El cliente ingresa nueva contraseña; se valida, hashea con bcrypt y actualiza en la BD</li>
+      <li>Tokens de reset se limpian tras uso exitoso</li>
+      <li>Por seguridad, no se revela si el email existe o no en la respuesta al usuario</li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>6. Reenvío de verificación</h4>
+    <ul>
+      <li>Si el usuario no verificó su email, puede solicitar reenvío desde su perfil</li>
+      <li>Se genera nuevo token de verificación y se envía nuevo correo electrónico</li>
+      <li>El token anterior queda invalidado al ser reemplazado</li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>7. Control de acceso (Autorización)</h4>
+    <ul>
+      <li><strong>Middleware <code>authRequired</code>:</strong> verifica JWT en header <code>Authorization: Bearer &lt;token&gt;</code>; rechaza con 401 si es inválido</li>
+      <li><strong>Middleware <code>adminOnly</code>:</strong> verifica que <code>req.user.role === 'admin'</code>; rechaza con 403 si no es administrador</li>
+      <li>Usuarios sin email verificado no pueden crear pedidos (validación adicional en endpoints de pagos/pedidos)</li>
+      <li>Datos sensibles del usuario anterior se limpian del DOM al cerrar sesión</li>
+    </ul>
+  </div>
+
+  <!-- ── PROCESO 2 ── -->
+  <div class="page-break"></div>
+  <h3 id="proc-order">3.2 Proceso: Proceso de Pedido</h3>
+
+  <p><strong>Objetivo:</strong> Permitir a los usuarios autenticados y verificados seleccionar productos, configurar
+  opciones de envío, aplicar descuentos, realizar el pago (integrado con Mercado Pago) y recibir confirmación
+  del pedido con factura, garantizando la integridad del inventario y la trazabilidad completa del pedido.</p>
+
+  <p><strong>El proceso incluye:</strong></p>
+
+  <div class="process-box">
+    <h4>1. Gestión del carrito de compras</h4>
+    <ul>
+      <li>El cliente navega el catálogo de productos con paginación (12 productos por página)</li>
+      <li>Selecciona talla y color (variantes) antes de agregar al carrito</li>
+      <li>Validación de stock disponible al momento de agregar (tanto stock general como por variante)</li>
+      <li>Carrito persistido en <code>localStorage</code> con timestamp; expira automáticamente a las 24 horas</li>
+      <li>Aplicación de códigos promocionales con descuento porcentual validado contra la BD</li>
+      <li>Visualización en modal del carrito: items, cantidades, subtotal, descuento aplicado y total</li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>2. Formulario de checkout</h4>
+    <ul>
+      <li>Requiere usuario autenticado con email verificado (se valida antes de abrir el formulario)</li>
+      <li>Prefill automático de nombre, email, dirección y teléfono desde el perfil del usuario actual</li>
+      <li><strong>Campos del formulario:</strong> nombre completo, email, dirección línea 1 y 2, departamento (dropdown dinámico con 33 departamentos de Colombia), ciudad (se carga según departamento), código postal, cédula, teléfono</li>
+      <li>Cálculo de costo de envío por ciudad (endpoint <code>GET /shipping/quote?city=...</code>)</li>
+      <li>Aplicación opcional de tarjeta de regalo con validación de saldo</li>
+      <li>Aceptación obligatoria de Términos y Condiciones para habilitar el botón de pago</li>
+      <li>Reset completo de todos los datos sensibles (pago, tarjeta, método) al abrir el formulario — previene filtración entre sesiones</li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>3. Selección de método de pago</h4>
+    <ul>
+      <li><strong>Tarjeta crédito/débito:</strong> campos de número, expiración y CVV con validación vía patrón Strategy</li>
+      <li><strong>Mercado Pago:</strong> inicialización del Payment Brick embebido con el monto aproximado del pedido; el Brick maneja la UI de captura de datos de tarjeta de forma PCI-compliant</li>
+      <li><strong>PayPal, PSE, Contraentrega:</strong> validación básica según cada estrategia</li>
+      <li>Al seleccionar Mercado Pago, se oculta el botón de submit estándar; el Payment Brick tiene su propio botón de pago</li>
+      <li>Al cambiar de método, se destruye el Brick anterior y se restaura el botón estándar</li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>4. Procesamiento de pago con Mercado Pago</h4>
+    <ul>
+      <li><strong>Frontend:</strong> el Payment Brick tokeniza los datos de tarjeta (PCI-compliant, nunca tocan nuestro código)</li>
+      <li>Callback <code>onSubmit</code>: lee campos del formulario de envío, valida completitud, construye payload con token + datos de pedido</li>
+      <li>Mapeo de campos <code>snake_case</code> del Brick (<code>issuer_id</code>, <code>payment_method_id</code>) a <code>camelCase</code> del backend</li>
+      <li><strong>Backend <code>POST /payments/process</code>:</strong>
+        <ul>
+          <li>Valida usuario verificado, dirección, teléfono, ciudad, items no vacíos</li>
+          <li>Consulta productos en BD y valida stock de cada item/variante</li>
+          <li>Calcula subtotal sumando precio × cantidad de cada item</li>
+          <li>Aplica promociones (descuento porcentual), calcula envío por tarifa de ciudad, aplica gift cards</li>
+          <li>Crea la orden en MongoDB con estado <code>pendiente_pago</code></li>
+          <li>Llama a la API de Mercado Pago con el token de tarjeta para crear el pago</li>
+          <li>Modo sandbox disponible (<code>MP_SANDBOX=true</code>) para simulación en entorno de desarrollo</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>5. Confirmación y post-procesamiento</h4>
+    <ul>
+      <li><strong>Si pago aprobado:</strong>
+        <ul>
+          <li>Estado del pedido se actualiza a <code>confirmado</code></li>
+          <li>Se decrementa stock de cada producto/variante en la base de datos</li>
+          <li>Se registra movimiento de inventario (<code>StockMovement</code>) de tipo "venta"</li>
+          <li>Se envía email de confirmación de pedido al cliente (con detalle de items y dirección)</li>
+          <li>Se envía email con factura detallada</li>
+          <li>Frontend: limpia carrito de <code>localStorage</code>, cierra modal, muestra toast de éxito</li>
+          <li>Se genera y muestra factura en modal con datos completos del pedido</li>
+        </ul>
+      </li>
+      <li><strong>Si pago pendiente o rechazado:</strong>
+        <ul>
+          <li>Se notifica al usuario con mensaje apropiado (pendiente/error)</li>
+          <li>Se limpia carrito y cierra modal de pedido</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>6. Generación de factura</h4>
+    <ul>
+      <li>Número de factura único generado con timestamp (<code>FAC-{timestamp}</code>)</li>
+      <li>Se almacena en la orden (BD) y en <code>localStorage</code> del cliente para acceso offline</li>
+      <li>Renderizado en modal con datos completos: datos del cliente, dirección de envío, tabla de productos, subtotal, descuentos, envío, gift card y total</li>
+      <li>Opción de descarga como PDF profesional generado con jsPDF: encabezado corporativo, tabla de items con filas alternadas, sección de totales, pie de página</li>
+    </ul>
+  </div>
+
+  <div class="process-box">
+    <h4>7. Gestión post-venta del pedido</h4>
+    <ul>
+      <li><strong>Actualización de estado (admin):</strong> confirmado → enviado → entregado, con notificación por email al cliente en cada cambio</li>
+      <li><strong>Tracking:</strong> asignación de número de guía y transportadora; registro de eventos de envío con fecha, estado y notas</li>
+      <li><strong>Notificaciones automáticas:</strong> email al cambiar estado del pedido y al registrar eventos de tracking</li>
+      <li><strong>Historial de compras:</strong> el cliente consulta sus pedidos con detalle completo, puede ver factura y rastrear envío con línea de tiempo visual</li>
+      <li><strong>Devoluciones:</strong> solicitud dentro de 30 días posteriores a la entrega; flujo completo: solicitud → aprobación/rechazo → envío del cliente → recepción en bodega → revisión de calidad → generación de cupón (si apta); con notificaciones por email en cada etapa</li>
+    </ul>
+  </div>
+
+</div><!-- /container -->
+
+</body>
+</html>

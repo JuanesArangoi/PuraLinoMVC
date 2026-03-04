@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PuraLino — Plan de Gestión de Calidad</title>
+  <style>
+    @media print {
+      body { font-size: 10.5px; }
+      .page-break { page-break-before: always; }
+      h1, h2, h3 { page-break-after: avoid; }
+      table { page-break-inside: avoid; }
+      .no-print { display: none; }
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7;
+      color: #2c2c2c;
+      background: #f8f7f5;
+    }
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 48px 56px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    }
+    /* Cover */
+    .cover {
+      text-align: center;
+      padding: 50px 0 36px;
+      border-bottom: 3px solid #8b7355;
+      margin-bottom: 36px;
+    }
+    .cover h1 { font-size: 32px; color: #8b7355; letter-spacing: 4px; margin-bottom: 8px; }
+    .cover .subtitle { font-size: 13px; color: #999; letter-spacing: 2px; text-transform: uppercase; }
+    .cover .doc-title { font-size: 22px; color: #333; margin-top: 24px; font-weight: 600; }
+    .cover .doc-info { margin-top: 18px; font-size: 13px; color: #888; line-height: 2; }
+    /* Headings */
+    h2 { font-size: 19px; color: #8b7355; border-bottom: 2px solid #e8e0d4; padding-bottom: 8px; margin: 32px 0 16px; }
+    h3 { font-size: 15px; color: #555; margin: 22px 0 10px; padding-left: 12px; border-left: 4px solid #8b7355; }
+    h4 { font-size: 13.5px; color: #6b5b45; margin: 16px 0 8px; font-weight: 600; }
+    p { margin: 7px 0; color: #444; font-size: 13px; }
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 12px; }
+    thead th { background: #8b7355; color: #fff; padding: 9px 10px; text-align: left; font-weight: 600; font-size: 11.5px; letter-spacing: 0.3px; }
+    tbody td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+    tbody tr:nth-child(even) { background: #faf9f7; }
+    tbody tr:hover { background: #f5f0ea; }
+    code { background: #f5f0ea; padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 11px; color: #8b5e3c; }
+    ul, ol { margin: 8px 0 8px 22px; font-size: 13px; color: #444; }
+    li { margin-bottom: 4px; }
+    .box { background: #faf9f7; border: 1px solid #e8e0d4; border-radius: 8px; padding: 14px 18px; margin: 12px 0; }
+    .box h4 { margin-top: 0; color: #8b7355; border-bottom: 1px solid #e8e0d4; padding-bottom: 5px; margin-bottom: 6px; }
+    .tag-yes { background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .tag-no { background: #f0f0f0; color: #888; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+    /* RNF card */
+    .rnf-card { border: 1px solid #e8e0d4; border-radius: 8px; overflow: hidden; margin: 14px 0; }
+    .rnf-card table { margin: 0; }
+    .rnf-card thead th { background: #6b5b45; }
+    .rnf-card tbody td:first-child { font-weight: 600; width: 28%; background: #faf9f7; color: #6b5b45; }
+    /* TOC */
+    .toc { background: #faf9f7; border: 1px solid #e8e0d4; border-radius: 8px; padding: 18px 24px; margin: 18px 0 28px; }
+    .toc h3 { border: none; padding: 0; margin: 0 0 10px; color: #8b7355; }
+    .toc ol { margin-left: 18px; }
+    .toc li { margin-bottom: 3px; font-size: 13px; }
+    .toc a { color: #8b7355; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .print-btn { position: fixed; bottom: 24px; right: 24px; background: #8b7355; color: #fff; border: none; padding: 14px 28px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 16px rgba(139,115,85,0.4); z-index: 999; }
+    .print-btn:hover { background: #74604a; }
+  </style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">📄 Guardar como PDF</button>
+
+<div class="container">
+
+  <!-- ══════════ COVER ══════════ -->
+  <div class="cover">
+    <h1>PURA LINO</h1>
+    <div class="subtitle">Lino Puro, Comodidad Pura</div>
+    <div class="doc-title">Plan de Gestión de Calidad del Software</div>
+    <div class="doc-info">
+      <strong>Proyecto:</strong> PuraLino E-Commerce<br>
+      <strong>Versión:</strong> 1.0<br>
+      <strong>Fecha:</strong> Febrero 2026<br>
+      <strong>Procesos evaluados:</strong> Login y Autenticación · Proceso de Pedido<br>
+      <strong>Estándar de referencia:</strong> ISO/IEC 25010:2023
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Tabla de Contenido</h3>
+    <ol>
+      <li><a href="#s1">Plan de Gestión de Calidad</a></li>
+      <li><a href="#s2">Calidad del Software</a></li>
+      <li><a href="#s3">Factores de Calidad del Software (ISO 25010)</a></li>
+      <li><a href="#s4">Métricas para la Calidad de un Proceso</a></li>
+      <li><a href="#s5">Creación de Métricas para Calidad</a></li>
+      <li><a href="#s6">Modelos y Estándares Aplicables</a></li>
+      <li><a href="#s7">Administración de la Calidad</a></li>
+      <li><a href="#s8">Características de la Administración de Calidad</a></li>
+      <li><a href="#s9">Atributos de Calidad</a></li>
+      <li><a href="#s10">Atributos Referenciados en la ISO 25010</a></li>
+      <li><a href="#s11">Requisitos No Funcionales del Sistema</a></li>
+    </ol>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 1 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <h2 id="s1">1. Plan de Gestión de Calidad</h2>
+
+  <p>El presente plan establece las directrices, métricas y mecanismos de control de calidad para los dos procesos principales del sistema PuraLino E-Commerce:</p>
+
+  <div class="box">
+    <h4>Proceso 1: Login y Autenticación de Usuarios</h4>
+    <p>Abarca el registro de nuevos usuarios con validación de datos, verificación de correo electrónico mediante token criptográfico, inicio de sesión por usuario o email con contraseña hasheada (bcrypt), emisión y verificación de tokens JWT, gestión de sesión con timeout por inactividad, recuperación de contraseña y control de acceso basado en roles (cliente/administrador). El objetivo de calidad es garantizar que la autenticación sea segura, confiable y con experiencia de usuario fluida, protegiendo los datos sensibles en todo momento.</p>
+  </div>
+
+  <div class="box">
+    <h4>Proceso 2: Proceso de Pedido</h4>
+    <p>Comprende la gestión del carrito de compras con persistencia y expiración, formulario de checkout con datos de envío geográficos de Colombia, cálculo de costos de envío, aplicación de promociones y tarjetas de regalo, selección y procesamiento de pago (integrado con Mercado Pago Payment Brick), generación de factura con descarga PDF, decrementación automática de inventario, envío de correos de confirmación y gestión post-venta (tracking, actualizaciones de estado, devoluciones). El objetivo de calidad es asegurar que el flujo completo de compra sea correcto, seguro en el manejo de datos de pago, confiable bajo diferentes condiciones de red y con una experiencia intuitiva para el usuario final.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 2 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <h2 id="s2">2. Calidad del Software</h2>
+
+  <p>En el contexto de PuraLino, <strong>calidad</strong> significa que el software cumple de manera verificable con las expectativas de tres grupos de interés:</p>
+
+  <div class="box">
+    <h4>Clientes (compradores)</h4>
+    <p>Esperan un proceso de registro e inicio de sesión rápido, seguro y sin fricciones. Necesitan que sus datos personales y financieros estén protegidos. Requieren un flujo de compra claro, donde puedan navegar productos, agregar al carrito, calcular envío, pagar con tarjeta de forma segura (sin exponer datos de tarjeta) y recibir confirmación inmediata por email con su factura.</p>
+  </div>
+
+  <div class="box">
+    <h4>Usuarios administradores</h4>
+    <p>Necesitan gestionar productos, inventario, pedidos, devoluciones y usuarios desde un panel confiable. Requieren que los estados de los pedidos se actualicen correctamente, que las notificaciones se envíen al cliente y que los datos sean consistentes entre los diferentes módulos del sistema.</p>
+  </div>
+
+  <div class="box">
+    <h4>Procesos de negocio</h4>
+    <p>El sistema debe soportar el flujo completo de venta en línea: desde la captación del usuario (registro + verificación) hasta la entrega del producto (tracking + confirmación). La calidad se mide en la capacidad del software de ejecutar estos procesos de manera correcta, manteniendo la integridad del inventario, la seguridad de los pagos y la trazabilidad de cada transacción. Un fallo en el proceso de login impide ventas; un fallo en el proceso de pedido genera pérdidas económicas y de confianza.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 3 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="s3">3. Factores de Calidad del Software (ISO 25010)</h2>
+
+  <p>Se seleccionaron <strong>5 factores de calidad</strong> de la ISO/IEC 25010:2023 aplicados directamente a los procesos de Login y Pedido:</p>
+
+  <table>
+    <thead>
+      <tr><th style="width:5%">#</th><th style="width:22%">Factor ISO 25010</th><th style="width:36%">Aplicación en Login y Autenticación</th><th style="width:37%">Aplicación en Proceso de Pedido</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td><strong>Seguridad</strong><br><em>(Security)</em></td>
+        <td>Contraseñas hasheadas con bcrypt (10 salt rounds); tokens JWT con expiración de 2h; tokens criptográficos para verificación de email y reset; middleware <code>authRequired</code> y <code>adminOnly</code>; timeout de sesión por inactividad; limpieza de datos sensibles del DOM al cerrar sesión; no se revela existencia de emails en recuperación de contraseña</td>
+        <td>Tokenización PCI-compliant de datos de tarjeta mediante Mercado Pago Payment Brick (los datos de tarjeta nunca tocan nuestro servidor); limpieza completa de datos de pago al abrir checkout y al cerrar sesión; validación de usuario verificado antes de permitir pagos; validación de stock en backend para prevenir manipulación</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td><strong>Adecuación Funcional</strong><br><em>(Functional Suitability)</em></td>
+        <td>Registro completo con 6 validaciones (frontend + backend); login por username o email; verificación de email con token de 24h; recuperación de contraseña con token de 1h; reenvío de verificación; restauración automática de sesión al recargar</td>
+        <td>Flujo completo de compra: carrito → checkout → pago → confirmación; cálculo de envío por ciudad colombiana; aplicación de promociones y gift cards; generación de factura con descarga PDF; decrementación automática de inventario; 10 tipos de emails transaccionales; gestión post-venta (tracking, devoluciones)</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td><strong>Fiabilidad</strong><br><em>(Reliability)</em></td>
+        <td>Recuperación de sesión ante errores de red (usa caché local del usuario); manejo de tokens expirados con logout graceful; validación doble (frontend + backend) para evitar datos corruptos; Service Worker para disponibilidad offline de assets</td>
+        <td>Carrito persistido en <code>localStorage</code> con timestamp y expiración automática (24h); guard contra doble submit en formulario de pedido; manejo de errores en pago (promise reject) con mensajes claros; modo sandbox para pruebas sin afectar producción; stock validado en backend antes de decrementar</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td><strong>Capacidad de Interacción</strong><br><em>(Interaction Capability)</em></td>
+        <td>Mensajes de error específicos por tipo de fallo; notificaciones toast para feedback inmediato; modal de accesibilidad (tamaño de fuente, contraste, cursor grande, resaltado de enlaces); diseño responsive; aviso visual antes de expiración de sesión</td>
+        <td>Prefill automático de datos del usuario; dropdowns dinámicos de departamento/ciudad; cotización de envío en tiempo real; indicador de procesamiento en botón de pago; formulario de Mercado Pago embebido con UX nativa; factura visual con opción de descarga PDF; toast de confirmación/error</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td><strong>Mantenibilidad</strong><br><em>(Maintainability)</em></td>
+        <td>Patrón MVC con separación clara: <code>AppModel</code> (estado/auth), <code>AppView</code> (DOM), <code>AppController</code> (lógica); middleware de auth reutilizable (<code>authRequired</code>, <code>adminOnly</code>); bus de eventos Observer para desacoplamiento</td>
+        <td>Patrón Strategy para métodos de pago y descuentos (extensible sin modificar código existente); rutas backend modulares (un archivo por recurso); modelos Mongoose con schemas tipados; Service Worker versionado para actualizaciones controladas; cliente API centralizado</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 4 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="s4">4. Métricas para la Calidad de un Proceso</h2>
+
+  <h3>4.1 Proceso: Login y Autenticación de Usuarios</h3>
+
+  <h4>Métricas a nivel de negocio</h4>
+  <table>
+    <thead>
+      <tr><th>Nombre de la Métrica</th><th>Descripción</th><th>Fórmula / Unidad</th><th>Fuente de Datos</th><th>Frecuencia</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tasa de registro exitoso</strong></td>
+        <td>Porcentaje de intentos de registro que resultan en un usuario creado</td>
+        <td>(Registros exitosos / Intentos totales) × 100 — %</td>
+        <td>Logs del backend <code>POST /auth/register</code> (200 vs 400)</td>
+        <td>Semanal</td>
+      </tr>
+      <tr>
+        <td><strong>Tasa de verificación de email</strong></td>
+        <td>Porcentaje de usuarios registrados que verifican su correo dentro de las 24h</td>
+        <td>(Usuarios con emailVerified=true / Registros totales) × 100 — %</td>
+        <td>Consulta MongoDB: <code>User.countDocuments({ emailVerified: true })</code></td>
+        <td>Semanal</td>
+      </tr>
+      <tr>
+        <td><strong>Tasa de recuperación de contraseña</strong></td>
+        <td>Porcentaje de solicitudes de reset que terminan en contraseña restablecida</td>
+        <td>(Resets completados / Solicitudes de reset) × 100 — %</td>
+        <td>Logs del backend <code>POST /auth/forgot-password</code> y <code>POST /auth/reset-password</code></td>
+        <td>Mensual</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Métricas a nivel de aplicación</h4>
+  <table>
+    <thead>
+      <tr><th>Nombre de la Métrica</th><th>Descripción</th><th>Fórmula / Unidad</th><th>Fuente de Datos</th><th>Frecuencia</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tiempo de respuesta del login</strong></td>
+        <td>Tiempo que tarda el servidor en responder al endpoint de login</td>
+        <td>Promedio en milisegundos (ms)</td>
+        <td>Render Dashboard → Logs de respuesta HTTP; <code>console.time</code> en backend</td>
+        <td>Diaria</td>
+      </tr>
+      <tr>
+        <td><strong>Tasa de errores de autenticación</strong></td>
+        <td>Porcentaje de requests al endpoint de login que retornan 401</td>
+        <td>(Respuestas 401 / Total requests login) × 100 — %</td>
+        <td>Logs del backend (Render Dashboard)</td>
+        <td>Diaria</td>
+      </tr>
+      <tr>
+        <td><strong>Cobertura de validación de entrada</strong></td>
+        <td>Cantidad de campos del formulario de registro que se validan tanto en frontend como backend</td>
+        <td>(Campos con doble validación / Campos totales) × 100 — %</td>
+        <td>Revisión de código: <code>auth.js</code> (backend) vs <code>appController.js</code> (frontend)</td>
+        <td>Por release</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 Proceso: Proceso de Pedido</h3>
+
+  <h4>Métricas a nivel de negocio</h4>
+  <table>
+    <thead>
+      <tr><th>Nombre de la Métrica</th><th>Descripción</th><th>Fórmula / Unidad</th><th>Fuente de Datos</th><th>Frecuencia</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tasa de conversión carrito → pedido</strong></td>
+        <td>Porcentaje de usuarios que abren el checkout y completan un pedido</td>
+        <td>(Pedidos completados / Checkouts abiertos) × 100 — %</td>
+        <td>Logs frontend (<code>console.log</code> en checkoutBtn) y colección <code>orders</code> en MongoDB</td>
+        <td>Semanal</td>
+      </tr>
+      <tr>
+        <td><strong>Tasa de pagos aprobados</strong></td>
+        <td>Porcentaje de intentos de pago con Mercado Pago que resultan en estado "approved"</td>
+        <td>(Pagos approved / Intentos de pago) × 100 — %</td>
+        <td>Colección <code>orders</code>: <code>Order.countDocuments({ mpStatus: 'approved' })</code>; Panel de Mercado Pago</td>
+        <td>Semanal</td>
+      </tr>
+      <tr>
+        <td><strong>Valor promedio del pedido</strong></td>
+        <td>Monto promedio de los pedidos confirmados</td>
+        <td>Σ(total de pedidos) / Cantidad de pedidos — COP</td>
+        <td>MongoDB aggregation: <code>Order.aggregate([{$group:{_id:null, avg:{$avg:"$total"}}}])</code></td>
+        <td>Mensual</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Métricas a nivel de aplicación</h4>
+  <table>
+    <thead>
+      <tr><th>Nombre de la Métrica</th><th>Descripción</th><th>Fórmula / Unidad</th><th>Fuente de Datos</th><th>Frecuencia</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tiempo de procesamiento de pago</strong></td>
+        <td>Tiempo desde que el frontend envía el payload hasta que recibe respuesta del backend</td>
+        <td>Promedio en milisegundos (ms)</td>
+        <td><code>console.time</code> en <code>onSubmit</code> del Payment Brick; logs de Render</td>
+        <td>Diaria</td>
+      </tr>
+      <tr>
+        <td><strong>Tasa de errores en flujo de pago</strong></td>
+        <td>Porcentaje de requests a <code>/payments/process</code> que retornan error (4xx/5xx)</td>
+        <td>(Respuestas error / Total requests) × 100 — %</td>
+        <td>Logs del backend (Render Dashboard)</td>
+        <td>Diaria</td>
+      </tr>
+      <tr>
+        <td><strong>Integridad de stock post-pedido</strong></td>
+        <td>Verificar que el stock se decrementó correctamente tras cada pedido</td>
+        <td>(Pedidos con stock correcto / Total pedidos) × 100 — %</td>
+        <td>Colección <code>stockMovements</code> cruzada con <code>orders</code> en MongoDB</td>
+        <td>Semanal</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 5 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="s5">5. Creación de Métricas para Calidad</h2>
+
+  <h3>5.1 Proceso: Login y Autenticación de Usuarios</h3>
+  <table>
+    <thead>
+      <tr><th>Nombre de la Métrica</th><th>Proceso Asociado</th><th>Descripción del Indicador</th><th>Fórmula / Criterio de Medición</th><th>Interpretación Esperada</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tasa de autenticación exitosa</strong></td>
+        <td>Login</td>
+        <td>Porcentaje de intentos de login que retornan un token JWT válido</td>
+        <td>(Logins con respuesta 200 / Total requests a <code>/auth/login</code>) × 100</td>
+        <td>≥ 85% indica que los usuarios recuerdan sus credenciales; &lt; 70% sugiere problemas de UX en registro o necesidad de mejorar mensajes de error</td>
+      </tr>
+      <tr>
+        <td><strong>Latencia de autenticación</strong></td>
+        <td>Login</td>
+        <td>Tiempo promedio de respuesta del endpoint de login, incluyendo consulta a BD y comparación bcrypt</td>
+        <td>Promedio de <code>response_time</code> de <code>POST /auth/login</code> en ms</td>
+        <td>≤ 500ms es aceptable; &gt; 1000ms indica posible problema de rendimiento en la BD o en el hashing de contraseña</td>
+      </tr>
+      <tr>
+        <td><strong>Efectividad de verificación de email</strong></td>
+        <td>Registro / Verificación</td>
+        <td>Porcentaje de usuarios que completan la verificación de email dentro de las primeras 24 horas</td>
+        <td>(Users con <code>emailVerified=true</code> en &lt;24h / Registros totales) × 100</td>
+        <td>≥ 70% es saludable; &lt; 50% sugiere problemas de entrega de email (revisar Brevo) o UX del correo de verificación</td>
+      </tr>
+      <tr>
+        <td><strong>Resistencia a accesos no autorizados</strong></td>
+        <td>Autorización</td>
+        <td>Cantidad de requests rechazados por middleware <code>authRequired</code> con token inválido o expirado</td>
+        <td>Count de respuestas 401 en endpoints protegidos / Total requests protegidos × 100</td>
+        <td>&lt; 5% indica uso normal (tokens expirados naturalmente); &gt; 15% podría indicar intentos de acceso malicioso o problemas con renovación de token</td>
+      </tr>
+      <tr>
+        <td><strong>Completitud de limpieza de sesión</strong></td>
+        <td>Logout / Seguridad</td>
+        <td>Verificar que al cerrar sesión se eliminan todos los datos sensibles del DOM y localStorage</td>
+        <td>Checklist: token eliminado + localStorage limpio + campos de formulario vacíos + MP Brick destruido (4/4 = 100%)</td>
+        <td>100% obligatorio; cualquier valor menor representa una vulnerabilidad de seguridad que debe corregirse inmediatamente</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 Proceso: Proceso de Pedido</h3>
+  <table>
+    <thead>
+      <tr><th>Nombre de la Métrica</th><th>Proceso Asociado</th><th>Descripción del Indicador</th><th>Fórmula / Criterio de Medición</th><th>Interpretación Esperada</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tasa de pedidos completados sin error</strong></td>
+        <td>Checkout / Pago</td>
+        <td>Porcentaje de intentos de pago que resultan en un pedido confirmado sin errores técnicos</td>
+        <td>(Pedidos con status 'confirmado' / Total intentos en <code>/payments/process</code>) × 100</td>
+        <td>≥ 90% es excelente; &lt; 75% indica problemas en validación de datos, stock o comunicación con Mercado Pago</td>
+      </tr>
+      <tr>
+        <td><strong>Tiempo de procesamiento end-to-end</strong></td>
+        <td>Pago</td>
+        <td>Tiempo total desde que el usuario presiona "Pagar" hasta que recibe confirmación visual</td>
+        <td>Diferencia entre timestamp de <code>onSubmit</code> y timestamp de respuesta (ms)</td>
+        <td>≤ 3000ms es aceptable; &gt; 5000ms degrada la experiencia y aumenta abandono</td>
+      </tr>
+      <tr>
+        <td><strong>Integridad de inventario</strong></td>
+        <td>Post-pedido</td>
+        <td>Verificar que por cada pedido confirmado se generaron los StockMovements correspondientes y el stock del producto disminuyó correctamente</td>
+        <td>(Pedidos con movimientos de stock correctos / Total pedidos confirmados) × 100</td>
+        <td>100% obligatorio; &lt; 100% indica un bug crítico en la lógica de decrementación de stock</td>
+      </tr>
+      <tr>
+        <td><strong>Tasa de entrega de emails de confirmación</strong></td>
+        <td>Post-pedido</td>
+        <td>Porcentaje de pedidos confirmados que generaron un email de confirmación enviado exitosamente</td>
+        <td>(Emails enviados OK vía Brevo / Pedidos confirmados) × 100</td>
+        <td>≥ 95% es aceptable; &lt; 90% requiere revisar configuración de Brevo o dominio de envío</td>
+      </tr>
+      <tr>
+        <td><strong>Seguridad en manejo de datos de pago</strong></td>
+        <td>Pago / Seguridad</td>
+        <td>Verificar que los datos de tarjeta nunca se almacenan ni transitan por nuestro servidor (solo tokens)</td>
+        <td>Auditoría de código: 0 campos de tarjeta en logs, BD o payloads del backend (0 = cumple)</td>
+        <td>0 obligatorio; cualquier dato de tarjeta encontrado en logs o BD es una violación PCI crítica</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 6 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="s6">6. Modelos y Estándares Aplicables</h2>
+
+  <h3>ISO/IEC 25010:2023 — Modelos de Calidad de Producto de Software</h3>
+
+  <p>El estándar <strong>ISO/IEC 25010:2023</strong> define 9 características de calidad del producto de software. Para PuraLino se seleccionaron 5 de estas características como pilares del aseguramiento de calidad.</p>
+
+  <p><strong>Contribución al proyecto:</strong></p>
+  <ul>
+    <li><strong>Marco de evaluación estructurado:</strong> ISO 25010 proporciona un vocabulario y una taxonomía compartidos para definir, medir y comunicar la calidad del software entre el equipo de desarrollo.</li>
+    <li><strong>Trazabilidad de requisitos:</strong> Cada requisito no funcional del sistema se vincula directamente a una característica ISO 25010, asegurando que ningún aspecto de calidad quede sin cobertura.</li>
+    <li><strong>Métricas medibles:</strong> Las subcaracterísticas del estándar guían la definición de métricas concretas y verificables (secciones 4 y 5), evitando criterios subjetivos de calidad.</li>
+    <li><strong>Mejora continua:</strong> Al evaluar periódicamente las métricas contra los umbrales definidos, el equipo puede identificar áreas de mejora y priorizar esfuerzos de desarrollo.</li>
+  </ul>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 7 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <h2 id="s7">7. Administración de la Calidad</h2>
+
+  <p>La calidad se gestiona durante el ciclo de desarrollo mediante las siguientes actividades:</p>
+
+  <table>
+    <thead>
+      <tr><th style="width:22%">Actividad</th><th>Descripción</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Revisiones de código</strong></td>
+        <td>Cada cambio se revisa antes de ser integrado a la rama principal. Se verifica que siga los patrones establecidos (MVC, Observer, Strategy) y que incluya validaciones tanto en frontend como en backend.</td>
+      </tr>
+      <tr>
+        <td><strong>Pruebas funcionales</strong></td>
+        <td>Se ejecutan pruebas manuales del flujo completo de login (registro → verificación → login → logout) y pedido (carrito → checkout → pago → confirmación) en cada release, usando el entorno sandbox de Mercado Pago con tarjetas de prueba.</td>
+      </tr>
+      <tr>
+        <td><strong>Auditorías de seguridad</strong></td>
+        <td>Se verifica periódicamente que: no se almacenan datos de tarjeta, los tokens JWT expiran correctamente, las contraseñas están hasheadas, los datos sensibles se limpian al cerrar sesión, y el middleware de autorización protege las rutas correctas.</td>
+      </tr>
+      <tr>
+        <td><strong>Control de versiones</strong></td>
+        <td>Se utiliza Git con repositorios separados para frontend (<code>PuraLinoMVC</code>) y backend (<code>PuraLinoMVC-api</code>). Cada cambio se documenta con commits descriptivos. El Service Worker usa versionamiento de caché (<code>puralino-cache-v15</code>) para controlar actualizaciones del frontend.</td>
+      </tr>
+      <tr>
+        <td><strong>Monitoreo en producción</strong></td>
+        <td>Se utilizan los logs de Render Dashboard para monitorear errores HTTP, tiempos de respuesta y disponibilidad del API. Los <code>console.log</code> estratégicos en el backend permiten rastrear el flujo de pagos y autenticación.</td>
+      </tr>
+      <tr>
+        <td><strong>Mejora continua</strong></td>
+        <td>Los errores reportados por usuarios y detectados en logs se documentan, se diagnostica la causa raíz y se implementa la corrección mínima necesaria. Ejemplo reciente: se detectó que datos de pago persistían entre sesiones de usuarios, se implementó limpieza completa en logout y apertura de checkout.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 8 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <h2 id="s8">8. Características de la Administración de Calidad</h2>
+
+  <table>
+    <thead>
+      <tr><th style="width:24%">Característica</th><th>Aplicación en PuraLino</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Enfoque al cliente</strong></td>
+        <td>El diseño del sistema prioriza la experiencia del usuario final: formularios con prefill automático, mensajes de error específicos en español, modal de accesibilidad configurable (fuente, contraste, cursor), notificaciones toast inmediatas, y emails transaccionales con diseño corporativo. Cada decisión de UX se basa en reducir fricciones para el comprador.</td>
+      </tr>
+      <tr>
+        <td><strong>Mejora continua</strong></td>
+        <td>El sistema evoluciona iterativamente: se detectó y corrigió la persistencia de datos de pago entre sesiones, se migró de tokenización manual a Payment Brick para cumplimiento PCI, se agregó timeout de sesión por inactividad, y se implementó doble validación (frontend + backend) en todos los formularios. Cada bug reportado se aborda con corrección de causa raíz.</td>
+      </tr>
+      <tr>
+        <td><strong>Liderazgo de calidad</strong></td>
+        <td>Las decisiones arquitectónicas (MVC, Observer, Strategy, middleware por capas) establecen estándares de código que todo el proyecto sigue. La separación clara de responsabilidades facilita la identificación y corrección de defectos. Los patrones de diseño actúan como guías de calidad para nuevas funcionalidades.</td>
+      </tr>
+      <tr>
+        <td><strong>Toma de decisiones basada en evidencia</strong></td>
+        <td>Los logs del backend, el panel de Mercado Pago, las consultas a MongoDB y los logs de Render proveen datos reales para evaluar la calidad. Las métricas definidas en este plan se basan en fuentes de datos verificables, no en percepciones subjetivas.</td>
+      </tr>
+      <tr>
+        <td><strong>Gestión de relaciones</strong></td>
+        <td>La integración con servicios externos (Mercado Pago, Brevo, Cloudinary) se gestiona mediante variables de entorno y modos de operación (sandbox/producción), permitiendo probar de forma aislada sin afectar el entorno productivo ni la experiencia del usuario final.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 9 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="s9">9. Atributos de Calidad</h2>
+
+  <p>Los siguientes 5 atributos de calidad se consideraron y aplicaron en los procesos de Login y Pedido:</p>
+
+  <div class="box">
+    <h4>1. Confidencialidad</h4>
+    <p><strong>Importancia:</strong> Los procesos de login y pedido manejan datos altamente sensibles (contraseñas, datos de tarjeta, información personal). Cualquier filtración compromete la confianza del usuario y la viabilidad del negocio.</p>
+    <p><strong>Implementación:</strong> Contraseñas hasheadas con bcrypt (nunca almacenadas en texto plano); datos de tarjeta tokenizados por MP Payment Brick (nunca tocan nuestro servidor); JWT como mecanismo stateless que no expone datos en cookies; limpieza de formularios y localStorage al cerrar sesión; variables de entorno para credenciales de servicios externos.</p>
+  </div>
+
+  <div class="box">
+    <h4>2. Integridad</h4>
+    <p><strong>Importancia:</strong> En el proceso de pedido, es crítico que los totales calculados, el stock decrementado y los estados de los pedidos sean correctos y no puedan ser manipulados por el usuario.</p>
+    <p><strong>Implementación:</strong> Cálculo de totales siempre en el backend (no se confía en montos enviados por el frontend); validación de stock en servidor antes de decrementar; registro de movimientos de inventario (StockMovement) para auditoría; doble validación de campos obligatorios (frontend + backend); tokens criptográficos firmados (JWT) que no pueden ser alterados.</p>
+  </div>
+
+  <div class="box">
+    <h4>3. Disponibilidad</h4>
+    <p><strong>Importancia:</strong> Si el sistema de login o de pedido no está disponible, el negocio pierde ventas directamente. Los usuarios esperan poder comprar en cualquier momento.</p>
+    <p><strong>Implementación:</strong> Service Worker con caché de assets para carga offline; restauración de sesión desde caché local ante errores de red; carrito persistido en localStorage con expiración; despliegue en Render con auto-restart; manejo graceful de errores con mensajes claros al usuario en lugar de pantallas en blanco.</p>
+  </div>
+
+  <div class="box">
+    <h4>4. Usabilidad</h4>
+    <p><strong>Importancia:</strong> Un flujo de login o compra confuso genera abandono. En e-commerce, cada paso adicional o error no comunicado reduce la conversión.</p>
+    <p><strong>Implementación:</strong> Login flexible (usuario o email); prefill automático de datos en checkout; dropdowns geográficos dinámicos (departamento → ciudad); cotización de envío en tiempo real; Payment Brick embebido con UX nativa de Mercado Pago; mensajes de validación específicos en español; modal de accesibilidad configurable; descarga de factura como PDF.</p>
+  </div>
+
+  <div class="box">
+    <h4>5. Modularidad</h4>
+    <p><strong>Importancia:</strong> La capacidad de modificar un componente sin afectar otros es esencial para la evolución del sistema. Agregar nuevos métodos de pago o cambiar el servicio de email no debe requerir reescribir el flujo de pedido.</p>
+    <p><strong>Implementación:</strong> Patrón MVC con tres capas independientes; patrón Strategy para pagos (agregar nuevo método = agregar nueva estrategia); patrón Observer para comunicación por eventos; rutas backend modulares (un archivo por recurso REST); middleware de auth reutilizable y composable; servicio de email independiente del flujo de pedido (fire-and-forget).</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 10 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="s10">10. Atributos Referenciados en la ISO 25010</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:18%">Característica ISO 25010</th>
+        <th style="width:24%">Subcaracterísticas</th>
+        <th style="width:10%">Aplicable</th>
+        <th style="width:48%">Justificación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Adecuación Funcional</strong></td>
+        <td>Completitud funcional, Corrección funcional, Pertinencia funcional</td>
+        <td><span class="tag-yes">SÍ</span></td>
+        <td>Ambos procesos implementan todas las funcionalidades requeridas: el login cubre registro, verificación, autenticación, recuperación y control de acceso; el pedido cubre carrito, checkout, pago, factura, tracking y devoluciones. Los cálculos de totales y stock son correctos y verificados en backend.</td>
+      </tr>
+      <tr>
+        <td><strong>Eficiencia de Desempeño</strong></td>
+        <td>Comportamiento temporal, Utilización de recursos, Capacidad</td>
+        <td><span class="tag-no">NO</span></td>
+        <td>No se implementaron optimizaciones específicas de rendimiento como caching de consultas, CDN para el API, o pruebas de carga. El rendimiento actual depende de la infraestructura base de Render y MongoDB Atlas.</td>
+      </tr>
+      <tr>
+        <td><strong>Compatibilidad</strong></td>
+        <td>Coexistencia, Interoperabilidad</td>
+        <td><span class="tag-no">NO</span></td>
+        <td>No se realizaron pruebas formales de compatibilidad entre navegadores ni interoperabilidad con otros sistemas. La aplicación usa estándares web modernos (ES Modules, Fetch API) que funcionan en navegadores actuales, pero no hay validación formal.</td>
+      </tr>
+      <tr>
+        <td><strong>Capacidad de Interacción</strong></td>
+        <td>Reconocibilidad, Aprendizaje, Operabilidad, Protección ante errores, Estética, Accesibilidad</td>
+        <td><span class="tag-yes">SÍ</span></td>
+        <td>El sistema incluye: mensajes de error descriptivos en español, notificaciones toast, modal de accesibilidad configurable (tamaño de fuente, contraste, cursor grande, resaltado de enlaces), diseño responsive, prefill automático de datos, dropdowns dinámicos y feedback visual durante el procesamiento de pagos.</td>
+      </tr>
+      <tr>
+        <td><strong>Fiabilidad</strong></td>
+        <td>Madurez, Disponibilidad, Tolerancia a fallos, Recuperabilidad</td>
+        <td><span class="tag-yes">SÍ</span></td>
+        <td>El login recupera sesión desde caché local ante errores de red; el carrito persiste con expiración automática; el Service Worker provee caché offline; el formulario de pedido tiene guard contra doble submit; los errores de pago se manejan con mensajes claros sin perder datos del formulario.</td>
+      </tr>
+      <tr>
+        <td><strong>Seguridad</strong></td>
+        <td>Confidencialidad, Integridad, No repudio, Responsabilidad, Autenticidad</td>
+        <td><span class="tag-yes">SÍ</span></td>
+        <td>Contraseñas con bcrypt; JWT con expiración; tokenización PCI-compliant de tarjetas (Payment Brick); middleware de autorización por capas; timeout de sesión por inactividad; limpieza de datos sensibles en logout; validaciones de integridad de datos en backend; tokens criptográficos para verificación y reset.</td>
+      </tr>
+      <tr>
+        <td><strong>Mantenibilidad</strong></td>
+        <td>Modularidad, Reusabilidad, Analizabilidad, Modificabilidad, Testabilidad</td>
+        <td><span class="tag-yes">SÍ</span></td>
+        <td>Arquitectura MVC con separación clara de capas; patrones Observer y Strategy para extensibilidad; rutas backend modulares (1 archivo por recurso); middleware reutilizable; modelos Mongoose con schemas tipados; Service Worker versionado; cliente API centralizado; código organizado en directorios por responsabilidad.</td>
+      </tr>
+      <tr>
+        <td><strong>Flexibilidad</strong></td>
+        <td>Adaptabilidad, Escalabilidad, Instalabilidad, Reemplazabilidad</td>
+        <td><span class="tag-no">NO</span></td>
+        <td>No se implementaron mecanismos formales de escalabilidad horizontal o adaptación dinámica. El patrón Strategy facilita agregar nuevos métodos de pago, pero no se han realizado pruebas de escalabilidad bajo carga.</td>
+      </tr>
+      <tr>
+        <td><strong>Seguridad de Uso</strong></td>
+        <td>Prevención de riesgos, Mitigación, Protección del usuario</td>
+        <td><span class="tag-no">NO</span></td>
+        <td>No se implementaron mecanismos formales de seguridad de uso como limitación de tasa (rate limiting), captcha, o bloqueo de cuenta por intentos fallidos. Estos son mejoras previstas para futuras iteraciones.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 11 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="s11">11. Requisitos No Funcionales del Sistema</h2>
+
+  <p>Se define <strong>1 requisito no funcional</strong> por cada característica ISO 25010 seleccionada, para cada proceso (5 para Login, 5 para Pedido), alineados con las métricas definidas anteriormente.</p>
+
+  <h3>11.1 Proceso: Login y Autenticación de Usuarios</h3>
+
+  <!-- RNF-L01 -->
+  <div class="rnf-card">
+    <table>
+      <thead><tr><th>ITEM</th><th>DESCRIPCIÓN</th></tr></thead>
+      <tbody>
+        <tr><td>ID</td><td>RNF-L01</td></tr>
+        <tr><td>CATEGORÍA</td><td>Seguridad (ISO 25010)</td></tr>
+        <tr><td>DESCRIPCIÓN DEL REQUISITO</td><td>Las contraseñas de los usuarios deben almacenarse hasheadas con un algoritmo de hashing seguro y los tokens de autenticación deben tener expiración temporal. Al cerrar sesión, todos los datos sensibles deben eliminarse del cliente.</td></tr>
+        <tr><td>MÉTRICA O CRITERIO DE ACEPTACIÓN</td><td>100% de contraseñas almacenadas como hash bcrypt (0 en texto plano); JWT con expiración ≤ 2h; checklist de limpieza de sesión: 4/4 elementos eliminados (token, localStorage, formularios, MP Brick)</td></tr>
+        <tr><td>PRIORIDAD</td><td>Alta</td></tr>
+        <tr><td>COMENTARIOS / JUSTIFICACIÓN</td><td>La seguridad en autenticación es la primera línea de defensa del sistema. Un fallo aquí compromete todos los datos de los usuarios y la integridad del negocio. Se implementó bcrypt con 10 salt rounds, JWT con expiración de 2h, y limpieza completa de datos sensibles del DOM y localStorage al hacer logout.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RNF-L02 -->
+  <div class="rnf-card">
+    <table>
+      <thead><tr><th>ITEM</th><th>DESCRIPCIÓN</th></tr></thead>
+      <tbody>
+        <tr><td>ID</td><td>RNF-L02</td></tr>
+        <tr><td>CATEGORÍA</td><td>Adecuación Funcional (ISO 25010)</td></tr>
+        <tr><td>DESCRIPCIÓN DEL REQUISITO</td><td>El sistema debe permitir el inicio de sesión tanto con nombre de usuario como con correo electrónico, validar las credenciales contra la base de datos y retornar un token de sesión con los datos del usuario.</td></tr>
+        <tr><td>MÉTRICA O CRITERIO DE ACEPTACIÓN</td><td>Tasa de autenticación exitosa ≥ 85%; login funcional con username y con email; respuesta incluye token + datos de usuario (sin passwordHash)</td></tr>
+        <tr><td>PRIORIDAD</td><td>Alta</td></tr>
+        <tr><td>COMENTARIOS / JUSTIFICACIÓN</td><td>Los usuarios pueden registrarse con un username pero recordar solo su email, o viceversa. La flexibilidad de login por ambos campos reduce fricciones y abandono. Implementado con query <code>$or</code> de MongoDB.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RNF-L03 -->
+  <div class="rnf-card">
+    <table>
+      <thead><tr><th>ITEM</th><th>DESCRIPCIÓN</th></tr></thead>
+      <tbody>
+        <tr><td>ID</td><td>RNF-L03</td></tr>
+        <tr><td>CATEGORÍA</td><td>Fiabilidad (ISO 25010)</td></tr>
+        <tr><td>DESCRIPCIÓN DEL REQUISITO</td><td>El sistema debe restaurar la sesión del usuario automáticamente al recargar la página si el token JWT sigue vigente, y mantener la sesión desde caché local en caso de error de red temporal.</td></tr>
+        <tr><td>MÉTRICA O CRITERIO DE ACEPTACIÓN</td><td>Sesión restaurada en ≤ 1s si el token es válido; fallback a caché local en caso de error de red (status 0); logout automático solo ante errores 401/403</td></tr>
+        <tr><td>PRIORIDAD</td><td>Media</td></tr>
+        <tr><td>COMENTARIOS / JUSTIFICACIÓN</td><td>En un entorno PWA, los usuarios pueden abrir la aplicación sin conexión estable. Mantener la sesión con datos en caché hasta que la red se recupere evita frustración y pérdida de estado del carrito. Implementado en <code>AppModel.init()</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RNF-L04 -->
+  <div class="rnf-card">
+    <table>
+      <thead><tr><th>ITEM</th><th>DESCRIPCIÓN</th></tr></thead>
+      <tbody>
+        <tr><td>ID</td><td>RNF-L04</td></tr>
+        <tr><td>CATEGORÍA</td><td>Capacidad de Interacción (ISO 25010)</td></tr>
+        <tr><td>DESCRIPCIÓN DEL REQUISITO</td><td>El formulario de login y registro debe proporcionar mensajes de error específicos por cada tipo de fallo de validación, en idioma español, y mostrar feedback visual inmediato al usuario.</td></tr>
+        <tr><td>MÉTRICA O CRITERIO DE ACEPTACIÓN</td><td>100% de validaciones con mensaje descriptivo en español; feedback vía toast en ≤ 300ms; 6 validaciones específicas en registro (nombre, email, usuario, contraseña longitud/mayúscula/número)</td></tr>
+        <tr><td>PRIORIDAD</td><td>Media</td></tr>
+        <tr><td>COMENTARIOS / JUSTIFICACIÓN</td><td>Mensajes genéricos como "Error" no ayudan al usuario a corregir el problema. Cada validación (frontend y backend) retorna un mensaje específico en español que indica exactamente qué corregir, reduciendo intentos fallidos y abandonos.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RNF-L05 -->
+  <div class="rnf-card">
+    <table>
+      <thead><tr><th>ITEM</th><th>DESCRIPCIÓN</th></tr></thead>
+      <tbody>
+        <tr><td>ID</td><td>RNF-L05</td></tr>
+        <tr><td>CATEGORÍA</td><td>Mantenibilidad (ISO 25010)</td></tr>
+        <tr><td>DESCRIPCIÓN DEL REQUISITO</td><td>La lógica de autenticación y autorización debe estar encapsulada en middleware reutilizable, independiente de las rutas específicas del negocio, facilitando su modificación sin impactar otros módulos.</td></tr>
+        <tr><td>MÉTRICA O CRITERIO DE ACEPTACIÓN</td><td>Middleware <code>authRequired</code> reutilizado en ≥ 10 rutas sin duplicación de código; modificar lógica de auth requiere cambios en ≤ 1 archivo (<code>middleware/auth.js</code>)</td></tr>
+        <tr><td>PRIORIDAD</td><td>Media</td></tr>
+        <tr><td>COMENTARIOS / JUSTIFICACIÓN</td><td>Centralizar la autenticación en un middleware evita duplicar validaciones de JWT en cada ruta. Cualquier cambio en la estrategia de autenticación (e.g., migrar a OAuth) solo requiere modificar <code>auth.js</code>, sin tocar las rutas de negocio.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-break"></div>
+  <h3>11.2 Proceso: Proceso de Pedido</h3>
+
+  <!-- RNF-P01 -->
+  <div class="rnf-card">
+    <table>
+      <thead><tr><th>ITEM</th><th>DESCRIPCIÓN</th></tr></thead>
+      <tbody>
+        <tr><td>ID</td><td>RNF-P01</td></tr>
+        <tr><td>CATEGORÍA</td><td>Seguridad (ISO 25010)</td></tr>
+        <tr><td>DESCRIPCIÓN DEL REQUISITO</td><td>Los datos de tarjeta de crédito/débito no deben ser almacenados, procesados ni transitados por el servidor de la aplicación. La tokenización debe realizarla un tercero PCI-compliant. Los datos de pago deben limpiarse del DOM entre sesiones.</td></tr>
+        <tr><td>MÉTRICA O CRITERIO DE ACEPTACIÓN</td><td>0 campos de tarjeta en logs, base de datos o payloads del backend; tokenización exclusiva vía Mercado Pago Payment Brick; 100% de limpieza de datos de pago al abrir checkout y al cerrar sesión</td></tr>
+        <tr><td>PRIORIDAD</td><td>Alta</td></tr>
+        <tr><td>COMENTARIOS / JUSTIFICACIÓN</td><td>El cumplimiento PCI-DSS se logra delegando la captura de datos de tarjeta al Payment Brick de Mercado Pago, que genera un token. Nuestro backend solo recibe y procesa tokens, nunca datos de tarjeta. Se implementó limpieza completa de formularios al abrir checkout y al cerrar sesión para prevenir filtración entre sesiones.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RNF-P02 -->
+  <div class="rnf-card">
+    <table>
+      <thead><tr><th>ITEM</th><th>DESCRIPCIÓN</th></tr></thead>
+      <tbody>
+        <tr><td>ID</td><td>RNF-P02</td></tr>
+        <tr><td>CATEGORÍA</td><td>Adecuación Funcional (ISO 25010)</td></tr>
+        <tr><td>DESCRIPCIÓN DEL REQUISITO</td><td>El sistema debe ejecutar el flujo completo de pedido: validar stock, calcular totales (subtotal, descuento, envío, gift card), procesar pago, crear orden, decrementar inventario, registrar movimiento de stock y enviar confirmación por email.</td></tr>
+        <tr><td>MÉTRICA O CRITERIO DE ACEPTACIÓN</td><td>Tasa de pedidos completados sin error ≥ 90%; integridad de inventario 100% (todo pedido genera StockMovement); email de confirmación enviado en ≥ 95% de pedidos</td></tr>
+        <tr><td>PRIORIDAD</td><td>Alta</td></tr>
+        <tr><td>COMENTARIOS / JUSTIFICACIÓN</td><td>El proceso de pedido es el flujo de negocio más crítico. Cada paso (validación, cálculo, pago, stock, email) debe completarse correctamente o el sistema debe revertir/notificar. Se implementaron validaciones exhaustivas en backend y registro de movimientos de stock para auditoría.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RNF-P03 -->
+  <div class="rnf-card">
+    <table>
+      <thead><tr><th>ITEM</th><th>DESCRIPCIÓN</th></tr></thead>
+      <tbody>
+        <tr><td>ID</td><td>RNF-P03</td></tr>
+        <tr><td>CATEGORÍA</td><td>Fiabilidad (ISO 25010)</td></tr>
+        <tr><td>DESCRIPCIÓN DEL REQUISITO</td><td>El carrito de compras debe persistir entre recargas de página con una expiración automática de 24 horas. El formulario de pedido debe prevenir envíos duplicados y manejar errores de pago sin perder los datos ingresados.</td></tr>
+        <tr><td>MÉTRICA O CRITERIO DE ACEPTACIÓN</td><td>Carrito persiste tras recarga (100%); expiración automática a las 24h; 0 pedidos duplicados por doble click (guard implementado); datos del formulario preservados tras error de pago</td></tr>
+        <tr><td>PRIORIDAD</td><td>Alta</td></tr>
+        <tr><td>COMENTARIOS / JUSTIFICACIÓN</td><td>Un carrito que se pierde al recargar genera abandono. Un doble submit genera cobros duplicados. Se implementó persistencia en localStorage con timestamp, variable <code>orderSubmitting</code> como guard contra doble click, y el callback <code>onSubmit</code> del Brick maneja errores sin cerrar el formulario.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RNF-P04 -->
+  <div class="rnf-card">
+    <table>
+      <thead><tr><th>ITEM</th><th>DESCRIPCIÓN</th></tr></thead>
+      <tbody>
+        <tr><td>ID</td><td>RNF-P04</td></tr>
+        <tr><td>CATEGORÍA</td><td>Capacidad de Interacción (ISO 25010)</td></tr>
+        <tr><td>DESCRIPCIÓN DEL REQUISITO</td><td>El formulario de checkout debe prellenar datos del usuario, ofrecer selección geográfica dinámica (departamento → ciudad), mostrar cotización de envío en tiempo real y proporcionar feedback visual durante el procesamiento del pago.</td></tr>
+        <tr><td>MÉTRICA O CRITERIO DE ACEPTACIÓN</td><td>Prefill automático de 4 campos (nombre, email, dirección, teléfono); 33 departamentos y ciudades dinámicas disponibles; cotización de envío en ≤ 2s; botón de pago muestra "Procesando..." durante la transacción</td></tr>
+        <tr><td>PRIORIDAD</td><td>Media</td></tr>
+        <tr><td>COMENTARIOS / JUSTIFICACIÓN</td><td>Reducir la cantidad de datos que el usuario debe escribir manualmente aumenta la conversión. La selección geográfica dinámica (departamento filtra ciudades) evita errores de escritura. El feedback visual durante el pago reduce la ansiedad del usuario y previene doble clicks.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RNF-P05 -->
+  <div class="rnf-card">
+    <table>
+      <thead><tr><th>ITEM</th><th>DESCRIPCIÓN</th></tr></thead>
+      <tbody>
+        <tr><td>ID</td><td>RNF-P05</td></tr>
+        <tr><td>CATEGORÍA</td><td>Mantenibilidad (ISO 25010)</td></tr>
+        <tr><td>DESCRIPCIÓN DEL REQUISITO</td><td>Los métodos de pago deben estar implementados bajo el patrón Strategy, permitiendo agregar nuevos métodos sin modificar el flujo de pedido existente. Las rutas de pago deben ser independientes de las rutas de pedido.</td></tr>
+        <tr><td>MÉTRICA O CRITERIO DE ACEPTACIÓN</td><td>Agregar un nuevo método de pago requiere cambios en ≤ 2 archivos (<code>payment.js</code> + <code>payments.js</code>); 0 modificaciones al flujo de checkout existente; rutas <code>/payments</code> y <code>/orders</code> en archivos separados</td></tr>
+        <tr><td>PRIORIDAD</td><td>Media</td></tr>
+        <tr><td>COMENTARIOS / JUSTIFICACIÓN</td><td>El patrón Strategy encapsula la lógica de cada método de pago en un objeto independiente. Si se necesita agregar Nequi, Daviplata u otro método, basta con agregar una nueva estrategia en el frontend y un handler en el backend, sin modificar el código del carrito, checkout ni facturación existente.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /container -->
+</body>
+</html>
