@@ -114,7 +114,7 @@
     max-height: 94vh; border-radius: 14px;
   }
   .pl-modal-content.pl-max { max-width: none; }
-  .pl-modal-close { width: 44px; height: 44px; font-size: 1.4rem; top: 0.4rem; right: 0.5rem; }
+  .pl-modal-close { width: 40px; height: 40px; font-size: 1.4rem; }
 
   /* --- Product form modal --- */
   .pl-form-grid { grid-template-columns: 1fr; }
@@ -222,6 +222,12 @@
 
   /* --- Toast --- */
   .pl-toast { right: 0.75rem; left: 0.75rem; max-width: none; top: 10px; font-size: 0.9rem; }
+
+  /* --- WhatsApp floating button mobile --- */
+  .whatsapp-float {
+    width: 48px; height: 48px; bottom: 74px; right: 16px;
+  }
+  .whatsapp-float svg { width: 24px; height: 24px; }
 
   /* --- Accessibility button mobile --- */
   .accessibility-btn {
@@ -401,7 +407,7 @@
 /* ── Print ─────────────────────────────────────────── */
 @media print {
   .pl-header, .pl-admin-nav, .pl-actions, .menu-toggle,
-  .menu-overlay, .accessibility-btn, .pl-modal, .pl-toast { display: none !important; }
+  .menu-overlay, .accessibility-btn, .whatsapp-float, .pl-modal, .pl-toast { display: none !important; }
   body { background: #fff; color: #000; }
   .pl-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
 }
