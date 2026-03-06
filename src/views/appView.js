@@ -42,6 +42,16 @@ export class AppView {
       const id = btn.getAttribute('data-close');
       this.toggleModal(id,false);
     }));
+    // close modal on click outside (on the backdrop)
+    document.querySelectorAll('.pl-modal').forEach(modal=>{
+      modal.addEventListener('click', (e)=>{
+        if(e.target === modal){
+          const closeBtn = modal.querySelector('.pl-modal-close');
+          const id = closeBtn ? closeBtn.getAttribute('data-close') : null;
+          if(id) this.toggleModal(id, false);
+        }
+      });
+    });
   }
 
   toast(msg, type='success'){
