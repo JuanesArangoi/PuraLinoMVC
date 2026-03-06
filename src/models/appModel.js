@@ -34,15 +34,17 @@ export class AppModel {
 
   async init(){
     // if token exists, validate it server-side and restore session
+    console.log('🔑 Init — token exists:', !!this.token);
     if(this.token){
       try{ 
         const u = await apiMe(); 
         this.state.currentUser = { ...u, id: u._id };
+        console.log('✅ Session restored for:', u.username || u.name);
         // Cache user data for offline/cold-start recovery
         try{ localStorage.setItem('pl_user', JSON.stringify(this.state.currentUser)); }catch(_){}
         this.startSessionTimeout();
       }catch(e){ 
-        console.warn('Session restore failed:', e.message);
+        console.warn('❌ Session restore failed:', e.message, 'status:', e.status);
         // Only clear token on auth errors (401/403 = invalid/expired token)
         // Keep session alive on network errors (0 = offline, cold start, timeout)
         if(e.status === 401 || e.status === 403){
@@ -53,7 +55,7 @@ export class AppModel {
           try{ localStorage.removeItem('pl_user'); }catch(_){}
         } else {
           // Network error — restore cached user info to keep UI logged in
-          console.warn('Network error during session restore — using cached user');
+          console.warn('🔄 Network error during session restore — using cached user');
           try{
             const cached = localStorage.getItem('pl_user');
             if(cached) this.state.currentUser = JSON.parse(cached);
@@ -61,6 +63,8 @@ export class AppModel {
           if(this.state.currentUser) this.startSessionTimeout();
         }
       }
+    } else {
+      console.log('🔑 No token found in localStorage');
     }
     await Promise.all([
       this.refreshProducts(),
