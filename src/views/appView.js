@@ -36,6 +36,7 @@ export class AppView {
       trackingModal: document.getElementById('trackingModal'),
       variantsModal: document.getElementById('variantsModal'),
       legalModal: document.getElementById('legalModal'),
+      forgotPasswordModal: document.getElementById('forgotPasswordModal'),
     };
     // close modal buttons
     document.querySelectorAll('.pl-modal-close').forEach(btn=>btn.addEventListener('click', (e)=>{
