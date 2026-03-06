@@ -1,4 +1,4 @@
-const CACHE_NAME = 'puralino-cache-v16';
+const CACHE_NAME = 'puralino-cache-v17';
 const urlsToCache = [
   '/',
   '/assets/styles.css',

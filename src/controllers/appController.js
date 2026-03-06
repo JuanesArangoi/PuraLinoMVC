@@ -688,7 +688,7 @@ export class AppController {
       if(adminTrackBtn){ (async()=>{
         const oid = adminTrackBtn.getAttribute('data-admin-track');
         try{
-          const res = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
+          const res = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
           const data = await res.json();
           if(!res.ok){ throw new Error(data?.error||'Error'); }
           const cont = document.getElementById('trackingContent');
@@ -712,7 +712,7 @@ export class AppController {
           if(saveBtn){ saveBtn.addEventListener('click', async ()=>{
             try{
               const body = { trackingNumber: document.getElementById('trkNumber').value, carrier: document.getElementById('trkCarrier').value };
-              const r2 = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/orders/${oid}/tracking/meta`, { method:'PATCH', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
+              const r2 = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/orders/${oid}/tracking/meta`, { method:'PATCH', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
               const d2 = await r2.json(); if(!r2.ok) throw new Error(d2?.error||'Error');
               this.view.toast('Tracking actualizado');
             }catch(err){ this.view.toast(err.message||'Error al guardar tracking','error'); }
@@ -721,7 +721,7 @@ export class AppController {
           if(addEvBtn){ addEvBtn.addEventListener('click', async ()=>{
             try{
               const body = { status: document.getElementById('trkStatus').value, note: document.getElementById('trkNote').value };
-              const r3 = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/orders/${oid}/tracking`, { method:'POST', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
+              const r3 = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/orders/${oid}/tracking`, { method:'POST', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
               const d3 = await r3.json(); if(!r3.ok) throw new Error(d3?.error||'Error');
               const wrap = document.getElementById('trackEvents');
               wrap.innerHTML = d3.events.map(ev=>`<div class=\"pl-card\" style=\"margin:0.25rem 0\"><div class=\"pl-card-body\"><div>${new Date(ev.date).toLocaleString()}</div><div>${ev.status}</div><div class=\"pl-muted\">${ev.note||''}</div></div></div>`).join('');
@@ -899,7 +899,7 @@ export class AppController {
         const order = this.model.state.orders.find(o=>String(o._id||o.id)===String(oid));
         if(!order){ this.view.toast('Pedido no encontrado','error'); return; }
         try{
-          const res = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
+          const res = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
           const data = await res.json();
           if(!res.ok) throw new Error(data?.error||'Error');
           const events = data.events || [];
@@ -1082,7 +1082,7 @@ export class AppController {
             return;
           }
           
-          const res = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/auth/resend-verification`, {
+          const res = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/auth/resend-verification`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email })
@@ -1182,7 +1182,7 @@ export class AppController {
         e.preventDefault();
         const email = document.getElementById('forgotEmail').value;
         try{
-          const res = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/auth/forgot-password`, {
+          const res = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/auth/forgot-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email })
@@ -1212,7 +1212,7 @@ export class AppController {
         }
         
         try{
-          const res = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/auth/reset-password`, {
+          const res = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/auth/reset-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token, newPassword })
@@ -1473,7 +1473,7 @@ export class AppController {
       const city = document.getElementById('orderCity')?.value||'';
       if(!city){ this.view.toast('Selecciona una ciudad','error'); return; }
       try{
-        const res = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/shipping/quote?city=${encodeURIComponent(city)}`);
+        const res = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/shipping/quote?city=${encodeURIComponent(city)}`);
         const data = await res.json();
         const q = document.getElementById('shippingQuote');
         if(q) q.textContent = `Envío: ${cop(data.cost)} (ETA ${data.etaDays} días)`;
@@ -1756,7 +1756,7 @@ export class AppController {
       if(!o){ this.view.toast('Pedido no encontrado','error'); return; }
       this.model._viewingOrder = o;
       try{
-        const res = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
+        const res = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/orders/${oid}/tracking`, { headers: { Authorization: 'Bearer ' + (this.model.token||'') } });
         const data = await res.json();
         this.model._orderTracking = res.ok ? data : {};
       }catch(e){ this.model._orderTracking = {}; }
@@ -1787,7 +1787,7 @@ export class AppController {
       const oid = saveTrackBtn.dataset.id;
       const body = { trackingNumber: document.getElementById('trkNumber').value, carrier: document.getElementById('trkCarrier').value };
       try{
-        const r = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/orders/${oid}/tracking/meta`, { method:'PATCH', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
+        const r = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/orders/${oid}/tracking/meta`, { method:'PATCH', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify(body) });
         const d = await r.json(); if(!r.ok) throw new Error(d?.error||'Error');
         this.model._orderTracking = { ...this.model._orderTracking, trackingNumber: body.trackingNumber, carrier: body.carrier };
         this.view.toast('Datos de tracking guardados');
@@ -1802,7 +1802,7 @@ export class AppController {
       if(!status){ this.view.toast('Selecciona un estado para el evento','error'); return; }
       const note = document.getElementById('trkEventNote').value;
       try{
-        const r = await fetch(`${window.__API_URL__||'http://18.191.121.112:4000'}/orders/${oid}/tracking`, { method:'POST', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify({ status, note }) });
+        const r = await fetch(`${window.__API_URL__||'https://d2nkt7j19iaq1l.cloudfront.net'}/orders/${oid}/tracking`, { method:'POST', headers: { 'Content-Type':'application/json', Authorization: 'Bearer ' + (this.model.token||'') }, body: JSON.stringify({ status, note }) });
         const d = await r.json(); if(!r.ok) throw new Error(d?.error||'Error');
         this.model._orderTracking = { ...this.model._orderTracking, events: d.events || [] };
         // Re-render

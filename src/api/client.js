@@ -1,4 +1,4 @@
-const baseURL = window.__API_URL__ || 'http://18.191.121.112:4000';
+const baseURL = window.__API_URL__ || 'https://d2nkt7j19iaq1l.cloudfront.net';
 let token = null;
 
 function setToken(t){ token = t; if(t) localStorage.setItem('pl_token', t); else localStorage.removeItem('pl_token'); }
