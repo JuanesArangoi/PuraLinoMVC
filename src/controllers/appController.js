@@ -233,28 +233,18 @@ export class AppController {
     }catch(e){ /* banner load is non-critical */ }
   }
 
-  async _bindBannerAdmin(){
+  _bindBannerAdmin(){
     const preview = document.getElementById('bannerPreview');
     const titleInput = document.getElementById('bannerTitle');
     const subtitleInput = document.getElementById('bannerSubtitle');
     const imageInput = document.getElementById('bannerImageInput');
     const saveTextBtn = document.getElementById('saveBannerTextBtn');
     const deleteImgBtn = document.getElementById('deleteBannerImageBtn');
+    const uploadBtn = document.getElementById('bannerUploadBtn');
     if(!preview) return;
 
-    // Load current banner data
-    try{
-      const banner = await settingsApi.getBanner();
-      if(titleInput) titleInput.value = banner.title || '';
-      if(subtitleInput) subtitleInput.value = banner.subtitle || '';
-      if(banner.imageUrl){
-        preview.innerHTML = `<img src="${banner.imageUrl}" style="width:100%;max-height:200px;object-fit:cover" />`;
-      } else {
-        preview.innerHTML = '<span class="pl-muted" style="padding:2rem">Sin imagen de banner — se muestra el fondo por defecto</span>';
-      }
-    }catch(e){
-      preview.innerHTML = '<span class="pl-muted" style="padding:2rem">Error al cargar banner</span>';
-    }
+    // Upload button triggers file input
+    if(uploadBtn && imageInput) uploadBtn.onclick = ()=> imageInput.click();
 
     // Upload image
     if(imageInput) imageInput.onchange = async ()=>{
@@ -293,6 +283,19 @@ export class AppController {
         this._loadBanner();
       }catch(err){ this.view.toast('Error: ' + err.message, 'error'); }
     };
+
+    // Load current banner data (async, after handlers are bound)
+    settingsApi.getBanner().then(banner => {
+      if(titleInput) titleInput.value = banner.title || '';
+      if(subtitleInput) subtitleInput.value = banner.subtitle || '';
+      if(banner.imageUrl){
+        preview.innerHTML = `<img src="${banner.imageUrl}" style="width:100%;max-height:200px;object-fit:cover" />`;
+      } else {
+        preview.innerHTML = '<span class="pl-muted" style="padding:2rem">Sin imagen de banner — se muestra el fondo por defecto</span>';
+      }
+    }).catch(() => {
+      preview.innerHTML = '<span class="pl-muted" style="padding:2rem">Error al cargar banner</span>';
+    });
   }
 
   async _handleMPReturn(){
@@ -1120,7 +1123,7 @@ export class AppController {
             ]);
             this.view.showSections({home:false,products:false,customer:false,admin:true});
             this.currentAdminSection='dashboard';
-            this.view.renderAdmin('dashboard', this.model);
+            this.loadAdminSection('dashboard');
           } else {
             await Promise.all([
               this.model.refreshProducts(),
@@ -2618,7 +2621,7 @@ export class AppController {
       if(this.model.state.currentUser?.role!=='admin'){ this.view.toast('Acceso no autorizado','error'); return; }
       this.view.showSections({ home:false, products:false, customer:false, admin:true, about:false, contact:false });
       this.currentAdminSection='dashboard';
-      this.view.renderAdmin('dashboard', this.model);
+      this.loadAdminSection('dashboard');
     } else {
       this.view.showSections({ home:true, products:true, customer:false, admin:false, about:false, contact:false });
     }

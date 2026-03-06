@@ -441,13 +441,11 @@ export class AppView {
                   </label>
                 </div>
               </div>
+              <input type="file" id="bannerImageInput" accept="image/jpeg,image/png,image/webp" style="display:none" />
               <div style="display:flex;gap:.75rem;margin-top:.75rem;flex-wrap:wrap;align-items:center">
-                <label class="pl-btn pl-ghost" style="cursor:pointer;margin:0">
-                  📷 Subir imagen
-                  <input type="file" id="bannerImageInput" accept="image/jpeg,image/png,image/webp" style="display:none" />
-                </label>
-                <button class="pl-btn pl-primary" id="saveBannerTextBtn">Guardar texto</button>
-                <button class="pl-btn pl-ghost" id="deleteBannerImageBtn" style="color:#e74c3c">Eliminar imagen</button>
+                <button type="button" class="pl-btn pl-ghost" id="bannerUploadBtn">📷 Subir imagen</button>
+                <button type="button" class="pl-btn pl-primary" id="saveBannerTextBtn">Guardar texto</button>
+                <button type="button" class="pl-btn pl-ghost" id="deleteBannerImageBtn" style="color:#e74c3c">Eliminar imagen</button>
               </div>
             </div>
           </div>`;
