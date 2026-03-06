@@ -1,7 +1,7 @@
 import { bus } from '../core/observer.js';
 import { AppModel } from '../models/appModel.js';
 import { AppView, cop } from '../views/appView.js';
-import { wishlistApi, reviewsApi, paymentsApi } from '../api/client.js';
+import { wishlistApi, reviewsApi, paymentsApi, settingsApi } from '../api/client.js';
 import { PaymentStrategies } from '../strategies/payment.js';
 import { DEPARTMENTS } from '../data/colombiaDepts.js';
 import { LEGAL_PAGES } from '../data/legalPages.js';
@@ -210,8 +210,89 @@ export class AppController {
       }
     }
 
+    // ── Load banner settings ──
+    this._loadBanner();
+
     // ── Handle Mercado Pago return ──
     this._handleMPReturn();
+  }
+
+  async _loadBanner(){
+    try{
+      const banner = await settingsApi.getBanner();
+      const hero = document.getElementById('homeSection');
+      const titleEl = document.getElementById('heroBannerTitle');
+      const subtitleEl = document.getElementById('heroBannerSubtitle');
+      if(banner.title && titleEl) titleEl.textContent = banner.title;
+      if(banner.subtitle && subtitleEl) subtitleEl.textContent = banner.subtitle;
+      if(banner.imageUrl && hero){
+        hero.style.background = `linear-gradient(rgba(17,17,17,.55),rgba(17,17,17,.55)),url('${banner.imageUrl}')`;
+        hero.style.backgroundSize = 'cover';
+        hero.style.backgroundPosition = 'center';
+      }
+    }catch(e){ /* banner load is non-critical */ }
+  }
+
+  async _bindBannerAdmin(){
+    const preview = document.getElementById('bannerPreview');
+    const titleInput = document.getElementById('bannerTitle');
+    const subtitleInput = document.getElementById('bannerSubtitle');
+    const imageInput = document.getElementById('bannerImageInput');
+    const saveTextBtn = document.getElementById('saveBannerTextBtn');
+    const deleteImgBtn = document.getElementById('deleteBannerImageBtn');
+    if(!preview) return;
+
+    // Load current banner data
+    try{
+      const banner = await settingsApi.getBanner();
+      if(titleInput) titleInput.value = banner.title || '';
+      if(subtitleInput) subtitleInput.value = banner.subtitle || '';
+      if(banner.imageUrl){
+        preview.innerHTML = `<img src="${banner.imageUrl}" style="width:100%;max-height:200px;object-fit:cover" />`;
+      } else {
+        preview.innerHTML = '<span class="pl-muted" style="padding:2rem">Sin imagen de banner — se muestra el fondo por defecto</span>';
+      }
+    }catch(e){
+      preview.innerHTML = '<span class="pl-muted" style="padding:2rem">Error al cargar banner</span>';
+    }
+
+    // Upload image
+    if(imageInput) imageInput.onchange = async ()=>{
+      const file = imageInput.files[0];
+      if(!file) return;
+      if(file.size > 10 * 1024 * 1024){ this.view.toast('La imagen no puede superar 10 MB', 'error'); return; }
+      preview.innerHTML = '<span class="pl-muted" style="padding:2rem">Subiendo imagen...</span>';
+      try{
+        const result = await settingsApi.uploadBannerImage(file);
+        preview.innerHTML = `<img src="${result.imageUrl}" style="width:100%;max-height:200px;object-fit:cover" />`;
+        this.view.toast('Imagen de banner actualizada');
+        this._loadBanner();
+      }catch(err){
+        this.view.toast('Error al subir imagen: ' + err.message, 'error');
+        preview.innerHTML = '<span class="pl-muted" style="padding:2rem">Error al subir</span>';
+      }
+      imageInput.value = '';
+    };
+
+    // Save text
+    if(saveTextBtn) saveTextBtn.onclick = async ()=>{
+      try{
+        await settingsApi.updateBanner({ title: titleInput.value, subtitle: subtitleInput.value });
+        this.view.toast('Texto del banner actualizado');
+        this._loadBanner();
+      }catch(err){ this.view.toast('Error: ' + err.message, 'error'); }
+    };
+
+    // Delete image
+    if(deleteImgBtn) deleteImgBtn.onclick = async ()=>{
+      if(!confirm('¿Eliminar la imagen del banner?')) return;
+      try{
+        await settingsApi.deleteBannerImage();
+        preview.innerHTML = '<span class="pl-muted" style="padding:2rem">Sin imagen de banner</span>';
+        this.view.toast('Imagen de banner eliminada');
+        this._loadBanner();
+      }catch(err){ this.view.toast('Error: ' + err.message, 'error'); }
+    };
   }
 
   async _handleMPReturn(){
@@ -1488,6 +1569,7 @@ export class AppController {
       }
     }catch(err){ /* data may already be loaded */ }
     this.view.renderAdmin(sect, this.model);
+    if(sect === 'dashboard') this._bindBannerAdmin();
     this.bindInventoryEvents();
   }
 

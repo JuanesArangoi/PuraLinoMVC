@@ -131,6 +131,23 @@ export const wishlistApi = {
   async remove(productId){ return request(`/wishlist/${productId}`, { method:'DELETE', auth:true }); }
 };
 
+// ── Settings (Banner) ──
+export const settingsApi = {
+  async getBanner(){ return request('/settings/banner'); },
+  async updateBanner(payload){ return request('/settings/banner', { method:'PUT', body: payload, auth:true }); },
+  async uploadBannerImage(file){
+    const formData = new FormData();
+    formData.append('image', file);
+    const headers = {};
+    const t = getToken(); if(t) headers['Authorization'] = `Bearer ${t}`;
+    const res = await fetch(`${baseURL}/settings/banner/image`, { method:'POST', headers, body: formData });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data?.error || 'Upload error');
+    return data;
+  },
+  async deleteBannerImage(){ return request('/settings/banner/image', { method:'DELETE', auth:true }); }
+};
+
 // Reviews endpoints
 export const reviewsApi = {
   async list(productId){ return request(`/products/${productId}/reviews`); },

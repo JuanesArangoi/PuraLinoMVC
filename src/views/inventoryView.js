@@ -197,7 +197,7 @@ export function poNewLineTemplate(index, item) {
       </div>
       <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:.5rem;align-items:end">
         <label class="pl-label" style="margin:0">Nombre del producto *
-          <input class="pl-input po-new-name" value="${it.productName||''}" placeholder="Ej: Camisa Lino Premium">
+          <input class="pl-input po-new-name" value="${it.productName||''}" placeholder="Ej: Camiseta Monastery">
         </label>
         <label class="pl-label" style="margin:0">Categoría
           <select class="pl-input po-new-category">

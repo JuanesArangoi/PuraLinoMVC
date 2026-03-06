@@ -313,7 +313,7 @@ export class AppView {
         <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #8b7355;padding-bottom:16px;margin-bottom:20px">
           <div>
             <h1 style="margin:0;color:#8b7355;font-size:1.8rem;letter-spacing:1px">PURA LINO</h1>
-            <p style="margin:4px 0 0;color:#888;font-size:.85rem">Lino Puro, Comodidad Pura</p>
+            <p style="margin:4px 0 0;color:#888;font-size:.85rem">Tu Estilo, Las Mejores Marcas</p>
           </div>
           <div style="text-align:right">
             <h2 style="margin:0;color:#333;font-size:1.1rem">FACTURA</h2>
@@ -382,7 +382,7 @@ export class AppView {
         </div>
 
         <div style="margin-top:30px;padding-top:16px;border-top:1px solid #eee;text-align:center;font-size:.8rem;color:#aaa">
-          <p style="margin:0">Pura Lino — Bogotá, Colombia — contacto@puralino.com</p>
+          <p style="margin:0">Pura Lino — Bogotá, Colombia — Tu Estilo, Las Mejores Marcas</p>
           <p style="margin:4px 0 0">Gracias por tu compra</p>
         </div>
       </div>`;
@@ -420,6 +420,36 @@ export class AppView {
             <div class="pl-card"><div class="pl-card-body"><h3>Total Productos</h3><p style="font-size:1.6rem">${state.state.products.length}</p></div></div>
             <div class="pl-card"><div class="pl-card-body"><h3>Total Clientes</h3><p style="font-size:1.6rem">${state.state.users.filter(u=>u.role==='client').length}</p></div></div>
             <div class="pl-card"><div class="pl-card-body"><h3>Total Ventas</h3><p style="font-size:1.6rem">${cop(t.totalSales)}</p></div></div>
+          </div>
+
+          <div class="pl-card" style="margin-top:1.5rem">
+            <div class="pl-card-body">
+              <h3 style="margin-top:0">🖼️ Banner Principal</h3>
+              <p class="pl-muted" style="font-size:.85rem;margin-bottom:1rem">Sube una imagen para el banner de la página principal. <strong>Tamaño óptimo: 1920 × 600 px</strong> (formato JPG, PNG o WEBP, máx 10 MB).</p>
+              <div id="bannerPreview" style="margin-bottom:1rem;border-radius:8px;overflow:hidden;max-height:200px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;min-height:100px">
+                <span class="pl-muted">Cargando...</span>
+              </div>
+              <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end">
+                <div style="flex:1;min-width:200px">
+                  <label class="pl-label" style="margin:0">Título del banner
+                    <input id="bannerTitle" class="pl-input" placeholder="Tu Estilo, Las Mejores Marcas" />
+                  </label>
+                </div>
+                <div style="flex:1;min-width:200px">
+                  <label class="pl-label" style="margin:0">Subtítulo
+                    <input id="bannerSubtitle" class="pl-input" placeholder="Monastery · Clemont · Undergold..." />
+                  </label>
+                </div>
+              </div>
+              <div style="display:flex;gap:.75rem;margin-top:.75rem;flex-wrap:wrap;align-items:center">
+                <label class="pl-btn pl-ghost" style="cursor:pointer;margin:0">
+                  📷 Subir imagen
+                  <input type="file" id="bannerImageInput" accept="image/jpeg,image/png,image/webp" style="display:none" />
+                </label>
+                <button class="pl-btn pl-primary" id="saveBannerTextBtn">Guardar texto</button>
+                <button class="pl-btn pl-ghost" id="deleteBannerImageBtn" style="color:#e74c3c">Eliminar imagen</button>
+              </div>
+            </div>
           </div>`;
         break; }
       case 'products':{
