@@ -258,6 +258,7 @@ export const LEGAL_PAGES = {
         .mu .screenshot .placeholder { padding: 24px 16px; color: #9a8568; font-size: 12px; line-height: 1.5; }
         .mu .screenshot .placeholder .icon { font-size: 28px; margin-bottom: 6px; }
         .mu .screenshot .placeholder .hint { display: block; margin-top: 6px; font-size: 10px; color: #bba882; font-style: italic; }
+        .mu .screenshot img { width: 100%; display: block; }
         .mu code { background: #f5f0ea; padding: 2px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 11px; color: #8b5e3c; }
       </style>
       <div class="mu">
@@ -317,6 +318,7 @@ export const LEGAL_PAGES = {
         <h4>Abrir la aplicación</h4>
         <p>Ingresa a la URL de Pura Lino desde tu navegador. Al cargar, verás la <strong>página principal (Home)</strong> con el eslogan <em>"Lino Puro, Comodidad Pura"</em> y un botón para ir directamente al catálogo.</p>
       </div>
+      <div class="screenshot"><div class="caption">Página principal de Pura Lino</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772742994/puralino/manual/puralino-manual-0.webp" alt="Home principal Pura LINO"></div>
       <p>En la barra superior encontrarás:</p>
       <ul>
         <li><strong>Logo "PURA LINO":</strong> haz clic para volver siempre al inicio</li>
@@ -333,6 +335,7 @@ export const LEGAL_PAGES = {
         <h4>Abrir el formulario de registro</h4>
         <p>Haz clic en el botón <strong>"Registrarse"</strong> en la esquina superior derecha de la página. Se abrirá un modal con el formulario de registro.</p>
       </div>
+      <div class="screenshot"><div class="caption">Botón de Registro</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772742996/puralino/manual/puralino-manual-1.webp" alt="Registro Pura LINO"></div>
       <div class="step">
         <div class="step-number">2</div>
         <h4>Completar los datos del formulario</h4>
@@ -357,6 +360,7 @@ export const LEGAL_PAGES = {
         <h4>Crear la cuenta</h4>
         <p>Haz clic en <strong>"Crear Cuenta"</strong>. Si todos los datos son correctos, verás un mensaje de éxito indicando que se envió un correo de verificación a tu email.</p>
       </div>
+      <div class="screenshot"><div class="caption">Formulario de Registro</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743012/puralino/manual/puralino-manual-2.webp" alt="Formulario registro Pura LINO"></div>
       <div class="success">
         <strong>✅ Mensaje esperado:</strong> "Registro exitoso. Por favor revisa tu correo para verificar tu cuenta."
       </div>
@@ -375,11 +379,13 @@ export const LEGAL_PAGES = {
         <h4>Revisar tu bandeja de entrada</h4>
         <p>Abre tu correo electrónico (el que usaste en el registro). Busca un email de <strong>"Pura Lino"</strong> con el asunto <em>"Verifica tu cuenta — Pura Lino"</em>.</p>
       </div>
+      <div class="screenshot"><div class="caption">Correo de Verificación</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743025/puralino/manual/puralino-manual-3.webp" alt="Correo verificacion Pura LINO"></div>
       <div class="step">
         <div class="step-number">2</div>
         <h4>Hacer clic en "Verificar mi Cuenta"</h4>
         <p>Haz clic en el botón verde <strong>"Verificar mi Cuenta"</strong> dentro del correo. Se abrirá una página de confirmación.</p>
       </div>
+      <div class="screenshot"><div class="caption">Cuenta Verificada</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743027/puralino/manual/puralino-manual-4.webp" alt="Cuenta verificada Pura LINO"></div>
       <div class="tip">
         <strong>💡 ¿No recibiste el correo?</strong> Revisa tu carpeta de spam/correo no deseado. Si no aparece, puedes solicitar el reenvío desde tu perfil una vez inicies sesión. El enlace de verificación expira en 24 horas.
       </div>
@@ -391,6 +397,7 @@ export const LEGAL_PAGES = {
         <h4>Abrir el formulario de login</h4>
         <p>Haz clic en el botón <strong>"Iniciar Sesión"</strong> en la barra superior de la página.</p>
       </div>
+      <div class="screenshot"><div class="caption">Formulario de Inicio de Sesión</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743028/puralino/manual/puralino-manual-5.webp" alt="Inicio de sesion Pura LINO"></div>
       <div class="step">
         <div class="step-number">2</div>
         <h4>Ingresar tus credenciales</h4>
@@ -406,6 +413,7 @@ export const LEGAL_PAGES = {
           <li>Aparece una notificación toast de bienvenida</li>
         </ul>
       </div>
+      <div class="screenshot"><div class="caption">Interfaz Post-Login</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743031/puralino/manual/puralino-manual-7.webp" alt="Post-inicio de sesion Pura LINO"></div>
       <div class="warning">
         <strong>⚠️ Si ves el mensaje:</strong> "Debes verificar tu cuenta de correo antes de realizar pedidos" al intentar comprar, significa que tu email aún no está verificado. Revisa tu bandeja de entrada.
       </div>
@@ -465,11 +473,13 @@ export const LEGAL_PAGES = {
         </ul>
         <p>Haz clic en <strong>"Aplicar"</strong> para ver los resultados filtrados o <strong>"Limpiar"</strong> para restablecer.</p>
       </div>
+      <div class="screenshot"><div class="caption">Catálogo de Productos</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743032/puralino/manual/puralino-manual-8.webp" alt="Catalogo productos PURA LINO"></div>
       <div class="step">
         <div class="step-number">3</div>
         <h4>Ver detalle y seleccionar variante</h4>
         <p>Cada producto muestra su nombre, precio e imagen. Al interactuar con un producto, podrás seleccionar <strong>talla</strong> y <strong>color</strong> disponibles antes de agregarlo al carrito.</p>
       </div>
+      <div class="screenshot"><div class="caption">Selección de Producto y Variante</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743035/puralino/manual/puralino-manual-9.webp" alt="Seleccion producto Pura LINO"></div>
 
       <h2>9. Carrito de Compras</h2>
       <div class="step">
@@ -492,6 +502,7 @@ export const LEGAL_PAGES = {
         <h4>Proceder al pago</h4>
         <p>Haz clic en <strong>"Proceder al Pago"</strong>. Se abrirá el formulario de pedido.</p>
       </div>
+      <div class="screenshot"><div class="caption">Carrito de Compras</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772742997/puralino/manual/puralino-manual-10.webp" alt="Carrito Pura LINO"></div>
       <div class="tip">
         <strong>💡 Nota:</strong> Tu carrito se guarda automáticamente y se mantiene incluso si cierras el navegador. Expira después de 24 horas de inactividad.
       </div>
@@ -514,6 +525,7 @@ export const LEGAL_PAGES = {
           <tr><td><strong>Cédula</strong></td><td>No</td><td>Aparecerá en tu factura si la proporcionas</td></tr>
         </tbody>
       </table>
+      <div class="screenshot"><div class="caption">Formulario de Pedido</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772742999/puralino/manual/puralino-manual-11.webp" alt="Formulario pedido Pura LINO"></div>
       <h3>10.2 Calcular costo de envío</h3>
       <div class="step">
         <div class="step-number">1</div>
@@ -525,6 +537,7 @@ export const LEGAL_PAGES = {
         <h4>Calcular envío</h4>
         <p>Haz clic en <strong>"Calcular envío"</strong>. Verás el costo y tiempo estimado de entrega para tu ciudad.</p>
       </div>
+      <div class="screenshot"><div class="caption">Calculadora de Envío</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743000/puralino/manual/puralino-manual-12.webp" alt="Calculadora envio Pura LINO"></div>
       <h3>10.3 Selección de método de pago</h3>
       <div class="step">
         <div class="step-number">1</div>
@@ -537,6 +550,7 @@ export const LEGAL_PAGES = {
           <li><strong>Pago contraentrega:</strong> pagas al recibir tu pedido</li>
         </ul>
       </div>
+      <div class="screenshot"><div class="caption">Selector de Método de Pago</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743002/puralino/manual/puralino-manual-13.webp" alt="Selector pago Pura LINO"></div>
       <h3>10.4 Gift Card (opcional)</h3>
       <p>Si tienes una tarjeta de regalo, ingresa el código en el campo <strong>"Gift Card"</strong>. El saldo disponible se descontará del total de tu pedido.</p>
       <h3>10.5 Aceptar Términos y realizar el pedido</h3>
@@ -556,6 +570,7 @@ export const LEGAL_PAGES = {
         <h4>Esperar que cargue el formulario de Mercado Pago</h4>
         <p>Al seleccionar Mercado Pago, aparecerá un mensaje azul: <em>"💳 Mercado Pago — Completa los datos de pago en el formulario seguro de Mercado Pago abajo."</em> Debajo aparecerá el formulario embebido de Mercado Pago.</p>
       </div>
+      <div class="screenshot"><div class="caption">Payment Brick de Mercado Pago</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743003/puralino/manual/puralino-manual-14.webp" alt="Payment Brick Mercado Pago Pura LINO"></div>
       <div class="step">
         <div class="step-number">2</div>
         <h4>Completar los datos de la tarjeta</h4>
@@ -574,6 +589,7 @@ export const LEGAL_PAGES = {
         <h4>Hacer clic en "Pagar"</h4>
         <p>Haz clic en el botón <strong>"Pagar"</strong> del formulario de Mercado Pago. El sistema procesará tu pago. Espera unos segundos sin cerrar la ventana.</p>
       </div>
+      <div class="screenshot"><div class="caption">Formulario de Pago Mercado Pago</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743036/puralino/manual/puralino-manual-WEB.webp" alt="Formulario MP Pura LINO"></div>
       <div class="warning">
         <strong>⚠️ Importante:</strong> No cierres la ventana ni presiones "atrás" mientras se procesa el pago. El proceso puede tomar unos segundos dependiendo de tu conexión y la velocidad de tu banco.
       </div>
@@ -601,6 +617,7 @@ export const LEGAL_PAGES = {
         <h4>Descargar factura como PDF</h4>
         <p>Haz clic en el botón <strong>"Descargar Factura"</strong> para guardar una copia en formato PDF en tu dispositivo.</p>
       </div>
+      <div class="screenshot"><div class="caption">Factura del Pedido</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743005/puralino/manual/puralino-manual-15.webp" alt="Factura Pura LINO"></div>
       <div class="step">
         <div class="step-number">4</div>
         <h4>Correo de confirmación</h4>
@@ -610,6 +627,7 @@ export const LEGAL_PAGES = {
           <li><strong>Factura:</strong> copia de tu factura con todos los detalles</li>
         </ul>
       </div>
+      <div class="screenshot"><div class="caption">Email de Confirmación</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743006/puralino/manual/puralino-manual-16.webp" alt="Email confirmacion Pura LINO"></div>
       <div class="success">
         <strong>✅ ¡Listo!</strong> Tu pedido ha sido registrado exitosamente. Recibirás notificaciones por email cuando cambie el estado de tu pedido (confirmado → enviado → entregado).
       </div>
@@ -631,6 +649,7 @@ export const LEGAL_PAGES = {
         </ul>
         <p>También recibirás un email cada vez que haya una actualización en el envío de tu pedido.</p>
       </div>
+      <div class="screenshot"><div class="caption">Historial de Compras</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743008/puralino/manual/puralino-manual-17.webp" alt="Historial compras Pura LINO"></div>
       <div class="step">
         <div class="step-number">3</div>
         <h4>Solicitar devolución</h4>
@@ -654,6 +673,7 @@ export const LEGAL_PAGES = {
         <h4>Abrir el panel de accesibilidad</h4>
         <p>Haz clic en el botón flotante <strong>♿</strong> que aparece en la esquina de la pantalla.</p>
       </div>
+      <div class="screenshot"><div class="caption">Panel de Accesibilidad</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743009/puralino/manual/puralino-manual-18.webp" alt="Panel accesibilidad Pura LINO"></div>
       <div class="step">
         <div class="step-number">2</div>
         <h4>Ajustar las opciones</h4>
@@ -689,6 +709,7 @@ export const LEGAL_PAGES = {
         <li><strong>📈 Marketing:</strong> Promociones, Reseñas, Reportes</li>
         <li><strong>🚪 Salir:</strong> Cerrar sesión</li>
       </ul>
+      <div class="screenshot"><div class="caption">Panel de Administración</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743010/puralino/manual/puralino-manual-19.webp" alt="Panel admin Pura LINO"></div>
 
       <h2>16. Dashboard Administrativo</h2>
       <p>Al acceder al panel, el Dashboard muestra un resumen general del negocio en <strong>tarjetas de métricas</strong>:</p>
@@ -701,6 +722,7 @@ export const LEGAL_PAGES = {
           <tr><td><strong>Total Ventas</strong></td><td>Suma total en COP de todos los pedidos (confirmados, enviados y entregados)</td></tr>
         </tbody>
       </table>
+      <div class="screenshot"><div class="caption">Dashboard Administrativo</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743013/puralino/manual/puralino-manual-20.webp" alt="Dashboard admin Pura LINO"></div>
 
       <h2>17. Gestión de Pedidos (Admin)</h2>
       <p>Desde el menú lateral, haz clic en <strong>🛍️ Tienda → Pedidos</strong> para acceder a la tabla con todos los pedidos del sistema.</p>
@@ -720,6 +742,7 @@ export const LEGAL_PAGES = {
           <tr><td><strong>Acciones</strong></td><td>Botón "Gestionar" para abrir el detalle completo</td></tr>
         </tbody>
       </table>
+      <div class="screenshot"><div class="caption">Tabla de Pedidos (Admin)</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743015/puralino/manual/puralino-manual-21.webp" alt="Tabla pedidos admin Pura LINO"></div>
 
       <h2>18. Detalle y Gestión de un Pedido</h2>
       <p>Al hacer clic en <strong>"Gestionar"</strong> en cualquier pedido, se abre la vista de <strong>detalle completo</strong> con toda la información y herramientas de gestión.</p>
@@ -739,6 +762,7 @@ export const LEGAL_PAGES = {
         <h4>Tabla de Productos</h4>
         <p>Lista de todos los productos del pedido con: nombre del producto, variante (talla/color si aplica), cantidad, precio unitario y subtotal por producto.</p>
       </div>
+      <div class="screenshot"><div class="caption">Detalle del Pedido (Admin)</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743018/puralino/manual/puralino-manual-23.webp" alt="Detalle pedido admin Pura LINO"></div>
       <h3>18.2 Actualizar estado del pedido</h3>
       <div class="step">
         <div class="step-number">1</div>
@@ -755,6 +779,7 @@ export const LEGAL_PAGES = {
         <h4>Guardar el cambio</h4>
         <p>Haz clic en <strong>"Guardar Estado"</strong>. El estado se actualizará inmediatamente y se enviará un <strong>correo electrónico automático</strong> al cliente notificando el cambio.</p>
       </div>
+      <div class="screenshot"><div class="caption">Actualizar Estado del Pedido</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743019/puralino/manual/puralino-manual-24.webp" alt="Actualizar estado pedido admin Pura LINO"></div>
       <div class="success">
         <strong>✅ Resultado:</strong> Al cambiar el estado, el cliente recibe automáticamente un email con el nuevo estado del pedido.
       </div>
@@ -777,6 +802,7 @@ export const LEGAL_PAGES = {
         <h4>Guardar datos de tracking</h4>
         <p>Haz clic en <strong>"Guardar Tracking"</strong>. Estos datos se asocian al pedido y serán visibles para el cliente en su historial de compras.</p>
       </div>
+      <div class="screenshot"><div class="caption">Datos de Envío / Tracking</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743021/puralino/manual/puralino-manual-25.webp" alt="Datos de envío tracking admin Pura LINO"></div>
       <h3>19.2 Historial de eventos de envío</h3>
       <p>Debajo se encuentra la sección <strong>"Historial de Eventos"</strong> donde puedes registrar cada paso del envío.</p>
       <div class="step">
@@ -805,6 +831,7 @@ export const LEGAL_PAGES = {
         <h4>Registrar el evento</h4>
         <p>Haz clic en <strong>"+ Evento"</strong>. El evento se agrega a la línea de tiempo del pedido con la fecha y hora actual.</p>
       </div>
+      <div class="screenshot"><div class="caption">Historial de Eventos de Tracking</div><img src="https://res.cloudinary.com/dwi1ws3oa/image/upload/v1772743022/puralino/manual/puralino-manual-26.webp" alt="Historial eventos tracking admin Pura LINO"></div>
       <div class="tip">
         <strong>💡 Notificaciones automáticas:</strong> Cada vez que agregas un evento de tracking, el cliente recibe un <strong>correo electrónico automático</strong> con la actualización del estado de su envío.
       </div>

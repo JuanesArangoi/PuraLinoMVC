@@ -3,7 +3,3 @@ node_modules/
 *.log
 .DS_Store
 Thumbs.db
-
-# Archivos generados para el manual
-image_urls.json
-Manual_Usuario_backup_*.html
