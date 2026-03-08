@@ -34,9 +34,12 @@ export class AppModel {
 
   async init(){
     // if token exists, validate it server-side and restore session
-    console.log('🔑 Init — token exists:', !!this.token);
+    const rawToken = localStorage.getItem('pl_token');
+    console.log('🔑 Init — token in localStorage:', !!rawToken, rawToken ? `(${rawToken.substring(0,20)}...)` : '');
+    console.log('🔑 Init — this.token:', !!this.token);
     if(this.token){
       try{ 
+        console.log('🔑 Calling /auth/me...');
         const u = await apiMe(); 
         this.state.currentUser = { ...u, id: u._id };
         console.log('✅ Session restored for:', u.username || u.name);
@@ -48,6 +51,7 @@ export class AppModel {
         // Only clear token on auth errors (401/403 = invalid/expired token)
         // Keep session alive on network errors (0 = offline, cold start, timeout)
         if(e.status === 401 || e.status === 403){
+          console.warn('🔑 Clearing token due to 401/403');
           api.setToken(null);
           this.token = null;
           this.state.currentUser = null;
@@ -64,7 +68,7 @@ export class AppModel {
         }
       }
     } else {
-      console.log('🔑 No token found in localStorage');
+      console.log('🔑 No token found — checking localStorage directly:', !!rawToken);
     }
     await Promise.all([
       this.refreshProducts(),
@@ -421,6 +425,29 @@ export class AppModel {
   async markReturnReceived(id){ const r = await api.markReturnReceived(id); const i=this.state.returns.findIndex(x=>x._id===id); if(i>=0) this.state.returns[i]=r; this.notify(); return r; }
   async reviewReturn(id, data){ const r = await api.reviewReturn(id, data); const i=this.state.returns.findIndex(x=>x._id===id); if(i>=0) this.state.returns[i]=r; this.notify(); return r; }
   async validateCoupon(code){ return api.validateCoupon(code); }
+
+  // ── Wishlist ──
+  async refreshWishlist(){
+    try{
+      const list = await wishlistApi.get();
+      this.state.wishlist = Array.isArray(list) ? list : [];
+    }catch(e){ this.state.wishlist = []; }
+  }
+  async addToWishlist(productId){
+    const result = await wishlistApi.add(productId);
+    await this.refreshWishlist();
+    this.notify();
+    return result;
+  }
+  async removeFromWishlist(productId){
+    const result = await wishlistApi.remove(productId);
+    await this.refreshWishlist();
+    this.notify();
+    return result;
+  }
+  isInWishlist(productId){
+    return this.state.wishlist.some(w => String(w.productId || w._id || w) === String(productId));
+  }
 
   // ── Inventory ──
   async getStockMovements(query){ return inventoryApi.movements(query); }
