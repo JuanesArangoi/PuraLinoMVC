@@ -416,8 +416,7 @@
           </div>
         </div>
         <div id="mpInfo" style="display:none;">
-          <p style="margin:0 0 .75rem;font-size:.9rem;color:#1a5276;padding:.75rem;background:#e8f4fd;border-radius:8px;border:1px solid #b3d7f0;"><strong>💳 Mercado Pago</strong> — Completa los datos de pago en el formulario seguro de Mercado Pago abajo.</p>
-          <div id="mpBrickContainer"></div>
+          <p style="margin:0 0 .75rem;font-size:.9rem;color:#1a5276;padding:.75rem;background:#e8f4fd;border-radius:8px;border:1px solid #b3d7f0;"><strong>💳 Mercado Pago</strong> — Serás redirigido a la página segura de Mercado Pago para completar tu pago.</p>
         </div>
         <label class="pl-checkbox-label">
           <input type="checkbox" id="orderTerms" />
@@ -561,7 +560,7 @@
           <h3>Imágenes del Producto</h3>
           <div id="productFormImagesPreview" class="pl-images-preview"></div>
           <div class="pl-upload-area" id="productFormUploadArea">
-            <span>📷 Arrastra imágenes aquí o haz clic para seleccionar</span>
+            <span>📷 Arrastra imágenes aquí o haz clic (máx 3)</span>
             <input type="file" id="productFormImages" multiple accept="image/*" style="display:none" />
           </div>
           <p class="pl-muted" style="font-size:0.8rem;margin-top:0.25rem">Formatos: JPG, PNG, GIF, WEBP. Máx 5MB por imagen.</p>
@@ -582,6 +581,17 @@
         </div>
       </form>
     </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="pl-lightbox" id="plLightbox">
+    <button class="pl-lightbox-close" id="plLightboxClose">×</button>
+    <button class="pl-lightbox-arrow pl-lightbox-prev" id="plLightboxPrev">‹</button>
+    <div class="pl-lightbox-img-wrap">
+      <img id="plLightboxImg" src="" alt="Producto" />
+    </div>
+    <button class="pl-lightbox-arrow pl-lightbox-next" id="plLightboxNext">›</button>
+    <div class="pl-lightbox-counter" id="plLightboxCounter"></div>
   </div>
 
   <!-- Footer -->

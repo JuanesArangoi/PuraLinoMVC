@@ -87,6 +87,7 @@
     padding: 0.65rem 1rem; font-size: 0.9rem;
     min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
   }
+  .pl-actions .pl-btn { font-size: 0.75rem; padding: 0.5rem 0.7rem; white-space: nowrap; }
   .pl-icon-btn {
     min-width: 44px; min-height: 44px;
     display: flex; align-items: center; justify-content: center;
@@ -99,7 +100,7 @@
   .pl-hero p { font-size: 0.95rem; }
 
   /* --- Product grid --- */
-  .pl-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .pl-grid { grid-template-columns: 1fr !important; gap: 1rem; }
   .pl-img { height: 220px; }
   .pl-card { margin: 0; }
   .pl-card-body h3 { font-size: 1.05rem; }
@@ -222,6 +223,27 @@
 
   /* --- Toast --- */
   .pl-toast { right: 0.75rem; left: 0.75rem; max-width: none; top: 10px; font-size: 0.9rem; }
+
+  /* --- Footer responsive --- */
+  .pl-footer-grid { grid-template-columns: 1fr !important; gap: 1.5rem; text-align: center; }
+  .pl-footer-col { text-align: center; }
+
+  /* --- Tables & wide content --- */
+  .pl-modal-content table { display: block; overflow-x: auto; font-size: 0.85rem; }
+
+  /* --- Sections padding --- */
+  .pl-section { padding: 2rem 0; }
+  .pl-title { font-size: 1.6rem; margin-bottom: 1.25rem; }
+
+  /* --- Gallery mobile --- */
+  .pl-gallery-arrow { opacity: 1; width: 28px; height: 28px; font-size: 1.2rem; }
+  .pl-gallery-prev { left: 4px; }
+  .pl-gallery-next { right: 4px; }
+  .pl-lightbox-arrow { width: 40px; height: 40px; font-size: 1.8rem; }
+  .pl-lightbox-prev { left: 8px; }
+  .pl-lightbox-next { right: 8px; }
+  .pl-lightbox-close { top: 10px; right: 10px; width: 38px; height: 38px; font-size: 1.6rem; }
+  .pl-lightbox-img-wrap img { max-width: 96vw; max-height: 75vh; }
 
   /* --- WhatsApp floating button mobile --- */
   .whatsapp-float {

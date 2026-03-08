@@ -1,4 +1,4 @@
-const CACHE_NAME = 'puralino-cache-v17';
+const CACHE_NAME = 'puralino-cache-v21';
 const urlsToCache = [
   '/',
   '/assets/styles.css',
@@ -33,11 +33,18 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch — network-first for all requests
+// Fetch — network-first for static assets only
 self.addEventListener('fetch', event => {
   const req = event.request;
-  // Skip cross-origin requests (API calls, CDN, etc)
+  // Skip cross-origin requests
   if (!req.url.startsWith(self.location.origin)) return;
+
+  // Skip API routes — let them go directly to CloudFront/backend
+  const apiPaths = ['/auth', '/products', '/orders', '/promotions', '/users', '/returns',
+    '/shipping', '/upload', '/reviews', '/suppliers', '/warehouses', '/purchase-orders',
+    '/inventory', '/settings', '/payments', '/wishlist', '/giftcards'];
+  const url = new URL(req.url);
+  if (apiPaths.some(p => url.pathname.startsWith(p))) return;
 
   event.respondWith(
     fetch(req).then(res => {

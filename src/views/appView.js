@@ -102,13 +102,18 @@ export class AppView {
             </label>
           </div>`;
       }
-      const mainImg = (p.images && p.images.length > 0)
-        ? `<img src="${p.images[0].url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">`
-        : '👕';
+      const imgs = (p.images && p.images.length > 0) ? p.images : [];
+      const hasMultiple = imgs.length > 1;
+      const gallerySlides = imgs.length > 0
+        ? imgs.map((img, i) => `<div class="pl-gallery-slide${i===0?' active':''}" data-slide="${i}"><img src="${img.url}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover"></div>`).join('')
+        : '<div class="pl-gallery-slide active"><span style="font-size:2rem">👕</span></div>';
+      const galleryArrows = hasMultiple ? `<button class="pl-gallery-arrow pl-gallery-prev" data-dir="-1">‹</button><button class="pl-gallery-arrow pl-gallery-next" data-dir="1">›</button>` : '';
+      const galleryDots = hasMultiple ? `<div class="pl-gallery-dots">${imgs.map((_, i) => `<span class="pl-gallery-dot${i===0?' active':''}" data-dot="${i}"></span>`).join('')}</div>` : '';
       const stockBadge = outOfStock ? '<span class="pl-badge" style="position:absolute;top:10px;left:10px;background:#e74c3c;color:#fff;z-index:1;">Agotado</span>' : '';
+      const imgData = imgs.length > 0 ? `data-lightbox-images='${JSON.stringify(imgs.map(img=>img.url))}'` : '';
       return `
         <div class="pl-card" ${outOfStock?'style="opacity:0.6;"':''}>
-          <div class="pl-img" style="position:relative;">${stockBadge}${mainImg}</div>
+          <div class="pl-img pl-gallery" style="position:relative;cursor:pointer;" ${imgData}>${stockBadge}${gallerySlides}${galleryArrows}${galleryDots}</div>
           <div class="pl-card-body">
             <div class="pl-row-gap" style="justify-content:space-between;align-items:center;">
               <h3 class="pl-name">${p.name}</h3>

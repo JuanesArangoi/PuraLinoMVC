@@ -1280,10 +1280,46 @@ export class AppController {
         giftCardCode: document.getElementById('giftCardCode')?.value || undefined
       };
 
-      // ── Mercado Pago flow — handled by Payment Brick's own submit button ──
+      // ── Mercado Pago flow — redirect to MP checkout ──
       if(method === 'mercadopago'){
-        this.view.toast('Usa el formulario de Mercado Pago abajo para pagar.', 'warning');
-        orderSubmitting = false;
+        try{
+          if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'Redirigiendo a Mercado Pago...'; }
+          const prefPayload = {
+            items: this.model.state.cart.map(c => ({
+              productId: c.product.id || c.product._id,
+              variantId: c.variantId || undefined,
+              quantity: c.quantity,
+            })),
+            userName: nameVal,
+            email: this.model.state.currentUser?.email || '',
+            address: addrVal,
+            address2: document.getElementById('orderAddress2')?.value?.trim() || '',
+            department: document.getElementById('orderDepartment')?.value || '',
+            postalCode: document.getElementById('orderPostalCode')?.value?.trim() || '',
+            cedula: document.getElementById('orderCedula')?.value?.trim() || '',
+            phone: phoneVal,
+            paymentMethod: 'mercadopago',
+            shippingCity: document.getElementById('orderCity')?.value || '',
+            shippingCost: (typeof this.currentShipping?.cost==='number'? this.currentShipping.cost: undefined),
+            promoCode: this.model.state.currentPromo?.code || undefined,
+            giftCardCode: document.getElementById('giftCardCode')?.value || undefined,
+          };
+          const pref = await paymentsApi.createPreference(prefPayload);
+          // Persist address/phone
+          try{ await this.model.updateCurrentUser({ name: nameVal, address: addrVal, phone: phoneVal }); }catch(e){}
+          // Redirect to MercadoPago checkout
+          const redirectUrl = pref.sandboxInitPoint || pref.initPoint;
+          if(redirectUrl){
+            window.location.href = redirectUrl;
+          } else {
+            this.view.toast('No se pudo obtener la URL de pago de Mercado Pago','error');
+          }
+        }catch(err){
+          this.view.toast(err.message || 'Error al crear preferencia de pago','error');
+        }finally{
+          orderSubmitting = false;
+          if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = 'Confirmar Pedido'; }
+        }
         return;
       }
 
@@ -1341,8 +1377,7 @@ export class AppController {
         ['cardNumber','cardExpiry','cardCVV'].forEach(id=>document.getElementById(id).required=false);
         if(method==='mercadopago'){
           if(mpInfo) mpInfo.style.display='block';
-          if(submitBtn) submitBtn.style.display='none';
-          this._initMPBrick();
+          if(submitBtn) submitBtn.style.display='';
         } else {
           if(mpInfo) mpInfo.style.display='none';
           if(submitBtn) submitBtn.style.display='';
@@ -2361,6 +2396,104 @@ export class AppController {
     const start = (this.currentPage - 1) * this.PRODUCTS_PER_PAGE;
     const pageProducts = allProducts.slice(start, start + this.PRODUCTS_PER_PAGE);
     this.view.renderProducts(pageProducts, recs, { current: this.currentPage, total: totalPages, totalProducts: total });
+    this._bindGalleryEvents();
+  }
+
+  _bindGalleryEvents(){
+    // Gallery arrows (prev/next within product card)
+    document.querySelectorAll('.pl-gallery-arrow').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const gallery = btn.closest('.pl-gallery');
+        if(!gallery) return;
+        const slides = gallery.querySelectorAll('.pl-gallery-slide');
+        const dots = gallery.querySelectorAll('.pl-gallery-dot');
+        const dir = parseInt(btn.dataset.dir);
+        const current = gallery.querySelector('.pl-gallery-slide.active');
+        const idx = current ? parseInt(current.dataset.slide) : 0;
+        const next = (idx + dir + slides.length) % slides.length;
+        slides.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+        slides[next].classList.add('active');
+        if(dots[next]) dots[next].classList.add('active');
+      });
+    });
+
+    // Gallery dots
+    document.querySelectorAll('.pl-gallery-dot').forEach(dot => {
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const gallery = dot.closest('.pl-gallery');
+        if(!gallery) return;
+        const idx = parseInt(dot.dataset.dot);
+        gallery.querySelectorAll('.pl-gallery-slide').forEach(s => s.classList.remove('active'));
+        gallery.querySelectorAll('.pl-gallery-dot').forEach(d => d.classList.remove('active'));
+        const target = gallery.querySelector(`[data-slide="${idx}"]`);
+        if(target) target.classList.add('active');
+        dot.classList.add('active');
+      });
+    });
+
+    // Lightbox — click on gallery image to open
+    document.querySelectorAll('.pl-gallery').forEach(gallery => {
+      gallery.addEventListener('click', (e) => {
+        if(e.target.closest('.pl-gallery-arrow') || e.target.closest('.pl-gallery-dot')) return;
+        const raw = gallery.dataset.lightboxImages;
+        if(!raw) return;
+        const images = JSON.parse(raw);
+        const activeSlide = gallery.querySelector('.pl-gallery-slide.active');
+        const startIdx = activeSlide ? parseInt(activeSlide.dataset.slide) : 0;
+        this._openLightbox(images, startIdx);
+      });
+    });
+  }
+
+  _openLightbox(images, startIdx = 0){
+    this._lbImages = images;
+    this._lbIndex = startIdx;
+    const lb = document.getElementById('plLightbox');
+    const img = document.getElementById('plLightboxImg');
+    const counter = document.getElementById('plLightboxCounter');
+    const prevBtn = document.getElementById('plLightboxPrev');
+    const nextBtn = document.getElementById('plLightboxNext');
+
+    img.src = images[startIdx];
+    counter.textContent = images.length > 1 ? `${startIdx + 1} / ${images.length}` : '';
+    prevBtn.style.display = images.length > 1 ? '' : 'none';
+    nextBtn.style.display = images.length > 1 ? '' : 'none';
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Clean up old listeners
+    if(this._lbCleanup) this._lbCleanup();
+    const ac = new AbortController();
+    const sig = { signal: ac.signal };
+
+    const navigate = (dir) => {
+      this._lbIndex = (this._lbIndex + dir + this._lbImages.length) % this._lbImages.length;
+      img.src = this._lbImages[this._lbIndex];
+      counter.textContent = `${this._lbIndex + 1} / ${this._lbImages.length}`;
+    };
+
+    prevBtn.addEventListener('click', () => navigate(-1), sig);
+    nextBtn.addEventListener('click', () => navigate(1), sig);
+    document.getElementById('plLightboxClose').addEventListener('click', () => this._closeLightbox(), sig);
+    lb.addEventListener('click', (e) => { if(e.target === lb) this._closeLightbox(); }, sig);
+    document.addEventListener('keydown', (e) => {
+      if(!lb.classList.contains('active')) return;
+      if(e.key === 'Escape') this._closeLightbox();
+      if(e.key === 'ArrowLeft') navigate(-1);
+      if(e.key === 'ArrowRight') navigate(1);
+    }, sig);
+
+    this._lbCleanup = () => ac.abort();
+  }
+
+  _closeLightbox(){
+    const lb = document.getElementById('plLightbox');
+    lb.classList.remove('active');
+    document.body.style.overflow = '';
+    if(this._lbCleanup){ this._lbCleanup(); this._lbCleanup = null; }
   }
 
   goToPage(page){
@@ -2439,12 +2572,17 @@ export class AppController {
     // Submit
     document.getElementById('productForm').addEventListener('submit', (ev)=>{ ev.preventDefault(); this._submitProductForm(); }, sig);
 
+    this._updateUploadAreaVisibility();
     this.view.toggleModal('productModal', true);
   }
 
   _handleFileSelect(fileList){
     const preview = document.getElementById('productFormImagesPreview');
+    const MAX_IMAGES = 3;
     for(const file of fileList){
+      if((this._existingImages.length + this._pendingImages.length) >= MAX_IMAGES){
+        this.view.toast(`Máximo ${MAX_IMAGES} imágenes por producto`,'error'); break;
+      }
       if(!file.type.startsWith('image/')) continue;
       if(file.size > 5 * 1024 * 1024){ this.view.toast('Imagen demasiado grande (máx 5MB)','error'); continue; }
       this._pendingImages.push(file);
@@ -2455,9 +2593,17 @@ export class AppController {
       div.querySelector('.pl-img-remove').addEventListener('click', ()=>{
         this._pendingImages = this._pendingImages.filter(f => f !== file);
         div.remove();
+        this._updateUploadAreaVisibility();
       });
       preview.appendChild(div);
     }
+    this._updateUploadAreaVisibility();
+  }
+
+  _updateUploadAreaVisibility(){
+    const total = (this._existingImages||[]).length + (this._pendingImages||[]).length;
+    const area = document.getElementById('productFormUploadArea');
+    if(area) area.style.display = total >= 3 ? 'none' : '';
   }
 
   _renderExistingThumb(container, img){
@@ -2467,6 +2613,7 @@ export class AppController {
     div.querySelector('.pl-img-remove').addEventListener('click', ()=>{
       this._existingImages = this._existingImages.filter(i => i.public_id !== img.public_id);
       div.remove();
+      this._updateUploadAreaVisibility();
     });
     container.appendChild(div);
   }
