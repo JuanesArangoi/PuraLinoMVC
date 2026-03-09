@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PuraLino — Código (N4): Estructura y Trazabilidad</title>
+  <style>
+    @page { size: A4; margin: 2cm 2.5cm; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #222;
+      line-height: 1.55;
+      background: #fff;
+      padding: 30px 50px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #1a5276;
+      padding-bottom: 12px;
+      margin-bottom: 8px;
+    }
+    .header-center {
+      text-align: center;
+      flex: 1;
+    }
+    .header-center h1 {
+      font-size: 16px;
+      color: #1a5276;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .header-center .subtitle {
+      font-size: 12px;
+      color: #555;
+      font-style: italic;
+    }
+    .logo-placeholder {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1a5276, #2e86c1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 11px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* ── Sections ── */
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #b7950b;
+      margin: 28px 0 6px 0;
+      padding-bottom: 3px;
+      border-bottom: 2px solid #f0e68c;
+    }
+    .section-subtitle {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a5276;
+      margin: 18px 0 8px 0;
+    }
+    p.desc {
+      font-size: 12.5px;
+      color: #333;
+      margin-bottom: 12px;
+      text-align: justify;
+    }
+
+    /* ── Tree structure ── */
+    .tree {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 16px 20px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+      white-space: pre;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+    .tree .folder { color: #b7950b; font-weight: 700; }
+    .tree .file { color: #1a5276; }
+    .tree .comment { color: #888; font-style: italic; }
+
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+    thead th {
+      background: #1a5276;
+      color: #fff;
+      font-weight: 600;
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 12px;
+    }
+    tbody td {
+      padding: 7px 10px;
+      border: 1px solid #d5d8dc;
+      vertical-align: top;
+    }
+    tbody tr:nth-child(even) { background: #f7f9fc; }
+    tbody tr:hover { background: #eaf2f8; }
+    td code {
+      font-family: 'Consolas', monospace;
+      font-size: 11.5px;
+      color: #7d3c98;
+      background: #fdf2e9;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    td strong { font-weight: 600; }
+
+    /* ── Print ── */
+    @media print {
+      body { padding: 0; font-size: 11px; }
+      .tree { font-size: 11px; page-break-inside: avoid; }
+      table { font-size: 11px; }
+      .section-title { page-break-before: auto; }
+      .no-break { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════ HEADER ══════════ -->
+  <div class="header">
+    <div class="logo-placeholder">UQ</div>
+    <div class="header-center">
+      <h1>PuraLino</h1>
+      <h1>Software Architecture Description &ndash; C4 Model</h1>
+      <div class="subtitle">Curso: Ingeniería de Software III &mdash; Universidad del Quindío</div>
+    </div>
+    <div class="logo-placeholder" style="background:linear-gradient(135deg,#117a65,#1abc9c);font-size:9px;">Facultad<br>Ingeniería</div>
+  </div>
+
+  <!-- ══════════ 2.4 CÓDIGO (N4) ══════════ -->
+  <div class="section-title">2.4 Código (N4)</div>
+
+  <!-- ── 2.4.1 Estructura del repositorio y módulos ── -->
+  <div class="section-subtitle">2.4.1 Estructura del repositorio y módulos</div>
+  <p class="desc">
+    El sistema se implementa en dos módulos principales alineados con el Nivel 2 (Contenedores):
+    una aplicación web SPA (JavaScript vanilla, patrón MVC) como canal del cliente, y un Backend
+    en Node.js (Express + MongoDB) que centraliza la lógica de negocio, autenticación, pasarela
+    de pagos e integraciones externas.
+  </p>
+
+  <!-- ── Frontend ── -->
+  <p class="desc"><strong>Estructura (árbol):</strong></p>
+
+  <div class="tree"><span class="folder">/PuraLinoMVC/</span>                                    <span class="comment">(Frontend — SPA MVC)</span>
+    <span class="file">index.html</span>                              <span class="comment">(Vista principal / Single Page Application)</span>
+    <span class="file">sw.js</span>                                   <span class="comment">(Service Worker — cache offline, PWA)</span>
+    <span class="file">manifest.json</span>                           <span class="comment">(Manifiesto PWA)</span>
+    <span class="file">package.json</span>                            <span class="comment">(Dependencias y scripts de testing)</span>
+    <span class="file">vitest.config.js</span>                        <span class="comment">(Configuración de pruebas unitarias)</span>
+    <span class="folder">/assets/</span>
+        <span class="file">styles.css</span>                          <span class="comment">(Estilos globales de la aplicación)</span>
+    <span class="folder">/icons/</span>
+        <span class="file">icon-192x192.png</span>                    <span class="comment">(Iconos PWA)</span>
+    <span class="folder">/docs/</span>
+        <span class="file">C4_Arquitectura_Procesos.html</span>       <span class="comment">(Documentación C4)</span>
+        <span class="file">Manual_Usuario.html</span>                 <span class="comment">(Manual de usuario)</span>
+        <span class="file">Plan_Gestion_Calidad.html</span>           <span class="comment">(Plan de gestión de calidad)</span>
+    <span class="folder">/src/</span>
+        <span class="folder">/api/</span>
+            <span class="file">client.js</span>                       <span class="comment">(Cliente HTTP, gestión de token JWT, requests)</span>
+        <span class="folder">/controllers/</span>
+            <span class="file">appController.js</span>                <span class="comment">(Controlador principal MVC — orquesta UI y modelo)</span>
+        <span class="folder">/core/</span>
+            <span class="file">observer.js</span>                     <span class="comment">(Patrón Observer — bus de eventos)</span>
+        <span class="folder">/data/</span>
+            <span class="file">colombiaDepts.js</span>                <span class="comment">(Datos estáticos: departamentos y ciudades)</span>
+            <span class="file">legalPages.js</span>                   <span class="comment">(Contenido legal: términos, privacidad)</span>
+        <span class="folder">/models/</span>
+            <span class="file">appModel.js</span>                     <span class="comment">(Modelo MVC — estado, carrito, sesión, wishlist)</span>
+        <span class="folder">/strategies/</span>
+            <span class="file">discount.js</span>                     <span class="comment">(Estrategia de descuento porcentual)</span>
+            <span class="file">payment.js</span>                      <span class="comment">(Estrategia de procesamiento de pagos)</span>
+        <span class="folder">/styles/</span>
+            <span class="file">mobile.css</span>                      <span class="comment">(Estilos responsivos para móvil)</span>
+        <span class="folder">/views/</span>
+            <span class="file">appView.js</span>                      <span class="comment">(Vista principal — renderizado de UI)</span>
+            <span class="file">inventoryView.js</span>                <span class="comment">(Vista de gestión de inventario)</span>
+        <span class="file">main.js</span>                             <span class="comment">(Punto de entrada — inicializa AppController)</span>
+    <span class="folder">/tests/</span>
+        <span class="file">appModel.test.js</span>                    <span class="comment">(Tests unitarios del modelo)</span>
+        <span class="file">discount.test.js</span>                    <span class="comment">(Tests de estrategia de descuento)</span>
+        <span class="file">observer.test.js</span>                    <span class="comment">(Tests del patrón Observer)</span></div>
+
+  <!-- ── Backend ── -->
+  <div class="tree"><span class="folder">/PuraLinoMVC-api/</span>                                <span class="comment">(Backend — API REST Node.js)</span>
+    <span class="file">package.json</span>                            <span class="comment">(Dependencias: express, mongoose, jwt, bcrypt, etc.)</span>
+    <span class="file">vitest.config.js</span>                        <span class="comment">(Configuración de pruebas unitarias)</span>
+    <span class="folder">/src/</span>
+        <span class="file">server.js</span>                           <span class="comment">(Punto de entrada — Express, CORS, MongoDB, rutas)</span>
+        <span class="file">seed.js</span>                             <span class="comment">(Datos semilla — admin y configuración inicial)</span>
+        <span class="folder">/middleware/</span>
+            <span class="file">auth.js</span>                         <span class="comment">(Middleware JWT: authRequired, adminOnly)</span>
+        <span class="folder">/models/</span>                                  <span class="comment">(Entidades Mongoose / ODM)</span>
+            <span class="file">User.js</span>                         <span class="comment">(Usuario: auth, roles, verificación email)</span>
+            <span class="file">Product.js</span>                      <span class="comment">(Producto: nombre, precio, stock, variantes, imágenes)</span>
+            <span class="file">Order.js</span>                        <span class="comment">(Pedido: items, total, estado, factura)</span>
+            <span class="file">Promotion.js</span>                    <span class="comment">(Promoción: código, descuento, activa)</span>
+            <span class="file">Return.js</span>                       <span class="comment">(Devolución: motivo, estado, aprobación)</span>
+            <span class="file">Review.js</span>                       <span class="comment">(Reseña: rating, comentario)</span>
+            <span class="file">Wishlist.js</span>                     <span class="comment">(Lista de deseos del usuario)</span>
+            <span class="file">Coupon.js</span>                       <span class="comment">(Cupón de descuento)</span>
+            <span class="file">GiftCard.js</span>                     <span class="comment">(Tarjeta de regalo)</span>
+            <span class="file">Supplier.js</span>                     <span class="comment">(Proveedor: nombre, contacto)</span>
+            <span class="file">Warehouse.js</span>                    <span class="comment">(Bodega: ubicación, estantes)</span>
+            <span class="file">PurchaseOrder.js</span>                <span class="comment">(Orden de compra a proveedor)</span>
+            <span class="file">StockMovement.js</span>                <span class="comment">(Movimiento de inventario)</span>
+            <span class="file">Setting.js</span>                      <span class="comment">(Configuración general: banner, envío)</span>
+        <span class="folder">/routes/</span>                                  <span class="comment">(APIs REST — controladores de rutas)</span>
+            <span class="file">auth.js</span>                         <span class="comment">(Login, registro, verificación email, reset password)</span>
+            <span class="file">products.js</span>                     <span class="comment">(CRUD productos, imágenes Cloudinary)</span>
+            <span class="file">orders.js</span>                       <span class="comment">(Creación/consulta pedidos, estados, facturación)</span>
+            <span class="file">payments.js</span>                     <span class="comment">(MercadoPago: preferencias, webhooks, estados)</span>
+            <span class="file">promotions.js</span>                   <span class="comment">(CRUD promociones, validación códigos)</span>
+            <span class="file">returns.js</span>                      <span class="comment">(Gestión devoluciones: solicitar, aprobar, rechazar)</span>
+            <span class="file">reviews.js</span>                      <span class="comment">(Reseñas de productos)</span>
+            <span class="file">users.js</span>                        <span class="comment">(Gestión usuarios: perfil, CRUD admin)</span>
+            <span class="file">wishlist.js</span>                     <span class="comment">(Lista de deseos: agregar, consultar, eliminar)</span>
+            <span class="file">shipping.js</span>                     <span class="comment">(Tarifas de envío por ciudad)</span>
+            <span class="file">giftcards.js</span>                    <span class="comment">(Tarjetas de regalo: crear, canjear)</span>
+            <span class="file">inventory.js</span>                    <span class="comment">(Movimientos de stock, alertas bajo stock)</span>
+            <span class="file">suppliers.js</span>                    <span class="comment">(CRUD proveedores)</span>
+            <span class="file">warehouses.js</span>                   <span class="comment">(CRUD bodegas y estantes)</span>
+            <span class="file">purchaseOrders.js</span>               <span class="comment">(Órdenes de compra: crear, enviar, recibir)</span>
+            <span class="file">settings.js</span>                     <span class="comment">(Configuración: banner, tarifas envío)</span>
+            <span class="file">cloudinary.js</span>                   <span class="comment">(Upload de imágenes a Cloudinary)</span>
+            <span class="file">manual-upload.js</span>                <span class="comment">(Upload manual de archivos)</span>
+        <span class="folder">/utils/</span>
+            <span class="file">emailService.js</span>                 <span class="comment">(Servicio SMTP: verificación, recovery, facturas)</span>
+    <span class="folder">/tests/</span>
+        <span class="file">auth.test.js</span>                        <span class="comment">(Tests: JWT, bcrypt, validaciones registro, middleware)</span>
+        <span class="file">models.test.js</span>                      <span class="comment">(Tests: modelos, envío, email, MercadoPago, stock)</span></div>
+
+  <!-- ══════════ 2.4.2 TRAZABILIDAD ══════════ -->
+  <div class="section-subtitle">2.4.2 Trazabilidad paquetes/Clases</div>
+  <p class="desc">
+    Para garantizar consistencia entre arquitectura y código, los componentes del Nivel 3
+    se evidencian en los siguientes módulos para los procesos de
+    <strong>Autenticación y Gestión de Usuarios</strong> y <strong>Gestión de Pedidos</strong>:
+  </p>
+
+  <!-- ── Proceso 1: Autenticación y Gestión de Usuarios ── -->
+  <p class="desc"><strong>Proceso 1: Autenticación y Gestión de Usuarios</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:22%">Elemento N3</th>
+        <th style="width:38%">Código (paquete/clase)</th>
+        <th style="width:40%">Responsabilidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>API de Inicio de Sesión</strong></td>
+        <td><code>routes/auth.js</code></td>
+        <td>Expone endpoints de login (<code>POST /auth/login</code>), registro (<code>POST /auth/register</code>), verificación de email y consulta de perfil (<code>GET /auth/me</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>Componente de Seguridad</strong></td>
+        <td><code>middleware/auth.js</code></td>
+        <td>Valida credenciales JWT, gestiona sesión/token y protege endpoints con <code>authRequired</code> y <code>adminOnly</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Modelo de Usuario</strong></td>
+        <td><code>models/User.js</code></td>
+        <td>Entidad Mongoose: username, passwordHash, role (admin/client), email, emailVerified, tokens de verificación y recuperación.</td>
+      </tr>
+      <tr>
+        <td><strong>API de Gestión de Usuarios</strong></td>
+        <td><code>routes/users.js</code></td>
+        <td>Gestión de perfil de usuario, actualización de datos personales (<code>PUT /users/me</code>), listado de usuarios (admin).</td>
+      </tr>
+      <tr>
+        <td><strong>Componente de Notificaciones</strong></td>
+        <td><code>utils/emailService.js</code></td>
+        <td>Dispara y gestiona notificaciones por email (SMTP/Brevo): verificación de cuenta, recuperación de contraseña, reenvío de verificación.</td>
+      </tr>
+      <tr>
+        <td><strong>Recuperación de Contraseña</strong></td>
+        <td><code>routes/auth.js</code></td>
+        <td>Endpoints <code>POST /auth/forgot-password</code> y <code>POST /auth/reset-password</code>: genera token temporal, envía email y permite restablecer contraseña.</td>
+      </tr>
+      <tr>
+        <td><strong>Cliente HTTP (Frontend)</strong></td>
+        <td><code>api/client.js</code></td>
+        <td>Gestiona token JWT en <code>localStorage</code> (<code>pl_token</code>), adjunta header <code>Authorization: Bearer</code> a cada request autenticado.</td>
+      </tr>
+      <tr>
+        <td><strong>Modelo de Sesión (Frontend)</strong></td>
+        <td><code>models/appModel.js</code></td>
+        <td>Métodos <code>login()</code>, <code>logout()</code>, <code>init()</code>: restaura sesión desde localStorage, valida token con <code>/auth/me</code>, maneja timeout de 30 minutos.</td>
+      </tr>
+      <tr>
+        <td><strong>Controlador de Auth (Frontend)</strong></td>
+        <td><code>controllers/appController.js</code></td>
+        <td>Gestiona formularios de login/registro, modales de autenticación, actualización de UI según estado de sesión, manejo de roles (admin/client).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── Proceso 2: Gestión de Pedidos ── -->
+  <p class="desc"><strong>Proceso 2: Gestión de Pedidos</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:22%">Elemento N3</th>
+        <th style="width:38%">Código (paquete/clase)</th>
+        <th style="width:40%">Responsabilidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>API de Gestión de Pedidos</strong></td>
+        <td><code>routes/orders.js</code></td>
+        <td>Expone creación (<code>POST /orders</code>), consulta (<code>GET /orders</code>, <code>GET /orders/my</code>) y actualización de estado de pedidos. Genera número de factura.</td>
+      </tr>
+      <tr>
+        <td><strong>Modelo de Pedido</strong></td>
+        <td><code>models/Order.js</code></td>
+        <td>Entidad Mongoose: userId, items, total, subtotal, discount, shippingCost, status (pendiente_pago, confirmado, preparando, enviado, entregado, cancelado), invoiceNumber, paymentMethod.</td>
+      </tr>
+      <tr>
+        <td><strong>Componente de Pedidos</strong></td>
+        <td><code>routes/orders.js</code><br><code>models/Promotion.js</code></td>
+        <td>Reglas del pedido: cálculo de totales con descuentos y envío, transiciones de estado, validación de stock antes de confirmar, decremento de inventario.</td>
+      </tr>
+      <tr>
+        <td><strong>Adaptador de Pasarela de Pagos</strong></td>
+        <td><code>routes/payments.js</code></td>
+        <td>Encapsula integración con MercadoPago: creación de preferencias (<code>POST /payments/create-preference</code>), procesamiento de webhooks, verificación de estados de pago y simulación en sandbox.</td>
+      </tr>
+      <tr>
+        <td><strong>Componente de Notificaciones de Pedido</strong></td>
+        <td><code>utils/emailService.js</code></td>
+        <td>Envío de email de confirmación de pedido y factura al cliente tras completar la compra.</td>
+      </tr>
+      <tr>
+        <td><strong>Modelo de Producto</strong></td>
+        <td><code>models/Product.js</code></td>
+        <td>Entidad referenciada en items del pedido: nombre, precio, stock, variantes (talla/color). Se decrementa stock al confirmar pedido.</td>
+      </tr>
+      <tr>
+        <td><strong>Carrito de Compras (Frontend)</strong></td>
+        <td><code>models/appModel.js</code></td>
+        <td>Métodos <code>addToCart()</code>, <code>removeFromCart()</code>, <code>clearCart()</code>, <code>cartCount()</code>: gestión de carrito con persistencia en localStorage, validación de stock, expiración de 2 horas.</td>
+      </tr>
+      <tr>
+        <td><strong>Estrategia de Descuentos</strong></td>
+        <td><code>strategies/discount.js</code></td>
+        <td>Patrón Strategy: cálculo de descuentos porcentuales aplicados al subtotal del carrito mediante códigos promocionales.</td>
+      </tr>
+      <tr>
+        <td><strong>Estrategia de Pagos</strong></td>
+        <td><code>strategies/payment.js</code></td>
+        <td>Patrón Strategy: procesamiento según método de pago seleccionado (transferencia bancaria, contra-entrega, MercadoPago con redirección).</td>
+      </tr>
+      <tr>
+        <td><strong>Controlador de Checkout (Frontend)</strong></td>
+        <td><code>controllers/appController.js</code></td>
+        <td>Orquesta flujo de compra: resumen del carrito, formulario de envío, selección de pago, aplicación de cupones, redirección a MercadoPago, manejo de retorno (<code>_handleMPReturn</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>Vista de Pedidos (Frontend)</strong></td>
+        <td><code>views/appView.js</code></td>
+        <td>Renderizado del carrito, resumen de compra, seguimiento de pedidos, historial y detalle con factura.</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>
