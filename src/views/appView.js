@@ -56,22 +56,30 @@ export class AppView {
   }
 
   toast(msg, type='success'){
-    const n = this.refs.notification; n.textContent = msg; n.classList.add('show');
-    setTimeout(()=> n.classList.remove('show'), 2500);
+    const n = this.refs.notification;
+    n.textContent = msg;
+    n.className = 'pl-toast show';
+    if(type === 'error') n.classList.add('toast-error');
+    else if(type === 'warning') n.classList.add('toast-warning');
+    else n.classList.add('toast-success');
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(()=>{ n.className = 'pl-toast'; }, 3500);
   }
 
   showSessionWarning() {
-    const n = this.refs.notification; 
-    n.textContent = '⚠️ Tu sesión expirará en 10 segundos por inactividad'; 
-    n.classList.add('show');
-    setTimeout(()=> n.classList.remove('show'), 5000);
+    const n = this.refs.notification;
+    n.textContent = '⚠️ Tu sesión expirará en 10 segundos por inactividad';
+    n.className = 'pl-toast show toast-warning';
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(()=>{ n.className = 'pl-toast'; }, 5000);
   }
 
   showSessionExpired() {
-    const n = this.refs.notification; 
-    n.textContent = '⏰ Tu sesión ha expirado por inactividad. Redirigiendo al inicio...'; 
-    n.classList.add('show');
-    setTimeout(()=> n.classList.remove('show'), 8000);
+    const n = this.refs.notification;
+    n.textContent = '⏰ Tu sesión ha expirado por inactividad. Redirigiendo al inicio...';
+    n.className = 'pl-toast show toast-error';
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(()=>{ n.className = 'pl-toast'; }, 8000);
   }
 
   toggleModal(id, show){ const el=document.getElementById(id); if(!el) return; el.setAttribute('aria-hidden', show? 'false':'true'); }

@@ -1195,7 +1195,9 @@ export class AppController {
       if(!payload.username || payload.username.length<3){ this.view.toast('El usuario debe tener al menos 3 caracteres','error'); return; }
       if(payload.password.length<6){ this.view.toast('La contraseña debe tener al menos 6 caracteres','error'); return; }
       if(!/[A-Z]/.test(payload.password)){ this.view.toast('La contraseña debe tener al menos una mayúscula','error'); return; }
+      if(!/[a-z]/.test(payload.password)){ this.view.toast('La contraseña debe tener al menos una minúscula','error'); return; }
       if(!/[0-9]/.test(payload.password)){ this.view.toast('La contraseña debe tener al menos un número','error'); return; }
+      if(!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(payload.password)){ this.view.toast('La contraseña debe tener al menos un carácter especial (!@#$%^&*...)','error'); return; }
       try{ 
         const response = await this.model.register(payload); 
         this.view.toggleModal('registerModal', false); 

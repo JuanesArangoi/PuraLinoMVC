@@ -75,8 +75,14 @@ body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,s
 }
 
 .accessibility-icon {
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
+}
+.accessibility-icon svg {
+  width: 24px;
+  height: 24px;
 }
 
 /* Accessibility Modal */
@@ -278,8 +284,12 @@ textarea.pl-input{resize:vertical}
 .pl-total{margin-top:1rem;font-weight:700}
 
 /* Toast */
-.pl-toast{position:fixed;top:20px;right:20px;background:#fff;border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,.15);padding:.8rem 1rem;border-radius:8px;display:none;z-index:60}
+.pl-toast{position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#222;color:#fff;border:none;box-shadow:0 8px 32px rgba(0,0,0,.35);padding:1rem 2rem;border-radius:12px;display:none;z-index:9999;font-size:1rem;font-weight:500;max-width:90vw;min-width:300px;text-align:center;animation:toastSlide .35s ease}
+@keyframes toastSlide{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .pl-toast.show{display:block}
+.pl-toast.toast-error{background:#dc3545;color:#fff}
+.pl-toast.toast-warning{background:#f0ad4e;color:#222}
+.pl-toast.toast-success{background:#28a745;color:#fff}
 
 /* Product Form Modal */
 .pl-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
