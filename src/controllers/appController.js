@@ -1,7 +1,7 @@
 import { bus } from '../core/observer.js';
 import { AppModel } from '../models/appModel.js';
 import { AppView, cop } from '../views/appView.js';
-import { wishlistApi, reviewsApi, paymentsApi, settingsApi, backlogApi } from '../api/client.js';
+import { api, wishlistApi, reviewsApi, paymentsApi, settingsApi, backlogApi, chatbotApi } from '../api/client.js';
 import { PaymentStrategies } from '../strategies/payment.js';
 import { DEPARTMENTS } from '../data/colombiaDepts.js';
 import { LEGAL_PAGES } from '../data/legalPages.js';
@@ -212,6 +212,9 @@ export class AppController {
 
     // ── Load banner settings ──
     this._loadBanner();
+
+    // ── Setup chatbot ──
+    this.setupChatbot();
 
     // ── Handle Mercado Pago return ──
     this._handleMPReturn();
@@ -1094,6 +1097,32 @@ export class AppController {
           this.view.toast(err.message || 'Error al reenviar correo de verificación','error');
         }
       })(); }
+
+      // Toggle 2FA
+      if(e.target.id === 'toggle2FABtn'){ (async () => {
+        try{
+          const res = await api.toggle2FA();
+          this.model.state.currentUser.twoFactorEnabled = res.twoFactorEnabled;
+          try{ localStorage.setItem('pl_user', JSON.stringify(this.model.state.currentUser)); }catch(_){}
+          this.view.toast(res.message);
+          this.view.renderCustomerHome(this.model.state.currentUser);
+        }catch(err){ this.view.toast(err.message||'Error al cambiar 2FA','error'); }
+      })(); }
+
+      // Deactivate account
+      if(e.target.id === 'deactivateAccountBtn'){ (async () => {
+        if(!confirm('¿Estás seguro de que deseas desactivar tu cuenta? No podrás iniciar sesión hasta que contactes a soporte.')) return;
+        const password = prompt('Ingresa tu contraseña para confirmar:');
+        if(!password) return;
+        try{
+          await api.deactivateAccount(password);
+          this.view.toast('Tu cuenta ha sido desactivada.');
+          this.model.logout();
+          this.view.setUserUI(null);
+          this.view.showSections({home:true, products:true, customer:false, admin:false});
+          this.route('home');
+        }catch(err){ this.view.toast(err.message||'Error al desactivar cuenta','error'); }
+      })(); }
     });
 
     // Forms
@@ -1104,37 +1133,37 @@ export class AppController {
         const u = document.getElementById('username').value;
         const p = document.getElementById('password').value;
         try{
-          const user = await this.model.login(u,p);
-          this.view.toggleModal('loginModal', false);
-          this.view.toast(`¡Bienvenido ${user.name}!`);
-          this.view.setUserUI(user);
-          this.view.updateCartCount(this.model.cartCount());
-          
-          if(user.role==='admin'){
-            await Promise.all([
-              this.model.refreshProducts(),
-              this.model.refreshPromotions(),
-              this.model.refreshAllOrders(),
-              this.model.refreshUsers(),
-              this.model.refreshReturns(),
-              this.model.refreshSuppliers(),
-              this.model.refreshWarehouses(),
-              this.model.refreshPurchaseOrders(),
-            ]);
-            this.view.showSections({home:false,products:false,customer:false,admin:true});
-            this.currentAdminSection='dashboard';
-            this.loadAdminSection('dashboard');
-          } else {
-            await Promise.all([
-              this.model.refreshProducts(),
-              this.model.refreshPromotions(),
-              this.model.refreshMyOrders(),
-            ]);
-            this.route('home');
-            this.renderProducts();
+          const result = await this.model.login(u,p);
+          if(result.requires2FA){
+            this.view.toggleModal('loginModal', false);
+            document.getElementById('twoFactorUserId').value = result.userId;
+            document.getElementById('twoFactorCode').value = '';
+            this.view.toggleModal('twoFactorModal', true);
+            this.view.toast(result.message || 'Código enviado a tu correo');
+            return;
           }
+          const user = result;
+          this.view.toggleModal('loginModal', false);
+          this._completeLogin(user);
         } catch(err){
           this.view.toast(err.message||'Credenciales inválidas','error');
+        }
+      });
+    }
+    // 2FA verification form
+    const twoFactorForm = document.getElementById('twoFactorForm');
+    if(twoFactorForm){
+      twoFactorForm.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const userId = document.getElementById('twoFactorUserId').value;
+        const code = document.getElementById('twoFactorCode').value.trim();
+        if(!code || code.length !== 6){ this.view.toast('Ingresa el código de 6 dígitos','error'); return; }
+        try{
+          const user = await this.model.verify2FA(userId, code);
+          this.view.toggleModal('twoFactorModal', false);
+          this._completeLogin(user);
+        }catch(err){
+          this.view.toast(err.message||'Código incorrecto','error');
         }
       });
     }
@@ -1590,6 +1619,89 @@ export class AppController {
       this.view.toggleModal('cartModal', false); this.view.toggleModal('orderModal', true);
     });
 
+  }
+
+  // ── Complete login (shared by normal login and 2FA) ──
+  async _completeLogin(user){
+    this.view.toast(`¡Bienvenido ${user.name}!`);
+    this.view.setUserUI(user);
+    this.view.updateCartCount(this.model.cartCount());
+    this.model.startSessionTimeout();
+    if(user.role==='admin'){
+      await Promise.all([
+        this.model.refreshProducts(),
+        this.model.refreshPromotions(),
+        this.model.refreshAllOrders(),
+        this.model.refreshUsers(),
+        this.model.refreshReturns(),
+        this.model.refreshSuppliers(),
+        this.model.refreshWarehouses(),
+        this.model.refreshPurchaseOrders(),
+      ]);
+      this.view.showSections({home:false,products:false,customer:false,admin:true});
+      this.currentAdminSection='dashboard';
+      this.loadAdminSection('dashboard');
+    } else {
+      await Promise.all([
+        this.model.refreshProducts(),
+        this.model.refreshPromotions(),
+        this.model.refreshMyOrders(),
+      ]);
+      this.route('home');
+      this.renderProducts();
+    }
+  }
+
+  // ── Chatbot ──
+  setupChatbot(){
+    const toggle = document.getElementById('chatbotToggle');
+    const widget = document.getElementById('chatbotWidget');
+    const closeBtn = document.getElementById('chatbotClose');
+    const form = document.getElementById('chatbotForm');
+    const input = document.getElementById('chatbotInput');
+    const messages = document.getElementById('chatbotMessages');
+    if(!toggle || !widget) return;
+
+    toggle.onclick = ()=>{
+      const open = widget.style.display !== 'none';
+      widget.style.display = open ? 'none' : 'flex';
+      if(!open) input?.focus();
+    };
+    if(closeBtn) closeBtn.onclick = ()=>{ widget.style.display = 'none'; };
+
+    if(form) form.onsubmit = async (e)=>{
+      e.preventDefault();
+      const msg = input.value.trim();
+      if(!msg) return;
+      // Add user message
+      const userDiv = document.createElement('div');
+      userDiv.className = 'chatbot-msg user';
+      userDiv.textContent = msg;
+      messages.appendChild(userDiv);
+      input.value = '';
+      messages.scrollTop = messages.scrollHeight;
+      // Show typing
+      const typing = document.createElement('div');
+      typing.className = 'chatbot-msg typing';
+      typing.textContent = 'Escribiendo...';
+      messages.appendChild(typing);
+      messages.scrollTop = messages.scrollHeight;
+      try{
+        const res = await chatbotApi.send(msg);
+        typing.remove();
+        const botDiv = document.createElement('div');
+        botDiv.className = 'chatbot-msg bot';
+        botDiv.textContent = res.reply;
+        messages.appendChild(botDiv);
+      }catch(err){
+        typing.remove();
+        const errDiv = document.createElement('div');
+        errDiv.className = 'chatbot-msg bot';
+        errDiv.textContent = 'Lo siento, hubo un error. Intenta de nuevo.';
+        messages.appendChild(errDiv);
+      }
+      messages.scrollTop = messages.scrollHeight;
+    };
   }
 
   // ── Load admin section (with async data fetch for inventory sections) ──

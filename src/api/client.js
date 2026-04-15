@@ -28,6 +28,9 @@ export const api = {
   setToken,
   getToken,
   async login({ username, password }){ return request('/auth/login', { method:'POST', body:{ username, password } }); },
+  async verify2FA({ userId, code }){ return request('/auth/verify-2fa', { method:'POST', body:{ userId, code } }); },
+  async toggle2FA(){ return request('/auth/toggle-2fa', { method:'POST', auth:true }); },
+  async deactivateAccount(password){ return request('/auth/deactivate-account', { method:'POST', body:{ password }, auth:true }); },
   async register(payload){ return request('/auth/register', { method:'POST', body: payload }); },
 
   async getProducts(query){
@@ -146,6 +149,11 @@ export const settingsApi = {
     return data;
   },
   async deleteBannerImage(){ return request('/settings/banner/image', { method:'DELETE', auth:true }); }
+};
+
+// ── Chatbot ──
+export const chatbotApi = {
+  async send(message){ return request('/chatbot', { method:'POST', body:{ message } }); }
 };
 
 // ── Backlog ──

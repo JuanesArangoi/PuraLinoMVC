@@ -155,6 +155,17 @@ export class AppModel {
   // Auth
   async login(username, password){
     const res = await api.login({ username, password });
+    if(res.requires2FA) return { requires2FA: true, userId: res.userId, message: res.message };
+    api.setToken(res.token);
+    this.token = res.token;
+    const user = { ...res.user, id: res.user._id };
+    this.state.currentUser = user;
+    try{ localStorage.setItem('pl_user', JSON.stringify(user)); }catch(_){}
+    this.notify();
+    return user;
+  }
+  async verify2FA(userId, code){
+    const res = await api.verify2FA({ userId, code });
     api.setToken(res.token);
     this.token = res.token;
     const user = { ...res.user, id: res.user._id };

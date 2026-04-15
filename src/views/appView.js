@@ -295,7 +295,26 @@ export class AppView {
         <div class="pl-row-gap" style="margin-top:0.5rem">
           <button class="pl-btn pl-primary" type="button" id="saveProfileBtn">Guardar Cambios</button>
         </div>
-      </form>`;
+      </form>
+
+      <div class="pl-card pl-mb" style="margin-top:1.5rem;max-width:420px">
+        <div class="pl-card-body">
+          <h4>🔐 Autenticación en 2 Pasos</h4>
+          <p class="pl-muted" style="margin-bottom:.75rem">Agrega una capa extra de seguridad. Cada vez que inicies sesión, recibirás un código de 6 dígitos por correo electrónico.</p>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <span style="font-weight:600;color:${user.twoFactorEnabled ? '#28a745' : '#dc3545'}">${user.twoFactorEnabled ? '✅ Activada' : '❌ Desactivada'}</span>
+            <button class="pl-btn ${user.twoFactorEnabled ? 'pl-ghost' : 'pl-primary'}" id="toggle2FABtn" style="font-size:.85rem">${user.twoFactorEnabled ? 'Desactivar' : 'Activar'}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pl-card" style="margin-top:1rem;max-width:420px;border:1px solid #f5c6cb">
+        <div class="pl-card-body">
+          <h4 style="color:#dc3545">⚠️ Zona de Peligro</h4>
+          <p class="pl-muted" style="margin-bottom:.75rem">Desactivar tu cuenta impedirá que puedas iniciar sesión. Tu información se conserva por temas de trazabilidad. Para reactivarla, contacta a soporte.</p>
+          <button class="pl-btn" id="deactivateAccountBtn" style="background:#dc3545;color:#fff;font-size:.85rem">Desactivar mi Cuenta</button>
+        </div>
+      </div>`;
   }
 
   renderPurchaseHistory(orders){
