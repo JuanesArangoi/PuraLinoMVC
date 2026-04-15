@@ -1,7 +1,7 @@
 import { bus } from '../core/observer.js';
 import { AppModel } from '../models/appModel.js';
 import { AppView, cop } from '../views/appView.js';
-import { wishlistApi, reviewsApi, paymentsApi, settingsApi } from '../api/client.js';
+import { wishlistApi, reviewsApi, paymentsApi, settingsApi, backlogApi } from '../api/client.js';
 import { PaymentStrategies } from '../strategies/payment.js';
 import { DEPARTMENTS } from '../data/colombiaDepts.js';
 import { LEGAL_PAGES } from '../data/legalPages.js';
@@ -1604,6 +1604,7 @@ export class AppController {
         case 'reviews': this.model._pendingReviews = await reviewsApi.pending(); break;
         case 'stockMovements': this.model._stockMovements = await this.model.getStockMovements(); break;
         case 'lowStock': this.model._lowStockAlerts = await this.model.getLowStockAlerts(5); break;
+        case 'backlog': this.model._backlogItems = await backlogApi.list(); break;
       }
     }catch(err){ /* data may already be loaded */ }
     this.view.renderAdmin(sect, this.model);
@@ -1945,6 +1946,87 @@ export class AppController {
         else this.view.toast('Devolución marcada como no apta. Se notificó al cliente.');
       }catch(err){ this.view.toast(err.message,'error'); }
     };
+
+    // ── BACKLOG ──
+    const addBacklogBtn = document.getElementById('addBacklogBtn');
+    if(addBacklogBtn) addBacklogBtn.onclick = ()=>{
+      this.model._editingBacklog = null;
+      this.view.renderAdmin('backlogForm', this.model);
+      this.bindInventoryEvents();
+    };
+
+    el.querySelectorAll('[data-edit-backlog]').forEach(btn=> btn.onclick = async ()=>{
+      const id = btn.getAttribute('data-edit-backlog');
+      try{
+        const item = await backlogApi.get(id);
+        this.model._editingBacklog = item;
+        this.view.renderAdmin('backlogForm', this.model);
+        this.bindInventoryEvents();
+      }catch(err){ this.view.toast(err.message,'error'); }
+    });
+
+    el.querySelectorAll('[data-delete-backlog]').forEach(btn=> btn.onclick = async ()=>{
+      if(!confirm('¿Eliminar esta tarea del backlog?')) return;
+      try{
+        await backlogApi.remove(btn.getAttribute('data-delete-backlog'));
+        this.view.toast('Tarea eliminada');
+        this.loadAdminSection('backlog');
+      }catch(err){ this.view.toast(err.message,'error'); }
+    });
+
+    const backlogForm = document.getElementById('backlogForm');
+    if(backlogForm) backlogForm.onsubmit = async (e)=>{
+      e.preventDefault();
+      const data = {
+        title: document.getElementById('backlogTitle').value.trim(),
+        description: document.getElementById('backlogDescription').value.trim(),
+        category: document.getElementById('backlogCategory').value,
+        priority: document.getElementById('backlogPriority').value,
+        status: document.getElementById('backlogStatus').value,
+        assignee: document.getElementById('backlogAssignee').value,
+        dueDate: document.getElementById('backlogDueDate').value || null
+      };
+      if(!data.title){ this.view.toast('El título es obligatorio','error'); return; }
+      try{
+        const id = document.getElementById('backlogId').value;
+        if(id) await backlogApi.update(id, data);
+        else await backlogApi.create(data);
+        this.view.toast(id?'Tarea actualizada':'Tarea creada');
+        this.loadAdminSection('backlog');
+      }catch(err){ this.view.toast(err.message,'error'); }
+    };
+
+    const cancelBacklogBtn = document.getElementById('cancelBacklogBtn');
+    if(cancelBacklogBtn) cancelBacklogBtn.onclick = ()=> this.loadAdminSection('backlog');
+
+    const backToBacklog = document.getElementById('backToBacklog');
+    if(backToBacklog) backToBacklog.onclick = ()=> this.loadAdminSection('backlog');
+
+    // Backlog filters
+    const filterStatus = document.getElementById('backlogFilterStatus');
+    const filterPriority = document.getElementById('backlogFilterPriority');
+    const applyBacklogFilter = ()=>{
+      const st = filterStatus?.value || '';
+      const pr = filterPriority?.value || '';
+      const all = this.model._backlogItems || [];
+      const filtered = all.filter(i=>{
+        if(st && i.status !== st) return false;
+        if(pr && i.priority !== pr) return false;
+        return true;
+      });
+      const orig = this.model._backlogItems;
+      this.model._backlogItems = filtered;
+      this.view.renderAdmin('backlog', this.model);
+      this.model._backlogItems = orig;
+      this.bindInventoryEvents();
+      // Restore filter values
+      const fs = document.getElementById('backlogFilterStatus');
+      const fp = document.getElementById('backlogFilterPriority');
+      if(fs) fs.value = st;
+      if(fp) fp.value = pr;
+    };
+    if(filterStatus) filterStatus.onchange = applyBacklogFilter;
+    if(filterPriority) filterPriority.onchange = applyBacklogFilter;
   }
 
   bindPOFormEvents(){

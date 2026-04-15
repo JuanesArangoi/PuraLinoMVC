@@ -778,6 +778,110 @@ export class AppView {
       case 'lowStock':{
         el.innerHTML = inv.renderLowStock(state._lowStockAlerts || []);
         break; }
+      case 'backlog':{
+        const items = state._backlogItems || [];
+        const statusColors = { pendiente:'#f39c12', en_progreso:'#2980b9', completada:'#27ae60', bloqueada:'#e74c3c' };
+        const statusLabels = { pendiente:'Pendiente', en_progreso:'En Progreso', completada:'Completada', bloqueada:'Bloqueada' };
+        const prioColors = { alta:'#e74c3c', media:'#f39c12', baja:'#27ae60' };
+        const prioLabels = { alta:'Alta', media:'Media', baja:'Baja' };
+        const catLabels = { general:'General', feature:'Feature', bug:'Bug', mejora:'Mejora', documentacion:'Documentación' };
+        const pending = items.filter(i=>i.status==='pendiente').length;
+        const inProg = items.filter(i=>i.status==='en_progreso').length;
+        const done = items.filter(i=>i.status==='completada').length;
+        const blocked = items.filter(i=>i.status==='bloqueada').length;
+        el.innerHTML = `
+          <h2>📋 Backlog del Proyecto</h2>
+          <div class="pl-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin-bottom:1rem">
+            <div class="pl-card"><div class="pl-card-body" style="text-align:center"><h4 style="margin:0;color:#f39c12">Pendientes</h4><p style="font-size:1.6rem;margin:.25rem 0 0;font-weight:700">${pending}</p></div></div>
+            <div class="pl-card"><div class="pl-card-body" style="text-align:center"><h4 style="margin:0;color:#2980b9">En Progreso</h4><p style="font-size:1.6rem;margin:.25rem 0 0;font-weight:700">${inProg}</p></div></div>
+            <div class="pl-card"><div class="pl-card-body" style="text-align:center"><h4 style="margin:0;color:#27ae60">Completadas</h4><p style="font-size:1.6rem;margin:.25rem 0 0;font-weight:700">${done}</p></div></div>
+            <div class="pl-card"><div class="pl-card-body" style="text-align:center"><h4 style="margin:0;color:#e74c3c">Bloqueadas</h4><p style="font-size:1.6rem;margin:.25rem 0 0;font-weight:700">${blocked}</p></div></div>
+          </div>
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem">
+            <button class="pl-btn pl-primary" id="addBacklogBtn">+ Nueva Tarea</button>
+            <select id="backlogFilterStatus" class="pl-input" style="width:auto">
+              <option value="">Todos los estados</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="en_progreso">En Progreso</option>
+              <option value="completada">Completada</option>
+              <option value="bloqueada">Bloqueada</option>
+            </select>
+            <select id="backlogFilterPriority" class="pl-input" style="width:auto">
+              <option value="">Todas las prioridades</option>
+              <option value="alta">Alta</option>
+              <option value="media">Media</option>
+              <option value="baja">Baja</option>
+            </select>
+          </div>
+          ${items.length===0?'<p class="pl-muted">No hay tareas en el backlog. Crea la primera.</p>':`
+          <table style="width:100%;margin-top:.5rem">
+            <thead><tr><th style="width:30%">Título</th><th>Categoría</th><th>Prioridad</th><th>Estado</th><th>Asignado</th><th>Fecha Límite</th><th>Acciones</th></tr></thead>
+            <tbody>${items.map(i=>`<tr>
+              <td><strong>${i.title}</strong>${i.description?`<br><span class="pl-muted" style="font-size:.8rem">${i.description.substring(0,60)}${i.description.length>60?'...':''}</span>`:''}</td>
+              <td style="font-size:.85rem">${catLabels[i.category]||i.category||'General'}</td>
+              <td><span style="background:${prioColors[i.priority]||'#999'};color:#fff;padding:2px 8px;border-radius:10px;font-size:.75rem;font-weight:600">${prioLabels[i.priority]||i.priority}</span></td>
+              <td><span style="background:${statusColors[i.status]||'#999'};color:#fff;padding:2px 8px;border-radius:10px;font-size:.75rem;font-weight:600">${statusLabels[i.status]||i.status}</span></td>
+              <td style="font-size:.85rem">${i.assignee||'<span class="pl-muted">—</span>'}</td>
+              <td style="font-size:.85rem">${i.dueDate?new Date(i.dueDate).toLocaleDateString('es-CO'):'<span class="pl-muted">—</span>'}</td>
+              <td>
+                <button class="pl-btn pl-ghost" data-edit-backlog="${i._id||i.id}" style="font-size:.85rem">Editar</button>
+                <button class="pl-btn pl-ghost" data-delete-backlog="${i._id||i.id}" style="font-size:.85rem;color:#e74c3c">Eliminar</button>
+              </td>
+            </tr>`).join('')}</tbody>
+          </table>`}`;
+        break; }
+      case 'backlogForm':{
+        const item = state._editingBacklog || {};
+        const isEdit = !!item.id;
+        el.innerHTML = `
+          <button class="pl-btn pl-ghost" id="backToBacklog" style="margin-bottom:1rem">← Volver al Backlog</button>
+          <h2>${isEdit?'Editar Tarea':'Nueva Tarea'}</h2>
+          <form id="backlogForm" class="pl-form" style="max-width:600px">
+            <input type="hidden" id="backlogId" value="${item.id||''}" />
+            <label>Título *<input id="backlogTitle" class="pl-input" value="${item.title||''}" required /></label>
+            <label>Descripción<textarea id="backlogDescription" class="pl-input" rows="3">${item.description||''}</textarea></label>
+            <div class="pl-row-gap" style="gap:1rem">
+              <label style="flex:1">Categoría
+                <select id="backlogCategory" class="pl-input">
+                  <option value="general" ${item.category==='general'?'selected':''}>General</option>
+                  <option value="feature" ${item.category==='feature'?'selected':''}>Feature</option>
+                  <option value="bug" ${item.category==='bug'?'selected':''}>Bug</option>
+                  <option value="mejora" ${item.category==='mejora'?'selected':''}>Mejora</option>
+                  <option value="documentacion" ${item.category==='documentacion'?'selected':''}>Documentación</option>
+                </select>
+              </label>
+              <label style="flex:1">Prioridad
+                <select id="backlogPriority" class="pl-input">
+                  <option value="baja" ${item.priority==='baja'?'selected':''}>Baja</option>
+                  <option value="media" ${(item.priority==='media'||!item.priority)?'selected':''}>Media</option>
+                  <option value="alta" ${item.priority==='alta'?'selected':''}>Alta</option>
+                </select>
+              </label>
+            </div>
+            <div class="pl-row-gap" style="gap:1rem">
+              <label style="flex:1">Estado
+                <select id="backlogStatus" class="pl-input">
+                  <option value="pendiente" ${(item.status==='pendiente'||!item.status)?'selected':''}>Pendiente</option>
+                  <option value="en_progreso" ${item.status==='en_progreso'?'selected':''}>En Progreso</option>
+                  <option value="completada" ${item.status==='completada'?'selected':''}>Completada</option>
+                  <option value="bloqueada" ${item.status==='bloqueada'?'selected':''}>Bloqueada</option>
+                </select>
+              </label>
+              <label style="flex:1">Asignado a
+                <select id="backlogAssignee" class="pl-input">
+                  <option value="" ${!item.assignee?'selected':''}>Sin asignar</option>
+                  <option value="Juan Arango" ${item.assignee==='Juan Arango'?'selected':''}>Juan Arango</option>
+                  <option value="Juan Arias" ${item.assignee==='Juan Arias'?'selected':''}>Juan Arias</option>
+                </select>
+              </label>
+            </div>
+            <label>Fecha Límite<input id="backlogDueDate" type="date" class="pl-input" value="${item.dueDate?new Date(item.dueDate).toISOString().split('T')[0]:''}" /></label>
+            <div class="pl-row-gap" style="margin-top:.75rem;gap:.75rem">
+              <button class="pl-btn pl-primary" type="submit">${isEdit?'Guardar Cambios':'Crear Tarea'}</button>
+              <button class="pl-btn pl-ghost" type="button" id="cancelBacklogBtn">Cancelar</button>
+            </div>
+          </form>`;
+        break; }
     }
   }
 

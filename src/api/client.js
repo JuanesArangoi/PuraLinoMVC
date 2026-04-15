@@ -148,6 +148,15 @@ export const settingsApi = {
   async deleteBannerImage(){ return request('/settings/banner/image', { method:'DELETE', auth:true }); }
 };
 
+// ── Backlog ──
+export const backlogApi = {
+  async list(){ return request('/backlog', { auth:true }); },
+  async get(id){ return request(`/backlog/${id}`, { auth:true }); },
+  async create(payload){ return request('/backlog', { method:'POST', body: payload, auth:true }); },
+  async update(id, payload){ return request(`/backlog/${id}`, { method:'PUT', body: payload, auth:true }); },
+  async remove(id){ return request(`/backlog/${id}`, { method:'DELETE', auth:true }); }
+};
+
 // Reviews endpoints
 export const reviewsApi = {
   async list(productId){ return request(`/products/${productId}/reviews`); },
