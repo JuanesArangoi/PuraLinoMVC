@@ -1132,14 +1132,19 @@ export class AppController {
         e.preventDefault();
         const u = document.getElementById('username').value;
         const p = document.getElementById('password').value;
+        const loginBtn = loginForm.querySelector('button[type="submit"]');
+        if(loginBtn){ loginBtn.disabled = true; loginBtn.textContent = 'Ingresando...'; }
         try{
           const result = await this.model.login(u,p);
           if(result.requires2FA){
             this.view.toggleModal('loginModal', false);
-            document.getElementById('twoFactorUserId').value = result.userId;
-            document.getElementById('twoFactorCode').value = '';
+            const uidEl = document.getElementById('twoFactorUserId');
+            const codeEl = document.getElementById('twoFactorCode');
+            if(uidEl) uidEl.value = result.userId;
+            if(codeEl) codeEl.value = '';
             this.view.toggleModal('twoFactorModal', true);
-            this.view.toast(result.message || 'Código enviado a tu correo');
+            this.view.toast(result.message || 'Código enviado a tu correo', 'success');
+            if(codeEl) setTimeout(()=> codeEl.focus(), 300);
             return;
           }
           const user = result;
@@ -1147,26 +1152,31 @@ export class AppController {
           this._completeLogin(user);
         } catch(err){
           this.view.toast(err.message||'Credenciales inválidas','error');
+        } finally {
+          if(loginBtn){ loginBtn.disabled = false; loginBtn.textContent = 'Ingresar'; }
         }
       });
     }
-    // 2FA verification form
-    const twoFactorForm = document.getElementById('twoFactorForm');
-    if(twoFactorForm){
-      twoFactorForm.addEventListener('submit', async (e)=>{
+    // 2FA verification form (use delegation for robustness)
+    document.addEventListener('submit', async (e)=>{
+      if(e.target && e.target.id === 'twoFactorForm'){
         e.preventDefault();
-        const userId = document.getElementById('twoFactorUserId').value;
-        const code = document.getElementById('twoFactorCode').value.trim();
+        const userId = document.getElementById('twoFactorUserId')?.value;
+        const code = (document.getElementById('twoFactorCode')?.value || '').trim();
         if(!code || code.length !== 6){ this.view.toast('Ingresa el código de 6 dígitos','error'); return; }
+        const btn = e.target.querySelector('button[type="submit"]');
+        if(btn){ btn.disabled = true; btn.textContent = 'Verificando...'; }
         try{
           const user = await this.model.verify2FA(userId, code);
           this.view.toggleModal('twoFactorModal', false);
           this._completeLogin(user);
         }catch(err){
           this.view.toast(err.message||'Código incorrecto','error');
+        }finally{
+          if(btn){ btn.disabled = false; btn.textContent = 'Verificar'; }
         }
-      });
-    }
+      }
+    });
     // T&C checkbox → enable/disable register button
     const regTerms = document.getElementById('regTerms');
     const regSubmitBtn = document.getElementById('regSubmitBtn');

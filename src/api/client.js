@@ -165,6 +165,12 @@ export const backlogApi = {
   async remove(id){ return request(`/backlog/${id}`, { method:'DELETE', auth:true }); }
 };
 
+// ── Audit Log ──
+export const auditApi = {
+  async list(params={}){ const q = new URLSearchParams(params).toString(); return request(`/backlog/audit${q ? '?'+q : ''}`, { auth:true }); },
+  async stats(){ return request('/backlog/audit/stats', { auth:true }); }
+};
+
 // Reviews endpoints
 export const reviewsApi = {
   async list(productId){ return request(`/products/${productId}/reviews`); },

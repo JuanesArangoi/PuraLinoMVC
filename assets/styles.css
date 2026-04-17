@@ -41,7 +41,7 @@ body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,s
 .pl-icon-btn .pl-admin{font-size:1rem}
 
 /* WhatsApp Floating Button */
-.whatsapp-float{position:fixed;bottom:80px;right:20px;width:52px;height:52px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:9999;box-shadow:0 4px 14px rgba(37,211,102,.4);transition:transform .2s,box-shadow .2s;text-decoration:none}
+.whatsapp-float{position:fixed;bottom:150px;right:20px;width:52px;height:52px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:9999;box-shadow:0 4px 14px rgba(37,211,102,.4);transition:transform .2s,box-shadow .2s;text-decoration:none}
 .whatsapp-float:hover{transform:scale(1.1);box-shadow:0 6px 20px rgba(37,211,102,.55)}
 
 /* Accessibility Button */
@@ -81,8 +81,8 @@ body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,s
   line-height: 1;
 }
 .accessibility-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
 }
 
 /* Accessibility Modal */
@@ -368,7 +368,7 @@ textarea.pl-input{resize:vertical}
 .pl-lightbox-counter{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:.95rem;font-weight:500}
 
 /* Chatbot Widget */
-.chatbot-toggle{position:fixed;bottom:90px;right:24px;z-index:999;width:56px;height:56px;border-radius:50%;background:#8b7355;color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);transition:all .3s;display:flex;align-items:center;justify-content:center}
+.chatbot-toggle{position:fixed;bottom:80px;right:20px;z-index:999;width:52px;height:52px;border-radius:50%;background:#8b7355;color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);transition:all .3s;display:flex;align-items:center;justify-content:center}
 .chatbot-toggle:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(0,0,0,.35)}
 .chatbot-widget{position:fixed;bottom:155px;right:24px;z-index:1000;width:380px;max-width:calc(100vw - 48px);height:480px;max-height:60vh;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.2);display:flex;flex-direction:column;overflow:hidden;animation:chatSlideUp .3s ease}
 @keyframes chatSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
