@@ -350,7 +350,7 @@ export function renderLowStock(alerts) {
     ${alerts.length===0?'<div class="pl-card"><div class="pl-card-body" style="text-align:center;color:#27ae60"><h3>✅ Todo en orden</h3><p>No hay productos con stock bajo.</p></div></div>':''}
     <table style="width:100%;margin-top:1rem">
       ${alerts.length>0?`<thead><tr><th>Producto</th><th>Variante</th><th>Stock Actual</th><th>Umbral</th><th>Estado</th></tr></thead>
-      <tbody>${alerts.map(a=>`<tr style="background:${a.currentStock===0?'#f8d7da':'#fff3cd'}">
+      <tbody>${alerts.map(a=>`<tr class="${a.currentStock===0?'stock-out':'stock-low'}">
         <td><strong>${a.productName}</strong></td>
         <td>${a.variantLabel||'General'}</td>
         <td style="font-weight:700;color:${a.currentStock===0?'#e74c3c':'#f39c12'}">${a.currentStock}</td>

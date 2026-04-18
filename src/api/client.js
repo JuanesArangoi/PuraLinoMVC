@@ -171,6 +171,13 @@ export const auditApi = {
   async stats(){ return request('/backlog/audit/stats', { auth:true }); }
 };
 
+// ── DB Changelog (auditoría a nivel de BD) ──
+export const dbChangelogApi = {
+  async list(params={}){ const q = new URLSearchParams(params).toString(); return request(`/backlog/db-changelog${q ? '?'+q : ''}`, { auth:true }); },
+  async stats(){ return request('/backlog/db-changelog/stats', { auth:true }); },
+  async history(recordId){ return request(`/backlog/db-changelog/${recordId}`, { auth:true }); }
+};
+
 // Reviews endpoints
 export const reviewsApi = {
   async list(productId){ return request(`/products/${productId}/reviews`); },
