@@ -73,7 +73,22 @@
     // Hamburger menu
     (function() {
       function init() {
-        var toggle = document.getElementById('menuToggle');
+        var toggle = document.ubuntu@ip-172-31-33-115:~$ cd /home/ubuntu/PuraLinoMVC-api
+ubuntu@ip-172-31-33-115:~/PuraLinoMVC-api$ node -e "
+const { Sequelize } = require('sequelize');
+require('dotenv').config();
+const sequelize = new Sequelize(process.env.DATABASE_URL, { dialect: 'postgres', logging: false });
+(async () => {
+  const [results] = await sequelize.query(\"UPDATE users SET \\\"twoFactorEnabled\\\" = true WHERE username IN ('Esteban1', 'adminAuditoria') RETURNING username, \\\"twoFactorEnabled\\\"\");
+  console.log('Updated:', results);
+  await sequelize.close();
+})();
+"
+Updated: [
+  { username: 'Esteban1', twoFactorEnabled: true },
+  { username: 'adminAuditoria', twoFactorEnabled: true }
+]
+ubuntu@ip-172-31-33-115:~/PuraLinoMVC-api$ getElementById('menuToggle');
         var nav = document.getElementById('navLinks');
         var overlay = document.getElementById('menuOverlay');
         if (!overlay) {
@@ -628,7 +643,7 @@
             <li><a href="#" data-legal="privacy">Aviso Legal y Privacidad</a></li>
             <li><a href="#" data-legal="shipping">Políticas de Envío y Devolución</a></li>
             <li><a href="#" data-legal="payment">Pago Seguro</a></li>
-            <li><a href="#" data-legal="userManual">Manual de Usuario</a></li>
+            <li><a href="docs/Manual_Usuario.html" target="_blank">Manual de Usuario</a></li>
           </ul>
         </div>
         <div class="pl-footer-col">
