@@ -886,6 +886,192 @@ export const LEGAL_PAGES = {
         • El cliente puede usar el cupón en su próxima compra ingresándolo como código de promoción
       </div>
 
+      <div style="background:#8b7355;color:#fff;padding:16px 24px;border-radius:10px;margin:30px 0 20px;text-align:center">
+        <h2 style="color:#fff;border:none;margin:0;font-size:20px">📦 Módulo de Inventario</h2>
+        <p style="color:#e8d5bf;margin:6px 0 0;font-size:13px">Las siguientes secciones cubren la gestión de inventario, accesible desde el Panel de Administración → menú "Inventario"</p>
+      </div>
+
+      <h2>21. Gestión de Proveedores</h2>
+      <p>Los proveedores son las empresas o personas que suministran productos a PuraLino. Desde esta sección puedes crear, editar y consultar todos tus proveedores.</p>
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Acceder a Proveedores</h4>
+        <p>En el menú lateral del Panel de Administración, haz clic en <strong>📦 Inventario → Proveedores</strong>. Se mostrará la tabla con todos los proveedores registrados.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>Crear nuevo proveedor</h4>
+        <p>Haz clic en el botón <strong>"+ Nuevo Proveedor"</strong>. Se abrirá un formulario con los siguientes campos:</p>
+      </div>
+      <table class="fields-table">
+        <thead><tr><th>Campo</th><th>Obligatorio</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Nombre</strong></td><td class="required">Sí</td><td>Nombre o razón social del proveedor</td><td>Textiles del Valle S.A.S.</td></tr>
+          <tr><td><strong>Persona de contacto</strong></td><td>No</td><td>Nombre de la persona de contacto</td><td>Carlos Martínez</td></tr>
+          <tr><td><strong>Email</strong></td><td>No</td><td>Correo electrónico del proveedor</td><td>ventas@textiledelvalle.com</td></tr>
+          <tr><td><strong>Teléfono</strong></td><td>No</td><td>Número de teléfono de contacto</td><td>+57 316 555 1234</td></tr>
+          <tr><td><strong>Dirección</strong></td><td>No</td><td>Dirección física del proveedor</td><td>Cra 5 #23-45, Cali</td></tr>
+        </tbody>
+      </table>
+      <div class="success">
+        <strong>✅ Confirmación:</strong> Al crear o editar un proveedor exitosamente, aparecerá un mensaje toast de confirmación en la esquina superior derecha.
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h4>Editar o eliminar proveedor</h4>
+        <p>En la tabla de proveedores, cada fila tiene botones de <strong>Editar</strong> (abre el formulario con datos pre-cargados) y <strong>Eliminar</strong> (solicita confirmación antes de borrar).</p>
+      </div>
+
+      <h2>22. Almacenes y Estanterías</h2>
+      <p>Los almacenes representan las ubicaciones físicas donde se almacena la mercancía. Cada almacén puede tener múltiples <strong>estanterías</strong> para organizar los productos.</p>
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Acceder a Almacenes</h4>
+        <p>En el menú lateral, haz clic en <strong>📦 Inventario → Almacenes</strong>. Verás la lista de almacenes con sus estanterías.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>Crear almacén</h4>
+        <p>Haz clic en <strong>"+ Nuevo Almacén"</strong> y completa:</p>
+      </div>
+      <table class="fields-table">
+        <thead><tr><th>Campo</th><th>Obligatorio</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Nombre</strong></td><td class="required">Sí</td><td>Nombre identificador del almacén</td><td>Bodega Principal</td></tr>
+          <tr><td><strong>Ubicación</strong></td><td>No</td><td>Dirección o referencia</td><td>Zona Industrial Norte</td></tr>
+          <tr><td><strong>Estanterías</strong></td><td>No</td><td>Lista de estanterías (se pueden agregar después)</td><td>A1, A2, B1, B2</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">
+        <strong>💡 Organización:</strong> Las estanterías permiten ubicar exactamente dónde se almacena cada producto dentro del almacén. Al recibir mercancía, podrás asignar cada producto a un almacén y estantería específica.
+      </div>
+
+      <h2>23. Albaranes (Órdenes de Compra a Proveedores)</h2>
+      <p>Los albaranes son las órdenes de compra que realizas a tus proveedores para reabastecer el inventario. Cada albarán tiene un ciclo de vida:</p>
+      <table class="fields-table">
+        <thead><tr><th>Estado</th><th>Descripción</th><th>Color</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Borrador</strong></td><td>Creado pero no enviado. Se puede editar libremente.</td><td style="background:#e0e0e0;text-align:center">Gris</td></tr>
+          <tr><td><strong>Enviado</strong></td><td>Confirmado y enviado al proveedor. Esperando entrega.</td><td style="background:#bbdefb;text-align:center">Azul</td></tr>
+          <tr><td><strong>Parcial</strong></td><td>Se ha recibido parte de la mercancía.</td><td style="background:#fff9c4;text-align:center">Amarillo</td></tr>
+          <tr><td><strong>Completo</strong></td><td>Toda la mercancía ha sido recibida.</td><td style="background:#c8e6c9;text-align:center">Verde</td></tr>
+        </tbody>
+      </table>
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Ver lista de albaranes</h4>
+        <p>En el menú lateral, haz clic en <strong>📦 Inventario → Albaranes</strong>. La tabla muestra: Nº Albarán, Proveedor, Productos, Costo Total, Estado, Fecha y Acciones.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>Crear nuevo albarán</h4>
+        <p>Haz clic en <strong>"+ Nuevo Albarán"</strong>. Complete el formulario:</p>
+      </div>
+      <table class="fields-table">
+        <thead><tr><th>Campo</th><th>Obligatorio</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Proveedor</strong></td><td class="required">Sí</td><td>Selecciona un proveedor del listado desplegable</td></tr>
+          <tr><td><strong>Productos</strong></td><td class="required">Sí</td><td>Selecciona producto, variante, cantidad y costo unitario. Puedes agregar múltiples líneas con "+ Línea"</td></tr>
+          <tr><td><strong>Notas</strong></td><td>No</td><td>Observaciones internas sobre la orden</td></tr>
+        </tbody>
+      </table>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h4>Ver detalle y enviar albarán</h4>
+        <p>Haz clic en el <strong>Nº de albarán</strong> para ver su detalle. Desde aquí puedes:</p>
+        <ul>
+          <li><strong>Enviar:</strong> Cambia el estado de "Borrador" a "Enviado"</li>
+          <li><strong>Recibir:</strong> Inicia el proceso de recepción de mercancía</li>
+          <li><strong>Imprimir PDF:</strong> Genera un documento PDF del albarán</li>
+        </ul>
+      </div>
+
+      <h2>24. Recepción de Mercancía</h2>
+      <p>Cuando el proveedor entrega la mercancía, debes registrar la recepción. Esto actualiza automáticamente el stock de cada producto.</p>
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Iniciar recepción</h4>
+        <p>Desde el detalle de un albarán con estado <strong>"Enviado"</strong> o <strong>"Parcial"</strong>, haz clic en <strong>"Recibir"</strong>.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>Registrar cantidades recibidas</h4>
+        <p>El formulario muestra cada línea del albarán con:</p>
+        <ul>
+          <li><strong>Producto y variante:</strong> lo que se pidió</li>
+          <li><strong>Cantidad pedida:</strong> lo solicitado al proveedor</li>
+          <li><strong>Cantidad ya recibida:</strong> lo recibido en entregas anteriores</li>
+          <li><strong>Cantidad a recibir ahora:</strong> campo editable para esta entrega</li>
+          <li><strong>Almacén y Estantería:</strong> dónde se almacenará</li>
+        </ul>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h4>Confirmar recepción</h4>
+        <p>Haz clic en <strong>"Confirmar Recepción"</strong>. El sistema:</p>
+        <ul>
+          <li>Actualiza el stock de cada producto/variante automáticamente</li>
+          <li>Registra un <strong>movimiento de stock</strong> tipo "entrada" con trazabilidad completa</li>
+          <li>Actualiza el estado del albarán a "Parcial" o "Completo"</li>
+        </ul>
+      </div>
+      <div class="success">
+        <strong>✅ Stock actualizado:</strong> Al confirmar la recepción, el stock se incrementa inmediatamente.
+      </div>
+      <div class="important">
+        <strong>❗ Recepción parcial:</strong> Si no recibes toda la mercancía, registra solo lo que llegó. El albarán quedará en "Parcial" y podrás hacer otra recepción después.
+      </div>
+
+      <h2>25. Movimientos de Inventario</h2>
+      <p>Muestra el <strong>historial completo</strong> de todos los movimientos de stock. Cada cambio de inventario (entrada, salida, ajuste) se registra con trazabilidad completa.</p>
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Acceder a Movimientos</h4>
+        <p>En el menú lateral, haz clic en <strong>📦 Inventario → Movimientos</strong>.</p>
+      </div>
+      <table class="fields-table">
+        <thead><tr><th>Columna</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Fecha</strong></td><td>Fecha y hora exacta del movimiento</td></tr>
+          <tr><td><strong>Tipo</strong></td><td><strong>Entrada</strong> (recepción), <strong>Salida</strong> (venta) o <strong>Ajuste</strong> (corrección manual)</td></tr>
+          <tr><td><strong>Producto</strong></td><td>Nombre del producto afectado</td></tr>
+          <tr><td><strong>Variante</strong></td><td>Variante específica (talla, color, etc.)</td></tr>
+          <tr><td><strong>Cantidad</strong></td><td>Cantidad movida (positiva para entradas, negativa para salidas)</td></tr>
+          <tr><td><strong>Razón</strong></td><td>Motivo del movimiento</td></tr>
+          <tr><td><strong>Almacén / Estantería</strong></td><td>Ubicación del movimiento</td></tr>
+          <tr><td><strong>Usuario</strong></td><td>Administrador que realizó la operación</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">
+        <strong>💡 Trazabilidad:</strong> Los movimientos se generan automáticamente al recibir mercancía y al procesar ventas. Permite auditar quién, cuándo y por qué cambió el stock.
+      </div>
+
+      <h2>26. Alertas de Stock Bajo</h2>
+      <p>Muestra productos cuyo stock actual está <strong>por debajo del umbral configurado</strong> (por defecto: 5 unidades) o <strong>completamente agotados</strong>.</p>
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Acceder a Stock Bajo</h4>
+        <p>En el menú lateral, haz clic en <strong>📦 Inventario → Stock Bajo</strong>.</p>
+      </div>
+      <table class="fields-table">
+        <thead><tr><th>Columna</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Producto</strong></td><td>Nombre del producto con stock bajo</td></tr>
+          <tr><td><strong>Variante</strong></td><td>Variante específica o "General"</td></tr>
+          <tr><td><strong>Stock Actual</strong></td><td>Cantidad disponible (rojo si es 0, naranja si es bajo)</td></tr>
+          <tr><td><strong>Umbral</strong></td><td>Nivel mínimo configurado (por defecto: 5)</td></tr>
+          <tr><td><strong>Estado</strong></td><td><span style="color:#e74c3c;font-weight:700">⛔ AGOTADO</span> (stock = 0) o <span style="color:#f39c12;font-weight:700">⚠️ BAJO</span> (1-5 unidades)</td></tr>
+        </tbody>
+      </table>
+      <div class="warning">
+        <strong>⚠️ Acción recomendada:</strong> Cuando veas productos aquí, crea un <strong>albarán</strong> al proveedor correspondiente: <strong>Inventario → Albaranes → + Nuevo Albarán</strong>.
+      </div>
+      <div class="tip">
+        <strong>💡 Código de colores:</strong><br>
+        • <strong style="color:#e74c3c">Fila roja</strong> → Producto agotado (stock = 0). No se puede vender.<br>
+        • <strong style="color:#f39c12">Fila amarilla</strong> → Stock bajo (1-5 unidades). Reabastecer pronto.
+      </div>
+
       <div style="text-align:center; padding: 30px 0; border-top: 2px solid #e8e0d4; margin-top: 24px;">
         <h2 style="border:none; text-align:center; color: #8b7355;">¿Necesitas ayuda?</h2>
         <p style="font-size: 13px; color: #666; margin-top: 10px;">
@@ -897,7 +1083,7 @@ export const LEGAL_PAGES = {
         </p>
         <p style="margin-top: 18px; color: #999; font-size: 11px;">
           Pura Lino — Lino Puro, Comodidad Pura<br>
-          Manual de Usuario v1.0 — Febrero 2026
+          Manual de Usuario v1.1 — Abril 2026
         </p>
       </div>
 
