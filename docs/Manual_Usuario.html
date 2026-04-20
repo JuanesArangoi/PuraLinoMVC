@@ -189,7 +189,7 @@
       <strong>Versión:</strong> 1.0<br>
       <strong>Fecha:</strong> Febrero 2026<br>
       <strong>Audiencia:</strong> Clientes / Usuarios finales<br>
-      <strong>Procesos cubiertos:</strong> Registro, Login, Autenticación y Proceso de Pedido
+      <strong>Procesos cubiertos:</strong> Registro, Login, Autenticación, Proceso de Pedido y Gestión de Inventario
     </div>
   </div>
 
@@ -217,6 +217,12 @@
       <li><a href="#admin-order-detail">Detalle y Gestión de un Pedido</a></li>
       <li><a href="#admin-tracking">Tracking y Eventos de Envío</a></li>
       <li><a href="#admin-returns">Gestión de Devoluciones (Admin)</a></li>
+      <li><a href="#inv-suppliers">Gestión de Proveedores (Inventario)</a></li>
+      <li><a href="#inv-warehouses">Almacenes y Estanterías</a></li>
+      <li><a href="#inv-po">Albaranes (Órdenes de Compra)</a></li>
+      <li><a href="#inv-receive">Recepción de Mercancía</a></li>
+      <li><a href="#inv-movements">Movimientos de Inventario</a></li>
+      <li><a href="#inv-lowstock">Alertas de Stock Bajo</a></li>
     </ol>
   </div>
 
@@ -1111,6 +1117,333 @@
     • Tienen vigencia de <strong>3 meses</strong> desde la fecha de generación<br>
     • No se realizan reembolsos en dinero — siempre se genera un cupón<br>
     • El cliente puede usar el cupón en su próxima compra ingresándolo como código de promoción
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- INVENTARIO — SECCIONES 21-26 -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <div style="background:#8b7355;color:#fff;padding:16px 24px;border-radius:10px;margin:30px 0 20px;text-align:center">
+    <h2 style="color:#fff;border:none;margin:0;font-size:20px">📦 Módulo de Inventario</h2>
+    <p style="color:#e8d5bf;margin:6px 0 0;font-size:13px">Las siguientes secciones cubren la gestión de inventario, accesible desde el Panel de Administración → menú "Inventario"</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 21. PROVEEDORES -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <h2 id="inv-suppliers">21. Gestión de Proveedores</h2>
+
+  <p>Los proveedores son las empresas o personas que suministran productos a PuraLino. Desde esta sección puedes crear, editar y consultar todos tus proveedores.</p>
+
+  <div class="step">
+    <div class="step-number">1</div>
+    <h4>Acceder a Proveedores</h4>
+    <p>En el menú lateral del Panel de Administración, haz clic en <strong>📦 Inventario → Proveedores</strong>. Se mostrará la tabla con todos los proveedores registrados.</p>
+  </div>
+
+  <div class="screenshot">
+    <div class="caption">📸 CAPTURA 29 — Lista de proveedores</div>
+    <div class="placeholder">
+      <div class="icon">📋</div>
+      Tabla de proveedores con columnas: Nombre, Contacto, Email, Teléfono, Acciones
+      <span class="hint">Subir captura a Cloudinary y reemplazar este placeholder</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-number">2</div>
+    <h4>Crear nuevo proveedor</h4>
+    <p>Haz clic en el botón <strong>"+ Nuevo Proveedor"</strong>. Se abrirá un formulario con los siguientes campos:</p>
+  </div>
+
+  <table class="fields-table">
+    <thead><tr><th>Campo</th><th>Obligatorio</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Nombre</strong></td><td class="required">Sí</td><td>Nombre o razón social del proveedor</td><td>Textiles del Valle S.A.S.</td></tr>
+      <tr><td><strong>Persona de contacto</strong></td><td>No</td><td>Nombre de la persona de contacto en la empresa</td><td>Carlos Martínez</td></tr>
+      <tr><td><strong>Email</strong></td><td>No</td><td>Correo electrónico del proveedor</td><td>ventas@textiledelvalle.com</td></tr>
+      <tr><td><strong>Teléfono</strong></td><td>No</td><td>Número de teléfono de contacto</td><td>+57 316 555 1234</td></tr>
+      <tr><td><strong>Dirección</strong></td><td>No</td><td>Dirección física del proveedor</td><td>Cra 5 #23-45, Cali</td></tr>
+    </tbody>
+  </table>
+
+  <div class="screenshot">
+    <div class="caption">📸 CAPTURA 30 — Formulario de nuevo proveedor</div>
+    <div class="placeholder">
+      <div class="icon">📝</div>
+      Formulario con campos: Nombre, Contacto, Email, Teléfono, Dirección y botón "Crear Proveedor"
+      <span class="hint">Subir captura a Cloudinary y reemplazar este placeholder</span>
+    </div>
+  </div>
+
+  <div class="success">
+    <strong>✅ Confirmación:</strong> Al crear o editar un proveedor exitosamente, aparecerá un mensaje toast de confirmación en la esquina superior derecha.
+  </div>
+
+  <div class="step">
+    <div class="step-number">3</div>
+    <h4>Editar o eliminar proveedor</h4>
+    <p>En la tabla de proveedores, cada fila tiene botones de <strong>Editar</strong> (abre el formulario con datos pre-cargados) y <strong>Eliminar</strong> (solicita confirmación antes de borrar).</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 22. ALMACENES -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="inv-warehouses">22. Almacenes y Estanterías</h2>
+
+  <p>Los almacenes representan las ubicaciones físicas donde se almacena la mercancía. Cada almacén puede tener múltiples <strong>estanterías</strong> para organizar los productos.</p>
+
+  <div class="step">
+    <div class="step-number">1</div>
+    <h4>Acceder a Almacenes</h4>
+    <p>En el menú lateral, haz clic en <strong>📦 Inventario → Almacenes</strong>. Verás la lista de almacenes con sus estanterías.</p>
+  </div>
+
+  <div class="screenshot">
+    <div class="caption">📸 CAPTURA 31 — Lista de almacenes con estanterías</div>
+    <div class="placeholder">
+      <div class="icon">🏭</div>
+      Tabla de almacenes mostrando: Nombre, Ubicación, Estanterías (expandibles), Acciones
+      <span class="hint">Subir captura a Cloudinary y reemplazar este placeholder</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-number">2</div>
+    <h4>Crear almacén</h4>
+    <p>Haz clic en <strong>"+ Nuevo Almacén"</strong> y completa:</p>
+  </div>
+
+  <table class="fields-table">
+    <thead><tr><th>Campo</th><th>Obligatorio</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Nombre</strong></td><td class="required">Sí</td><td>Nombre identificador del almacén</td><td>Bodega Principal</td></tr>
+      <tr><td><strong>Ubicación</strong></td><td>No</td><td>Dirección o referencia de ubicación</td><td>Zona Industrial Norte</td></tr>
+      <tr><td><strong>Estanterías</strong></td><td>No</td><td>Lista de estanterías dentro del almacén (se pueden agregar después)</td><td>A1, A2, B1, B2</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip">
+    <strong>💡 Organización:</strong> Las estanterías permiten ubicar exactamente dónde se almacena cada producto dentro del almacén. Al recibir mercancía, podrás asignar cada producto a un almacén y estantería específica.
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 23. ALBARANES -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="inv-po">23. Albaranes (Órdenes de Compra a Proveedores)</h2>
+
+  <p>Los albaranes son las órdenes de compra que realizas a tus proveedores para reabastecer el inventario. Cada albarán tiene un ciclo de vida con los siguientes estados:</p>
+
+  <table class="fields-table">
+    <thead><tr><th>Estado</th><th>Descripción</th><th>Color</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Borrador</strong></td><td>Albarán creado pero no enviado al proveedor. Se puede editar libremente.</td><td style="background:#e0e0e0;text-align:center">Gris</td></tr>
+      <tr><td><strong>Enviado</strong></td><td>Albarán confirmado y enviado al proveedor. Esperando entrega de mercancía.</td><td style="background:#bbdefb;text-align:center">Azul</td></tr>
+      <tr><td><strong>Parcial</strong></td><td>Se ha recibido parte de la mercancía. Faltan productos por entregar.</td><td style="background:#fff9c4;text-align:center">Amarillo</td></tr>
+      <tr><td><strong>Completo</strong></td><td>Toda la mercancía ha sido recibida y registrada en el inventario.</td><td style="background:#c8e6c9;text-align:center">Verde</td></tr>
+    </tbody>
+  </table>
+
+  <div class="step">
+    <div class="step-number">1</div>
+    <h4>Ver lista de albaranes</h4>
+    <p>En el menú lateral, haz clic en <strong>📦 Inventario → Albaranes</strong>. La tabla muestra: Nº Albarán, Proveedor, Productos, Costo Total, Estado, Fecha y Acciones.</p>
+  </div>
+
+  <div class="screenshot">
+    <div class="caption">📸 CAPTURA 32 — Tabla de albaranes</div>
+    <div class="placeholder">
+      <div class="icon">📄</div>
+      Tabla de albaranes con columnas: Nº, Proveedor, Productos, Costo, Estado (badge de color), Fecha, Acciones
+      <span class="hint">Subir captura a Cloudinary y reemplazar este placeholder</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-number">2</div>
+    <h4>Crear nuevo albarán</h4>
+    <p>Haz clic en <strong>"+ Nuevo Albarán"</strong>. Complete el formulario:</p>
+  </div>
+
+  <table class="fields-table">
+    <thead><tr><th>Campo</th><th>Obligatorio</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Proveedor</strong></td><td class="required">Sí</td><td>Selecciona un proveedor del listado desplegable</td></tr>
+      <tr><td><strong>Productos</strong></td><td class="required">Sí</td><td>Selecciona producto, variante (si aplica), cantidad y costo unitario. Puedes agregar múltiples líneas con el botón "+ Línea"</td></tr>
+      <tr><td><strong>Notas</strong></td><td>No</td><td>Observaciones internas sobre la orden</td></tr>
+    </tbody>
+  </table>
+
+  <div class="screenshot">
+    <div class="caption">📸 CAPTURA 33 — Formulario de nuevo albarán con líneas de productos</div>
+    <div class="placeholder">
+      <div class="icon">📝</div>
+      Formulario con selector de proveedor, líneas de productos (producto, variante, cantidad, costo unitario) y botones "Crear Albarán" / "+ Línea"
+      <span class="hint">Subir captura a Cloudinary y reemplazar este placeholder</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-number">3</div>
+    <h4>Ver detalle y enviar albarán</h4>
+    <p>Haz clic en el <strong>Nº de albarán</strong> en la tabla para ver su detalle completo. Desde aquí puedes:</p>
+    <ul>
+      <li><strong>Enviar:</strong> Cambia el estado de "Borrador" a "Enviado" (ya no se puede editar)</li>
+      <li><strong>Recibir:</strong> Inicia el proceso de recepción de mercancía (disponible cuando el estado es "Enviado" o "Parcial")</li>
+      <li><strong>Imprimir PDF:</strong> Genera un documento PDF del albarán con datos del proveedor, productos y costos para enviarlo o archivar</li>
+    </ul>
+  </div>
+
+  <div class="screenshot">
+    <div class="caption">📸 CAPTURA 34 — Detalle de albarán con acciones</div>
+    <div class="placeholder">
+      <div class="icon">📋</div>
+      Vista detalle del albarán mostrando: información del proveedor, tabla de productos con cantidades pedidas/recibidas, botones "Enviar", "Recibir", "Imprimir PDF"
+      <span class="hint">Subir captura a Cloudinary y reemplazar este placeholder</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 24. RECEPCIÓN -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="inv-receive">24. Recepción de Mercancía</h2>
+
+  <p>Cuando el proveedor entrega la mercancía, debes registrar la recepción en el sistema. Esto actualiza automáticamente el stock de cada producto.</p>
+
+  <div class="step">
+    <div class="step-number">1</div>
+    <h4>Iniciar recepción</h4>
+    <p>Desde el detalle de un albarán con estado <strong>"Enviado"</strong> o <strong>"Parcial"</strong>, haz clic en el botón <strong>"Recibir"</strong>.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-number">2</div>
+    <h4>Registrar cantidades recibidas</h4>
+    <p>El formulario de recepción muestra cada línea del albarán con:</p>
+    <ul>
+      <li><strong>Producto y variante:</strong> lo que se pidió</li>
+      <li><strong>Cantidad pedida:</strong> lo que se solicitó al proveedor</li>
+      <li><strong>Cantidad ya recibida:</strong> lo que se ha recibido en recepciones anteriores</li>
+      <li><strong>Cantidad a recibir ahora:</strong> campo editable para ingresar cuánto llega en esta entrega</li>
+      <li><strong>Almacén y Estantería:</strong> selecciona dónde se almacenará la mercancía</li>
+    </ul>
+  </div>
+
+  <div class="screenshot">
+    <div class="caption">📸 CAPTURA 35 — Formulario de recepción de mercancía</div>
+    <div class="placeholder">
+      <div class="icon">📦</div>
+      Formulario de recepción con tabla: Producto, Variante, Pedido, Ya Recibido, Recibir Ahora, Almacén, Estantería, y botón "Confirmar Recepción"
+      <span class="hint">Subir captura a Cloudinary y reemplazar este placeholder</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-number">3</div>
+    <h4>Confirmar recepción</h4>
+    <p>Haz clic en <strong>"Confirmar Recepción"</strong>. El sistema:</p>
+    <ul>
+      <li>Actualiza el stock de cada producto/variante automáticamente</li>
+      <li>Registra un <strong>movimiento de stock</strong> tipo "entrada" con trazabilidad completa</li>
+      <li>Actualiza el estado del albarán a "Parcial" o "Completo" según corresponda</li>
+    </ul>
+  </div>
+
+  <div class="success">
+    <strong>✅ Stock actualizado:</strong> Al confirmar la recepción, el stock se incrementa inmediatamente. Puedes verificarlo en la sección de Movimientos de Inventario.
+  </div>
+
+  <div class="important">
+    <strong>❗ Recepción parcial:</strong> Si no recibes toda la mercancía, registra solo las cantidades que llegaron. El albarán quedará en estado "Parcial" y podrás hacer otra recepción cuando llegue el resto.
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 25. MOVIMIENTOS -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="inv-movements">25. Movimientos de Inventario</h2>
+
+  <p>Esta sección muestra el <strong>historial completo</strong> de todos los movimientos de stock del sistema. Cada vez que el inventario cambia (entrada por recepción, salida por venta, ajuste manual), se registra un movimiento con trazabilidad completa.</p>
+
+  <div class="step">
+    <div class="step-number">1</div>
+    <h4>Acceder a Movimientos</h4>
+    <p>En el menú lateral, haz clic en <strong>📦 Inventario → Movimientos</strong>. Se muestra una tabla con todos los movimientos ordenados del más reciente al más antiguo.</p>
+  </div>
+
+  <table class="fields-table">
+    <thead><tr><th>Columna</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Fecha</strong></td><td>Fecha y hora exacta del movimiento</td></tr>
+      <tr><td><strong>Tipo</strong></td><td><strong>Entrada</strong> (recepción de mercancía), <strong>Salida</strong> (venta de producto) o <strong>Ajuste</strong> (corrección manual)</td></tr>
+      <tr><td><strong>Producto</strong></td><td>Nombre del producto afectado</td></tr>
+      <tr><td><strong>Variante</strong></td><td>Variante específica (talla, color, etc.) si aplica</td></tr>
+      <tr><td><strong>Cantidad</strong></td><td>Cantidad movida (positiva para entradas, negativa para salidas)</td></tr>
+      <tr><td><strong>Razón</strong></td><td>Descripción del motivo (ej: "Recepción albarán PO-0023", "Venta pedido #12345")</td></tr>
+      <tr><td><strong>Almacén</strong></td><td>Almacén donde se realizó el movimiento</td></tr>
+      <tr><td><strong>Estantería</strong></td><td>Estantería específica dentro del almacén</td></tr>
+      <tr><td><strong>Usuario</strong></td><td>Nombre del administrador que realizó la operación</td></tr>
+    </tbody>
+  </table>
+
+  <div class="screenshot">
+    <div class="caption">📸 CAPTURA 36 — Tabla de movimientos de inventario</div>
+    <div class="placeholder">
+      <div class="icon">📊</div>
+      Tabla de movimientos mostrando: Fecha, Tipo, Producto, Variante, Cantidad, Razón, Almacén, Estantería, Usuario
+      <span class="hint">Subir captura a Cloudinary y reemplazar este placeholder</span>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>💡 Trazabilidad:</strong> Los movimientos se generan automáticamente al recibir mercancía de albaranes y al procesar ventas. Esto permite auditar exactamente quién, cuándo y por qué cambió el stock de un producto.
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- 26. STOCK BAJO -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break"></div>
+  <h2 id="inv-lowstock">26. Alertas de Stock Bajo</h2>
+
+  <p>Esta sección muestra los productos cuyo stock actual está <strong>por debajo del umbral configurado</strong> (por defecto: 5 unidades) o que están <strong>completamente agotados</strong>. Es una herramienta proactiva para evitar quedarse sin inventario.</p>
+
+  <div class="step">
+    <div class="step-number">1</div>
+    <h4>Acceder a Stock Bajo</h4>
+    <p>En el menú lateral, haz clic en <strong>📦 Inventario → Stock Bajo</strong>. La tabla muestra automáticamente los productos que necesitan atención.</p>
+  </div>
+
+  <table class="fields-table">
+    <thead><tr><th>Columna</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Producto</strong></td><td>Nombre del producto con stock bajo</td></tr>
+      <tr><td><strong>Variante</strong></td><td>Variante específica o "General" si no tiene variantes</td></tr>
+      <tr><td><strong>Stock Actual</strong></td><td>Cantidad disponible actualmente (se resalta en rojo si es 0, naranja si es bajo)</td></tr>
+      <tr><td><strong>Umbral</strong></td><td>Nivel mínimo configurado para este producto (por defecto: 5)</td></tr>
+      <tr><td><strong>Estado</strong></td><td><span style="color:#e74c3c;font-weight:700">⛔ AGOTADO</span> (stock = 0) o <span style="color:#f39c12;font-weight:700">⚠️ BAJO</span> (1-5 unidades)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="screenshot">
+    <div class="caption">📸 CAPTURA 37 — Alertas de stock bajo con código de colores</div>
+    <div class="placeholder">
+      <div class="icon">⚠️</div>
+      Tabla de alertas con filas en rojo (agotado) y amarillo (bajo), mostrando productos con stock actual, umbral y estado
+      <span class="hint">Subir captura a Cloudinary y reemplazar este placeholder</span>
+    </div>
+  </div>
+
+  <div class="warning">
+    <strong>⚠️ Acción recomendada:</strong> Cuando veas productos en esta lista, debes crear un <strong>albarán (orden de compra)</strong> al proveedor correspondiente para reabastecer el inventario. Navega a <strong>Inventario → Albaranes → + Nuevo Albarán</strong>.
+  </div>
+
+  <div class="tip">
+    <strong>💡 Código de colores:</strong><br>
+    • <strong style="color:#e74c3c">Fila roja</strong> → Producto agotado (stock = 0). No se puede vender.<br>
+    • <strong style="color:#f39c12">Fila amarilla</strong> → Stock bajo (1-5 unidades). Reabastecer pronto.
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════ -->

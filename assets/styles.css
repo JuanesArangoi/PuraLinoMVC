@@ -386,30 +386,18 @@ textarea.pl-input{resize:vertical}
 .chatbot-send{background:#8b7355;color:#fff;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
 .chatbot-send:hover{background:#74604a}
 
-/* Admin Dark Theme — tables & cards contrast fix */
-#adminSection{background:#1a1a1a;color:#e0e0e0;min-height:80vh}
-#adminSection .pl-card{background:#222;border-color:#333;color:#e0e0e0}
-#adminSection .pl-card-body h3,#adminSection .pl-card-body h4{color:#fff}
-#adminSection h2,#adminSection h3{color:#fff}
-#adminSection table{border-collapse:collapse}
-#adminSection thead tr{background:#333}
-#adminSection thead th{padding:10px 12px;text-align:left;color:#ccc;font-weight:600;border-bottom:2px solid #444}
-#adminSection tbody tr{border-bottom:1px solid #333}
-#adminSection tbody td{padding:8px 12px;color:#ddd}
-#adminSection tbody tr:hover{background:rgba(255,255,255,.05)}
-#adminSection .pl-muted{color:#999}
-#adminSection .pl-input,#adminSection select.pl-input{background:#2a2a2a;border-color:#444;color:#e0e0e0}
-#adminSection .pl-input::placeholder{color:#777}
-#adminSection .pl-label{color:#ccc}
-#adminSection .pl-btn.pl-ghost{background:transparent;color:#ccc;border-color:#555}
-#adminSection .pl-btn.pl-ghost:hover{background:rgba(255,255,255,.1);color:#fff}
-#adminSection strong{color:#fff}
+/* Admin panel — clean table styling */
+#adminSection{min-height:80vh;padding:1.5rem 0}
+#adminSection table{border-collapse:collapse;width:100%}
+#adminSection thead tr{background:#8b7355}
+#adminSection thead th{padding:10px 12px;text-align:left;color:#fff;font-weight:600;border-bottom:2px solid #74604a;font-size:.88rem}
+#adminSection tbody tr{border-bottom:1px solid #eee}
+#adminSection tbody td{padding:8px 12px;color:#333;font-size:.88rem}
+#adminSection tbody tr:nth-child(even){background:#faf9f7}
+#adminSection tbody tr:hover{background:#f0ece4}
 
 /* Low stock alert rows */
 .stock-out{background:#f8d7da}
 .stock-low{background:#fff3cd}
-#adminSection .stock-out{background:#3d1f1f}
-#adminSection .stock-low{background:#3d3520}
-#adminSection .stock-out td,#adminSection .stock-low td{color:#eee}
 
 /* Responsive — see src/styles/mobile.css for all breakpoints */

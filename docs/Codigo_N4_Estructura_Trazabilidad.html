@@ -158,8 +158,8 @@
   <p class="desc">
     El sistema se implementa en dos módulos principales alineados con el Nivel 2 (Contenedores):
     una aplicación web SPA (JavaScript vanilla, patrón MVC) como canal del cliente, y un Backend
-    en Node.js (Express + MongoDB) que centraliza la lógica de negocio, autenticación, pasarela
-    de pagos e integraciones externas.
+    en Node.js (Express + Sequelize ORM + PostgreSQL) que centraliza la lógica de negocio, autenticación,
+    pasarela de pagos, gestión de inventario e integraciones externas.
   </p>
 
   <!-- ── Frontend ── -->
@@ -206,31 +206,46 @@
         <span class="file">observer.test.js</span>                    <span class="comment">(Tests del patrón Observer)</span></div>
 
   <!-- ── Backend ── -->
-  <div class="tree"><span class="folder">/PuraLinoMVC-api/</span>                                <span class="comment">(Backend — API REST Node.js)</span>
-    <span class="file">package.json</span>                            <span class="comment">(Dependencias: express, mongoose, jwt, bcrypt, etc.)</span>
+  <div class="tree"><span class="folder">/PuraLinoMVC-api/</span>                                <span class="comment">(Backend — API REST Node.js + PostgreSQL)</span>
+    <span class="file">package.json</span>                            <span class="comment">(Dependencias: express, sequelize, pg, jwt, bcrypt, etc.)</span>
     <span class="file">vitest.config.js</span>                        <span class="comment">(Configuración de pruebas unitarias)</span>
+    <span class="folder">/migrations/</span>
+        <span class="file">db_audit_triggers.sql</span>               <span class="comment">(Triggers PostgreSQL para db_changelog automático)</span>
+    <span class="folder">/monitoring/</span>
+        <span class="file">docker-compose.yml</span>                  <span class="comment">(Stack Prometheus + Grafana)</span>
+        <span class="file">prometheus.yml</span>                      <span class="comment">(Configuración de scraping de métricas)</span>
     <span class="folder">/src/</span>
-        <span class="file">server.js</span>                           <span class="comment">(Punto de entrada — Express, CORS, MongoDB, rutas)</span>
+        <span class="file">server.js</span>                           <span class="comment">(Punto de entrada — Express, CORS, PostgreSQL/Sequelize, rutas)</span>
         <span class="file">seed.js</span>                             <span class="comment">(Datos semilla — admin y configuración inicial)</span>
+        <span class="file">migrate-data.js</span>                     <span class="comment">(Script de migración MongoDB → PostgreSQL)</span>
         <span class="folder">/middleware/</span>
             <span class="file">auth.js</span>                         <span class="comment">(Middleware JWT: authRequired, adminOnly)</span>
-        <span class="folder">/models/</span>                                  <span class="comment">(Entidades Mongoose / ODM)</span>
-            <span class="file">User.js</span>                         <span class="comment">(Usuario: auth, roles, verificación email)</span>
-            <span class="file">Product.js</span>                      <span class="comment">(Producto: nombre, precio, stock, variantes, imágenes)</span>
-            <span class="file">Order.js</span>                        <span class="comment">(Pedido: items, total, estado, factura)</span>
-            <span class="file">Promotion.js</span>                    <span class="comment">(Promoción: código, descuento, activa)</span>
-            <span class="file">Return.js</span>                       <span class="comment">(Devolución: motivo, estado, aprobación)</span>
-            <span class="file">Review.js</span>                       <span class="comment">(Reseña: rating, comentario)</span>
-            <span class="file">Wishlist.js</span>                     <span class="comment">(Lista de deseos del usuario)</span>
-            <span class="file">Coupon.js</span>                       <span class="comment">(Cupón de descuento)</span>
-            <span class="file">GiftCard.js</span>                     <span class="comment">(Tarjeta de regalo)</span>
-            <span class="file">Supplier.js</span>                     <span class="comment">(Proveedor: nombre, contacto)</span>
-            <span class="file">Warehouse.js</span>                    <span class="comment">(Bodega: ubicación, estantes)</span>
-            <span class="file">PurchaseOrder.js</span>                <span class="comment">(Orden de compra a proveedor)</span>
-            <span class="file">StockMovement.js</span>                <span class="comment">(Movimiento de inventario)</span>
-            <span class="file">Setting.js</span>                      <span class="comment">(Configuración general: banner, envío)</span>
+        <span class="folder">/helpers/</span>
+            <span class="file">auditLog.js</span>                     <span class="comment">(logActivity — registro de auditoría a nivel de aplicación)</span>
+            <span class="file">requestContext.js</span>               <span class="comment">(AsyncLocalStorage — contexto del usuario por request)</span>
+            <span class="file">metrics.js</span>                      <span class="comment">(Métricas Prometheus — prom-client)</span>
+            <span class="file">dbLog.js</span>                        <span class="comment">(Helper de logging para base de datos)</span>
+        <span class="folder">/models/</span>
+            <span class="file">index.js</span>                        <span class="comment">(Sequelize ORM — todos los modelos, hooks de auditoría)</span>
+            <span class="comment">  Modelos definidos en index.js:</span>
+            <span class="comment">  User          — Usuario: auth, roles, verificación email, 2FA</span>
+            <span class="comment">  Product       — Producto: nombre, precio, stock, variantes (JSONB), imágenes (JSONB)</span>
+            <span class="comment">  Order         — Pedido: items (JSONB), total, estado, factura, tracking</span>
+            <span class="comment">  Promotion     — Promoción: código, descuento, activa</span>
+            <span class="comment">  Return        — Devolución: motivo, estado, fotos revisión (JSONB)</span>
+            <span class="comment">  Review        — Reseña: rating, comentario, aprobación</span>
+            <span class="comment">  Wishlist      — Lista de deseos (items JSONB)</span>
+            <span class="comment">  Coupon        — Cupón de descuento por devolución</span>
+            <span class="comment">  GiftCard      — Tarjeta de regalo</span>
+            <span class="comment">  Supplier      — Proveedor: nombre, contacto, ciudad</span>
+            <span class="comment">  Warehouse     — Almacén: ubicación, estanterías (JSONB)</span>
+            <span class="comment">  PurchaseOrder — Orden de compra: items (JSONB), estados, costo</span>
+            <span class="comment">  StockMovement — Movimiento de inventario: tipo, cantidad, trazabilidad</span>
+            <span class="comment">  Setting       — Configuración general (value JSONB)</span>
+            <span class="comment">  AuditLog      — Log de auditoría a nivel de aplicación</span>
+            <span class="comment">  BacklogItem   — Tareas del backlog del proyecto</span>
         <span class="folder">/routes/</span>                                  <span class="comment">(APIs REST — controladores de rutas)</span>
-            <span class="file">auth.js</span>                         <span class="comment">(Login, registro, verificación email, reset password)</span>
+            <span class="file">auth.js</span>                         <span class="comment">(Login, registro, verificación email, reset password, 2FA)</span>
             <span class="file">products.js</span>                     <span class="comment">(CRUD productos, imágenes Cloudinary)</span>
             <span class="file">orders.js</span>                       <span class="comment">(Creación/consulta pedidos, estados, facturación)</span>
             <span class="file">payments.js</span>                     <span class="comment">(MercadoPago: preferencias, webhooks, estados)</span>
@@ -241,25 +256,28 @@
             <span class="file">wishlist.js</span>                     <span class="comment">(Lista de deseos: agregar, consultar, eliminar)</span>
             <span class="file">shipping.js</span>                     <span class="comment">(Tarifas de envío por ciudad)</span>
             <span class="file">giftcards.js</span>                    <span class="comment">(Tarjetas de regalo: crear, canjear)</span>
-            <span class="file">inventory.js</span>                    <span class="comment">(Movimientos de stock, alertas bajo stock)</span>
+            <span class="file">inventory.js</span>                    <span class="comment">(Movimientos de stock, alertas bajo stock, ajuste manual)</span>
             <span class="file">suppliers.js</span>                    <span class="comment">(CRUD proveedores)</span>
-            <span class="file">warehouses.js</span>                   <span class="comment">(CRUD bodegas y estantes)</span>
-            <span class="file">purchaseOrders.js</span>               <span class="comment">(Órdenes de compra: crear, enviar, recibir)</span>
+            <span class="file">warehouses.js</span>                   <span class="comment">(CRUD almacenes y estanterías)</span>
+            <span class="file">purchaseOrders.js</span>               <span class="comment">(Albaranes: crear, enviar, recibir mercancía)</span>
             <span class="file">settings.js</span>                     <span class="comment">(Configuración: banner, tarifas envío)</span>
             <span class="file">cloudinary.js</span>                   <span class="comment">(Upload de imágenes a Cloudinary)</span>
             <span class="file">manual-upload.js</span>                <span class="comment">(Upload manual de archivos)</span>
+            <span class="file">backlog.js</span>                      <span class="comment">(Backlog items + AuditLog + DB Changelog)</span>
+            <span class="file">chatbot.js</span>                      <span class="comment">(Chatbot IA para atención al cliente)</span>
         <span class="folder">/utils/</span>
             <span class="file">emailService.js</span>                 <span class="comment">(Servicio SMTP: verificación, recovery, facturas)</span>
     <span class="folder">/tests/</span>
         <span class="file">auth.test.js</span>                        <span class="comment">(Tests: JWT, bcrypt, validaciones registro, middleware)</span>
-        <span class="file">models.test.js</span>                      <span class="comment">(Tests: modelos, envío, email, MercadoPago, stock)</span></div>
+        <span class="file">models.test.js</span>                      <span class="comment">(Tests: modelos, Sequelize, email, MercadoPago, stock)</span></div>
 
   <!-- ══════════ 2.4.2 TRAZABILIDAD ══════════ -->
   <div class="section-subtitle">2.4.2 Trazabilidad paquetes/Clases</div>
   <p class="desc">
     Para garantizar consistencia entre arquitectura y código, los componentes del Nivel 3
     se evidencian en los siguientes módulos para los procesos de
-    <strong>Autenticación y Gestión de Usuarios</strong> y <strong>Gestión de Pedidos</strong>:
+    <strong>Autenticación y Gestión de Usuarios</strong>, <strong>Gestión de Pedidos</strong>
+    y <strong>Gestión de Inventario</strong>:
   </p>
 
   <!-- ── Proceso 1: Autenticación y Gestión de Usuarios ── -->
@@ -286,7 +304,7 @@
       <tr>
         <td><strong>Modelo de Usuario</strong></td>
         <td><code>models/User.js</code></td>
-        <td>Entidad Mongoose: username, passwordHash, role (admin/client), email, emailVerified, tokens de verificación y recuperación.</td>
+        <td>Sequelize + PostgreSQL (tabla: <code>users</code>): username, passwordHash, role (admin/client), email, emailVerified, tokens de verificación y recuperación, 2FA.</td>
       </tr>
       <tr>
         <td><strong>API de Gestión de Usuarios</strong></td>
@@ -340,7 +358,7 @@
       <tr>
         <td><strong>Modelo de Pedido</strong></td>
         <td><code>models/Order.js</code></td>
-        <td>Entidad Mongoose: userId, items, total, subtotal, discount, shippingCost, status (pendiente_pago, confirmado, preparando, enviado, entregado, cancelado), invoiceNumber, paymentMethod.</td>
+        <td>Sequelize + PostgreSQL (tabla: <code>orders</code>): userId, items (JSONB), total, subtotal, discount, shippingCost, status (pendiente_pago, confirmado, preparando, enviado, entregado, cancelado), invoiceNumber, paymentMethod, trackingEvents (JSONB).</td>
       </tr>
       <tr>
         <td><strong>Componente de Pedidos</strong></td>
@@ -360,7 +378,7 @@
       <tr>
         <td><strong>Modelo de Producto</strong></td>
         <td><code>models/Product.js</code></td>
-        <td>Entidad referenciada en items del pedido: nombre, precio, stock, variantes (talla/color). Se decrementa stock al confirmar pedido.</td>
+        <td>Sequelize + PostgreSQL (tabla: <code>products</code>): nombre, precio, stock, variantes (JSONB: talla/color), imágenes (JSONB). Se decrementa stock al confirmar pedido.</td>
       </tr>
       <tr>
         <td><strong>Carrito de Compras (Frontend)</strong></td>
@@ -386,6 +404,80 @@
         <td><strong>Vista de Pedidos (Frontend)</strong></td>
         <td><code>views/appView.js</code></td>
         <td>Renderizado del carrito, resumen de compra, seguimiento de pedidos, historial y detalle con factura.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── Proceso 3: Gestión de Inventario ── -->
+  <p class="desc"><strong>Proceso 3: Gestión de Inventario</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:22%">Elemento N3</th>
+        <th style="width:38%">Código (paquete/clase)</th>
+        <th style="width:40%">Responsabilidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Componente de Gestión de Inventario (Proveedores)</strong></td>
+        <td><code>routes/suppliers.js</code></td>
+        <td>CRUD completo de proveedores (<code>GET/POST/PUT/DELETE /suppliers</code>): nombre, contacto, email, teléfono, dirección, ciudad, notas. Protegido con <code>authRequired</code> + <code>adminOnly</code>. Registra auditoría con <code>logActivity()</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Componente de Gestión de Inventario (Almacenes)</strong></td>
+        <td><code>routes/warehouses.js</code></td>
+        <td>CRUD de almacenes y gestión de estanterías como JSONB. Endpoints adicionales: <code>POST /:id/shelves</code> (agregar estantería), <code>DELETE /:id/shelves/:shelfId</code> (eliminar). Protegido con <code>adminOnly</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Componente de Gestión de Inventario (Albaranes)</strong></td>
+        <td><code>routes/purchaseOrders.js</code></td>
+        <td>Ciclo completo de órdenes de compra con estados: borrador → enviado → parcial → completo → cancelado. Genera Nº secuencial (<code>ALB-0001</code>). Edición solo en estado borrador. <code>POST /:id/receive</code>: recepción de mercancía que actualiza stock del producto, crea movimientos de inventario (<code>StockMovement</code>), detecta discrepancias y puede auto-crear productos nuevos desde el albarán.</td>
+      </tr>
+      <tr>
+        <td><strong>Componente de Gestión de Inventario (Movimientos y Alertas)</strong></td>
+        <td><code>routes/inventory.js</code></td>
+        <td><code>GET /movements</code>: consulta movimientos con filtros (productId, type, limit). <code>GET /low-stock</code>: alertas de productos con stock ≤ umbral configurable (evalúa stock general y por variante). <code>POST /adjust</code>: ajuste manual de stock (entrada/salida/ajuste absoluto) con registro de movimiento.</td>
+      </tr>
+      <tr>
+        <td><strong>Modelo de Proveedor</strong></td>
+        <td><code>models/index.js</code> (<code>Supplier</code>)</td>
+        <td>Sequelize + PostgreSQL (tabla: <code>suppliers</code>): name, contactPerson, email, phone, address, city, notes, active, timestamps.</td>
+      </tr>
+      <tr>
+        <td><strong>Modelo de Almacén</strong></td>
+        <td><code>models/index.js</code> (<code>Warehouse</code>)</td>
+        <td>Sequelize + PostgreSQL (tabla: <code>warehouses</code>): name, location, active, timestamps. Estanterías almacenadas como JSONB: <code>shelves[{code, label}]</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Modelo de Orden de Compra</strong></td>
+        <td><code>models/index.js</code> (<code>PurchaseOrder</code>)</td>
+        <td>Sequelize + PostgreSQL (tabla: <code>purchase_orders</code>): poNumber (unique), supplierId (ref Supplier), supplierName, status (enum: borrador/enviado/parcial/completo/cancelado), notes, expectedDate, totalCost. Items como JSONB: <code>[{productId, productName, variantId, quantityOrdered, quantityReceived, unitCost, warehouseId, shelfId, receivedAt, isNewProduct, newProductData}]</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Modelo de Movimiento de Stock</strong></td>
+        <td><code>models/index.js</code> (<code>StockMovement</code>)</td>
+        <td>Sequelize + PostgreSQL (tabla: <code>stock_movements</code>): productId, productName, variantId, variantLabel, type (entrada/salida/ajuste), quantity, reason, referenceType (purchase_order/customer_order/manual/return), referenceId, warehouseId, warehouseName, shelfCode, userId, userName, timestamps. Trazabilidad completa de cada cambio de inventario.</td>
+      </tr>
+      <tr>
+        <td><strong>Vista de Inventario (Frontend)</strong></td>
+        <td><code>views/inventoryView.js</code></td>
+        <td>Renderiza 6 secciones: proveedores, almacenes, albaranes (con badges de estado), detalle de albarán, formulario de recepción de mercancía, movimientos de stock y alertas de stock bajo (código de colores rojo/naranja). Incluye impresión PDF de albaranes.</td>
+      </tr>
+      <tr>
+        <td><strong>Controlador de Inventario (Frontend)</strong></td>
+        <td><code>controllers/appController.js</code></td>
+        <td>Orquesta menú lateral de inventario (5 secciones), carga datos de la API REST, gestiona eventos CRUD para proveedores, almacenes y albaranes. Maneja proceso de recepción de mercancía con asignación de almacén/estantería y transiciones de estado.</td>
+      </tr>
+      <tr>
+        <td><strong>Componente de Seguridad</strong></td>
+        <td><code>middleware/auth.js</code></td>
+        <td><code>authRequired</code> + <code>adminOnly</code> aplicado en todas las rutas de inventario (<code>/suppliers</code>, <code>/warehouses</code>, <code>/purchase-orders</code>, <code>/inventory</code>). Garantiza que solo administradores acceden al módulo completo.</td>
+      </tr>
+      <tr>
+        <td><strong>Auditoría de Inventario</strong></td>
+        <td><code>helpers/auditLog.js</code></td>
+        <td><code>logActivity()</code>: registra cada operación de inventario con action (CREATE/UPDATE/DELETE/RECEIVE_GOODS/STOCK_ADJUSTMENT), entity, entityId, entityName, usuario, timestamp y detalles adicionales (cambios, discrepancias, nuevo estado). Complementado por triggers PostgreSQL en <code>db_changelog</code>.</td>
       </tr>
     </tbody>
   </table>
