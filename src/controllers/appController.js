@@ -491,8 +491,9 @@ export class AppController {
               .then(r => r.text())
               .then(html => {
                 const doc = new DOMParser().parseFromString(html, 'text/html');
+                const styles = Array.from(doc.querySelectorAll('style')).map(s => s.outerHTML).join('');
                 const body = doc.querySelector('.container') || doc.body;
-                el.innerHTML = body.innerHTML;
+                el.innerHTML = styles + body.innerHTML;
               })
               .catch(() => { el.innerHTML = '<p style="color:red;padding:20px">Error al cargar el manual.</p>'; });
           }
