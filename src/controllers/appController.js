@@ -482,11 +482,27 @@ export class AppController {
       if(legalLink){
         e.preventDefault();
         const page = legalLink.getAttribute('data-legal');
-        const legal = LEGAL_PAGES[page];
-        if(legal){
+        if(page === 'userManual'){
           const el = document.getElementById('legalContent');
-          if(el) el.innerHTML = `<h2 style="margin-top:0">${legal.title}</h2>${legal.content}`;
-          this.view.toggleModal('legalModal', true);
+          if(el){
+            el.innerHTML = '<p style="text-align:center;padding:40px;color:#888">Cargando Manual de Usuario...</p>';
+            this.view.toggleModal('legalModal', true);
+            fetch('docs/Manual_Usuario.html')
+              .then(r => r.text())
+              .then(html => {
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const body = doc.querySelector('.container') || doc.body;
+                el.innerHTML = body.innerHTML;
+              })
+              .catch(() => { el.innerHTML = '<p style="color:red;padding:20px">Error al cargar el manual.</p>'; });
+          }
+        } else {
+          const legal = LEGAL_PAGES[page];
+          if(legal){
+            const el = document.getElementById('legalContent');
+            if(el) el.innerHTML = `<h2 style="margin-top:0">${legal.title}</h2>${legal.content}`;
+            this.view.toggleModal('legalModal', true);
+          }
         }
       }
 
