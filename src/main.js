@@ -17,3 +17,4 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   window.addEventListener('hashchange', routeFromHash);
   routeFromHash();
 });
+// CI/CD test
